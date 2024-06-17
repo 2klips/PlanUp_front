@@ -20,7 +20,9 @@ import {
 
 function App() {
   return (
-
+    <View>
+      <Text>Hello World!</Text>
+    </View>
   );
 }
 
