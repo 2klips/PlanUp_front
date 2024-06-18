@@ -10,6 +10,7 @@ Client/
 │   ├── navigation/             # 네비게이션 설정
 │   ├── hooks/                  # 커스텀 훅
 │   ├── styles/                 # 공통 스타일
+│   ├── services/               # API 호출 등 비즈니스 로직
 │   ├── utils/                  # 유틸리티 함수
 │   ├── context/                # React Contexts (글로벌 상태 관리)
 ├── App.js                      # 메인 앱 컴포넌트
