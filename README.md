@@ -1,3 +1,5 @@
+
+```
 Client/
 ├── android/                    # Android 네이티브 코드
 ├── ios/                        # iOS 네이티브 코드
@@ -14,3 +16,6 @@ Client/
 |── index.js                    # 엔트리 파일
 ├── package.json                # npm 패키지 설정 파일
 └── README.md                   # 프로젝트 설명 파일
+```
+
+run: react-native run-android
