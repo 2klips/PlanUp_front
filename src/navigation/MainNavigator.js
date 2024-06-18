@@ -6,8 +6,8 @@ const Stack = createNativeStackNavigator();
 
 function MainNavigator() {
     return (
-        <Stack.Navigator initialRouteName="MainPage">
-            <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown:false }}/>
+        <Stack.Navigator>
+            <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 }
