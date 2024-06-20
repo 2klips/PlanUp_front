@@ -9,9 +9,12 @@ const HorizontalLine = () => {
 
 const styles = StyleSheet.create({
     line: {
-        borderBottomColor: '#ccc',
+        borderBottomColor: 'white',
         borderBottomWidth: 1,
-        marginVertical: 10, // 수평선 위아래 여백 조정 (원하는 만큼)
+        marginVertical: 3, // 수평선 위아래 여백 조정 (원하는 만큼)
+        width: '60%',
+        marginLeft: '20%',
+        height: 1
     },
 });
 
