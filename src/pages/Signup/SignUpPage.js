@@ -1,108 +1,71 @@
 import React from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Alert} from 'react-native';
+import Modal from 'react-native-modal';
 import { useNavigation } from '@react-navigation/native';
+import LoginInputBox from '../../components/ui/LoginInputBox';
 
 function SignupPage() {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [passwordVerify, setPasswordVerify] = React.useState('');
-    const [email, setEmail] = React.useState('');
-    const [name, setName] = React.useState('');
-    const [phone, setPhone] = React.useState('');
-    const [address, setAddress] = React.useState('');
 
     const navigation = useNavigation();
 
-    const goToSignup = () => {
-        fetch('http://192.168.56.1:8080/user/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password,
-                email: email,
-                name: name,
-                phone: phone,
-                address: address,
-            }),
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log('Signup 성공:', data);
-            Alert.alert('Signup 성공', '회원가입에 성공했습니다.');
-            navigation.navigate('LoginPage');
-        })
-        .catch((error) => {
-            console.error('Signup 오류:', error);
-            Alert.alert('Signup 오류', '회원가입 중 오류가 발생했습니다.', error);
+    const goToNextPage = () => {
+        if (username === '') {
+            Alert.alert('아이디를 입력해주세요.');
+            return;
+        }
+        if (password === '') {
+            Alert.alert('비밀번호를 입력해주세요.');
+            return;
+        }
+        if (password !== passwordVerify) {
+            Alert.alert('비밀번호 오류', '비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        navigation.navigate('SignupPage2', {
+            username,
+            password,
         });
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Sign Up Page</Text>
-            <TextInput
-                name="username"
-                placeholder="아이디"
+            <View style={styles.TextBox}>
+                <Text style={styles.title}>환영합니다!</Text>
+                <Text style={styles.smallText}>원하시는 꿈을 이루실 수 있도록 최선을 다 할게요.</Text>
+            </View>
+            <View style={styles.TextBox}>
+                <Text style={styles.subText}>사용하실 아이디와</Text>
+                <Text style={styles.subText}>비밀번호를 비력해주세요.</Text>
+            </View>
+            <View style={styles.margin}>
+            <LoginInputBox
+                title="아이디"
+                text="가입하실 아이디를 입력하세요"
                 value={username}
                 onChangeText={setUsername}
-                textAlign='center'
-                style={styles.textInput}
             />
-            <TextInput
-                name="password"
-                placeholder="비밀번호"
+            </View>
+            <LoginInputBox
+                title="비밀번호"
+                text="비밀번호를 입력하세요"
                 value={password}
                 onChangeText={setPassword}
-                textAlign='center'
-                style={styles.textInput}
                 secureTextEntry
+                
             />
-            <TextInput
-                name="passwordVerify"
-                placeholder="비밀번호 확인"
+            <LoginInputBox
+                title="비밀번호 확인"
+                text="비밀번호를 다시 한 번 입력해주세요"
                 value={passwordVerify}
                 onChangeText={setPasswordVerify}
-                textAlign='center'
-                style={styles.textInput}
                 secureTextEntry
             />
-            <TextInput
-                name="email"
-                placeholder="이메일"
-                value={email}
-                onChangeText={setEmail}
-                textAlign='center'
-                style={styles.textInput}
-            />
-            <TextInput
-                name="name"
-                placeholder="이름"
-                value={name}
-                onChangeText={setName}
-                textAlign='center'
-                style={styles.textInput}
-            />
-            <TextInput
-                name="phone"
-                placeholder="핸드폰"
-                value={phone}
-                onChangeText={setPhone}
-                textAlign='center'
-                style={styles.textInput}
-            />
-            <TextInput
-                name="address"
-                placeholder="주소"
-                value={address}
-                onChangeText={setAddress}
-                textAlign='center'
-                style={styles.textInput}
-            />
-            <TouchableOpacity style={styles.button} onPress={goToSignup}>
-                <Text style={styles.buttonText}>Signup</Text>
+            <TouchableOpacity style={styles.button} onPress={goToNextPage}>
+                <Text style={styles.buttonText}>다음</Text>
             </TouchableOpacity>
         </View>
     );
@@ -115,21 +78,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    textInput: {
-        height: 40,
-        width: 300,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 10,
-        paddingLeft: 10,
-    },
     button: {
-        backgroundColor: '#49C8FF',
-        paddingVertical: 15,
+        backgroundColor: '#06A4FD',
+        paddingVertical: 5,
         paddingHorizontal: 30,
-        borderRadius: 5,
+        borderRadius: 12,
         marginBottom: 5,
-        width: 200,
+        width: 100,
+        height: 35,
+        marginTop: 30,
     },
     buttonText: {
         color: 'white',
@@ -139,8 +96,29 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
+        color: 'black'
+    },
+    smallText: {
+        fontSize: 14,
+        color: 'gray',
+        fontWeight: 'bold',
+        textAlign: 'left'
+    },
+    margin: {
         marginBottom: 20,
-        color: '#25A4FF'
+    },
+    subText: {
+        fontSize: 17,
+        color: 'black',
+        fontWeight: 'bold',
+        textAlign: 'left'
+    },
+    TextBox: {
+        marginBottom: 20,
+        marginLeft: 100,
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        width: '100%',
     },
 });
 
