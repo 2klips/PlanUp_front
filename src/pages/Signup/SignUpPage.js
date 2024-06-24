@@ -5,14 +5,14 @@ import { useNavigation } from '@react-navigation/native';
 import LoginInputBox from '../../components/ui/LoginInputBox';
 
 function SignupPage() {
-    const [username, setUsername] = React.useState('');
+    const [userid, setUserid] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [passwordVerify, setPasswordVerify] = React.useState('');
 
     const navigation = useNavigation();
 
-    const goToNextPage = () => {
-        if (username === '') {
+    const goToNextPage = async () => {
+        if (userid === '') {
             Alert.alert('아이디를 입력해주세요.');
             return;
         }
@@ -25,10 +25,30 @@ function SignupPage() {
             return;
         }
 
-        navigation.navigate('SignupPage2', {
-            username,
-            password,
-        });
+        try {
+            const response = await fetch(`http://192.168.153.1:8080/user/${userid}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (response.status === 200) {
+                const req = await response.json();
+                Alert.alert('아이디 중복', '이미 사용중인 아이디입니다.');
+                return;
+            } else if (response.status === 401) {
+                navigation.navigate('SignupPage2', {
+                    userid,
+                    password,
+                });
+            } else {
+                Alert.alert('서버 오류', '서버와 통신 중 오류가 발생했습니다.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Alert.alert('서버 오류', '서버와 통신 중 오류가 발생했습니다.');
+        }
     };
 
     return (
@@ -45,8 +65,8 @@ function SignupPage() {
             <LoginInputBox
                 title="아이디"
                 text="가입하실 아이디를 입력하세요"
-                value={username}
-                onChangeText={setUsername}
+                value={userid}
+                onChangeText={setUserid}
             />
             </View>
             <LoginInputBox
