@@ -9,7 +9,7 @@ function LoginPage({ navigation }) {
     const { setIsLoggedIn } = useAuth();
     const { setUser } = useAuth();
 
-    const [username, setUsername] = React.useState('');
+    const [userid, setUserid] = React.useState('');
     const [password, setPassword] = React.useState('');
 
     const goToSignup = () => {
@@ -25,7 +25,7 @@ function LoginPage({ navigation }) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    username: username,
+                    userid: userid,
                     password: password,
                 }),
             });
@@ -57,8 +57,8 @@ function LoginPage({ navigation }) {
             <LoginInputBox
                 title="아이디"
                 text="아이디를 입력하세요"
-                value={username}
-                onChangeText={setUsername}
+                value={userid}
+                onChangeText={setUserid}
             />
             <LoginInputBox
                 title="비밀번호"

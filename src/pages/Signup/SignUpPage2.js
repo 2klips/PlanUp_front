@@ -6,7 +6,7 @@ import Postcode from '@actbase/react-daum-postcode';
 
 function SignupPage2() {
     const route = useRoute();
-    const { username, password } = route.params;
+    const { userid, password } = route.params;
 
     const [isModalVisible, setModalVisible] = useState(false);
     // const [selectedAddress, setSelectedAddress] = useState('');
@@ -29,14 +29,28 @@ function SignupPage2() {
 
     const [email, setEmail] = React.useState('');
     const [name, setName] = React.useState('');
-    const [phone, setPhone] = React.useState('');
+    const [hp, setHp] = React.useState('');
     const [address, setAddress] = React.useState('');
     const [zoneCode, setZoneCode] = React.useState('');
     const [addrDetail, setAddrDetail] = React.useState('');
-    const [rrn1, setrrn1] = React.useState('');
-    const [rrn2, setrrn2] = React.useState('');
+    const [ssn1, setSsn1] = React.useState('');
+    const [ssn2, setSsn2] = React.useState('');
+    const [gender, setGender] = React.useState('');
 
-
+    const isGender = (ssn2) => {
+        if(ssn2[0] === '1' || ssn2[0] === '3'){
+            setGender('남성');
+        }
+        else if(ssn2[0] === '2' || ssn2[0] === '4'){
+            setGender('여성');
+        }else{
+            setGender('');
+        }
+    };
+    const handleChange = (text) => {
+        setSsn2(text);
+        isGender(text);
+    };
     const navigation = useNavigation();
 
     const goToSignup = () => {
@@ -46,12 +60,17 @@ function SignupPage2() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                username,
-                password,
-                email,
                 name,
-                phone,
+                userid,
+                password,
+                hp,
+                email,
+                zoneCode,
                 address,
+                addrDetail,
+                ssn1,
+                ssn2,
+                gender,
             }),
         })
         .then((response) => response.json())
@@ -89,8 +108,8 @@ function SignupPage2() {
                             placeholderTextColor='#25A4FF'
                             maxLength={6}
                             keyboardType="numeric"
-                            value={rrn1}
-                            onChangeText={setrrn1}
+                            value={ssn1}
+                            onChangeText={setSsn1}
                         />
                         <Text style={styles.separator}>-</Text>
                         <TextInput
@@ -99,16 +118,16 @@ function SignupPage2() {
                             placeholderTextColor='#25A4FF'
                             maxLength={7}
                             keyboardType="numeric"
-                            value={rrn2}
-                            onChangeText={setrrn2}
+                            value={ssn2}
+                            onChangeText={handleChange}
                             secureTextEntry
                         />
                     </View>
                     <LoginInputBox
                         title="연락처"
                         text="전화번호를 입력하세요"
-                        value={phone}
-                        onChangeText={setPhone}
+                        value={hp}
+                        onChangeText={setHp}
                         keyboardType="numeric"
                     />
                     <LoginInputBox
@@ -205,7 +224,7 @@ const styles = StyleSheet.create({
     },
     smallButtonText: {
         color: 'white',
-        fontSize: 9,
+        fontSize: 10,
         textAlign: 'center',
         fontWeight: 'bold',
     },
