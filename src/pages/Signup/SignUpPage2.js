@@ -120,61 +120,49 @@ function SignupPage2() {
                     />
                     <View>
                         <View>
-                            <View>
-                                <Modal visible={isModalVisible} animationType="slide">
-                                    <View style={styles.modalContainer}>
-                                        <Postcode
-                                            style={styles.postcode}
-                                            jsOptions={{ animation: true, hideMapBtn: true }}
-                                            onSelected={handleAddressSelect}
-                                        />
-                                        <Button title="닫기" onPress={() => setModalVisible(false)} />
-                                    </View>
-                                </Modal>
-                            </View>
-                                <LoginInputBox
-                                    title="주소"
-                                    text="주소/도로명 주소"
-                                    value={address}
-                                    onChangeText={setAddress}
-                                    editable={false}
-                                />
-                                <TouchableOpacity style={styles.smallButton} onPress={() => setModalVisible(true)} >
-                                    <Text style={styles.smallButtonText}>주소검색</Text>
-                                </TouchableOpacity>
-                            <View style={styles.inputContainer}>
-                                {/* <LoginInputBox
-                                    text="우편번호"
-                                    value={zoneCode}
-                                    onChangeText={setZoneCode}
-                                    editable={false}
-                                /> */}
-                                <TextInput
-                                    placeholder="우편번호"
-                                    placeholderTextColor='#25A4FF'
-                                    value={zoneCode}
-                                    onChangeText={setZoneCode}
-                                    textAlign='center'
-                                    style={styles.textInput}
-                                    editable={false}
-                                />
-                                <Text style={styles.separator}></Text>
-                                {/* <LoginInputBox
-                                    text="상세 주소를 입력 해주세요"
-                                    value={addrDetail}
-                                    onChangeText={setAddrDetail}
-                                /> */}
-                                <TextInput
-                                    placeholder="상세 주소를 입력 해주세요"
-                                    placeholderTextColor='#25A4FF'
-                                    value={addrDetail}
-                                    onChangeText={setAddrDetail}
-                                    textAlign='center'
-                                    style={[styles.textInput, {width: 155, fontSize: 12}]}
-                                />
-                            </View>
+                            <Modal visible={isModalVisible} animationType="slide">
+                                <View style={styles.modalContainer}>
+                                    <Postcode
+                                        style={styles.postcode}
+                                        jsOptions={{ animation: true, hideMapBtn: true }}
+                                        onSelected={handleAddressSelect}
+                                    />
+                                    <Button title="닫기" onPress={() => setModalVisible(false)} />
+                                </View>
+                            </Modal>
+                        </View>
+                            <LoginInputBox
+                                title="주소"
+                                text="주소/도로명 주소"
+                                value={address}
+                                onChangeText={setAddress}
+                                editable={false}
+                            />
+                            <TouchableOpacity style={styles.smallButton} onPress={() => setModalVisible(true)} >
+                                <Text style={styles.smallButtonText}>주소검색</Text>
+                            </TouchableOpacity>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                placeholder="우편번호"
+                                placeholderTextColor='#25A4FF'
+                                value={zoneCode}
+                                onChangeText={setZoneCode}
+                                textAlign='center'
+                                style={styles.textInput}
+                                editable={false}
+                            />
+                            <Text style={styles.separator}></Text>
+                            <TextInput
+                                placeholder="상세 주소를 입력 해주세요"
+                                placeholderTextColor='#25A4FF'
+                                value={addrDetail}
+                                onChangeText={setAddrDetail}
+                                textAlign='center'
+                                style={[styles.textInput, {width: 155, fontSize: 12}]}
+                            />
                         </View>
                     </View>
+                    
                     <TouchableOpacity style={styles.button} onPress={goToSignup}>
                         <Text style={styles.buttonText}>회원가입</Text>
                     </TouchableOpacity>
