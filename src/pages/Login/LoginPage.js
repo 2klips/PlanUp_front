@@ -3,12 +3,13 @@ import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'reac
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoginInputBox from '../../components/ui/LoginInputBox';
 
 function LoginPage({ navigation }) {
     const { setIsLoggedIn } = useAuth();
     const { setUser } = useAuth();
 
-    const [username, setUsername] = React.useState('');0
+    const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
 
     const goToSignup = () => {
@@ -53,29 +54,42 @@ function LoginPage({ navigation }) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Login Page</Text>
-            <TextInput
-                name="username"
-                placeholder="아이디"
+            <LoginInputBox
+                title="아이디"
+                text="아이디를 입력하세요"
                 value={username}
                 onChangeText={setUsername}
-                textAlign='center'
-                style={styles.textInput}
             />
-            <TextInput
-                name="password"
-                placeholder="비밀번호"
+            <LoginInputBox
+                title="비밀번호"
+                text="비밀번호를 입력하세요"
                 value={password}
                 onChangeText={setPassword}
-                textAlign='center'
-                style={styles.textInput}
                 secureTextEntry
             />
-            <TouchableOpacity style={styles.button} onPress={goToSignup}>
-                <Text style={styles.buttonText}>Go to SignupPage</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onLogin}>
-                <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonBox}>
+                <TouchableOpacity 
+                style={[
+                    styles.button, 
+                    { 
+                        backgroundColor: 'white',
+                        borderColor: '#06A4FD',
+                        borderWidth: 2,
+                    }]} 
+                onPress={onLogin}
+                >
+                    <Text style={[styles.buttonText, {color: '#06A4FD',}]}>로그인</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                style={[
+                    styles.button, 
+                    { backgroundColor: '#06A4FD' }
+                ]} 
+                onPress={goToSignup}
+                >
+                    <Text style={styles.buttonText}>회원가입</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -87,32 +101,37 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    textInput: {
-        height: 40,
-        width: 300,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 10,
-        paddingLeft: 10,
-    },
     button: {
-        backgroundColor: '#49C8FF',
-        paddingVertical: 15,
+        paddingVertical: 6,
         paddingHorizontal: 30,
-        borderRadius: 5,
+        borderRadius: 15,
         marginBottom: 5,
-        width: 200,
+        width: 130,
+        height: 40,
     },
     buttonText: {
         color: 'white',
         fontSize: 16,
         textAlign: 'center',
     },
+    buttonBox:{
+        width: 300,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 15,
+    },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
         color: '#25A4FF'
+    },
+    innerText:{
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#25A4FF',
+        marginBottom: 5,
+        marginLeft: 5,
     },
 });
 
