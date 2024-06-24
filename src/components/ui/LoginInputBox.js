@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
-function LoginInputBox({ title, text, value, onChangeText, secureTextEntry = false}) {
+function LoginInputBox({ title, text, value, onChangeText, ...props}) {
     return (
         <View>
             <Text style={styles.innerText}>{title}</Text>
@@ -12,7 +12,7 @@ function LoginInputBox({ title, text, value, onChangeText, secureTextEntry = fal
                 onChangeText={onChangeText}
                 textAlign='center'
                 style={styles.textInput}
-                secureTextEntry={secureTextEntry}
+                {...props}
             />
         </View>
     );
