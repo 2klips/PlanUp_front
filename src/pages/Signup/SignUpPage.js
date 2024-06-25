@@ -3,38 +3,97 @@ import {View, Text, StyleSheet, TextInput, TouchableOpacity, Alert} from 'react-
 import Modal from 'react-native-modal';
 import { useNavigation } from '@react-navigation/native';
 import LoginInputBox from '../../components/ui/LoginInputBox';
+import { validateId, validatePassword } from '../../utils/validateRegex';
 
 function SignupPage() {
     const [userid, setUserid] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [passwordVerify, setPasswordVerify] = React.useState('');
+    const [isValidId, setIsValidId] = React.useState(false);
+    const [isValidPassword, setIsValidPassword] = React.useState(false);
+    const [isValidPasswordVerify, setIsValidPasswordVerify] = React.useState(false);
+    const [idValidText, setIdValidText] = React.useState('');
+    const [idValidColor, setIdValidColor] = React.useState({ color: '#06A4FD' });
+    const [passwordValidText, setPasswordValidText] = React.useState('');
+    const [passwordValidColor, setPasswordValidColor] = React.useState({ color: '#06A4FD' });
+    const [passwordVerifyValidText, setPasswordVerifyValidText] = React.useState('');
+    const [passwordVerifyValidColor, setPasswordVerifyValidColor] = React.useState({ color: '#06A4FD' });
+
 
     const navigation = useNavigation();
 
-    const goToNextPage = async () => {
-        if (userid === '') {
-            Alert.alert('아이디를 입력해주세요.');
+    const handleValidateId = (id) => {
+        if (id === '') {
+            setIsValidId(false);
             return;
+        }else{
+            const isValid = validateId(id);
+            if (!isValid) {
+                setIsValidId(false);
+                setIdValidText('아이디는 4자 이상, 영문자, 숫자만 허용됩니다.');
+                setIdValidColor({ color: 'red' });
+            } else {
+                setIdValidText('사용가능한 아이디 입니다.');
+                setIdValidColor({ color: '#06A4FD' });
+                setIsValidId(true);
+            }
         }
-        if (password === '') {
-            Alert.alert('비밀번호를 입력해주세요.');
-            return;
-        }
-        if (password !== passwordVerify) {
-            Alert.alert('비밀번호 오류', '비밀번호가 일치하지 않습니다.');
-            return;
-        }
+    };
 
+    const handleValidatePassword = (pass) => {
+        if (pass === '') {
+            setIsValidPassword(false)
+            return;
+        }
+        const isValid = validatePassword(pass);
+        if (!isValid) {
+            setIsValidPassword(false)
+            setPasswordValidText("8자 이상, 대문자, 특수문자를 포함해야 합니다.");
+            setPasswordValidColor({ color: 'red' })
+        } else {
+            setPasswordValidText("사용가능한 비밀번호 입니다.")
+            setPasswordValidColor({ color: '#06A4FD' })
+            setIsValidPassword(true);
+        }
+    };
+
+    const handleValidatePasswordVerify = (pass) => {
+        if (pass === '') {
+            setIsValidPasswordVerify(false)
+            return;
+        }
+        if (password !== pass) {
+            setIsValidPasswordVerify(false)
+            setPasswordVerifyValidText("비밀번호가 일치하지 않습니다.");
+            setPasswordVerifyValidColor({ color: 'red' })
+        } else if (password === pass){
+            setPasswordVerifyValidText("사용가능한 비밀번호 입니다.")
+            setPasswordVerifyValidColor({ color: '#06A4FD' })
+            setIsValidPasswordVerify(true);
+        }
+    }
+
+    const goToNextPage = async () => {
+        if (!isValidId || !isValidPassword || !isValidPasswordVerify) {
+            Alert.alert('오류', '모든 입력란을 올바르게 작성해주세요.');
+            return;
+        }
         try {
-            const response = await fetch(`http://192.168.153.1:8080/user/${userid}`, {
-                method: 'GET',
+            const response = await fetch(`http://192.168.56.1:8080/user/get_user`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({
+                    userid,
+                }),
             });
     
             if (response.status === 200) {
                 const req = await response.json();
+                setIsValidPassword(false)
+                setPasswordValidText("이미 사용중인 아이디입니다.");
+                setPasswordValidColor({ color: 'red' })
                 Alert.alert('아이디 중복', '이미 사용중인 아이디입니다.');
                 return;
             } else if (response.status === 401) {
@@ -66,25 +125,47 @@ function SignupPage() {
                 title="아이디"
                 text="가입하실 아이디를 입력하세요"
                 value={userid}
-                onChangeText={setUserid}
-            />
+                onChangeText={(e) => {
+                    setUserid(e)
+                    handleValidateId(e);
+                }}
+                borderColor={idValidColor.color}
+                />
+            <Text style={[styles.validateText, idValidColor]}>{idValidText}</Text>
             </View>
+            <View>
             <LoginInputBox
                 title="비밀번호"
                 text="비밀번호를 입력하세요"
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(e) => {
+                    setPassword(e)
+                    handleValidatePassword(e);
+                }}
                 secureTextEntry
-                
+                borderColor={passwordValidColor.color}
             />
+            <Text style={[styles.validateText, passwordValidColor]}>{passwordValidText}</Text>
+            </View>
+            <View>
             <LoginInputBox
                 title="비밀번호 확인"
                 text="비밀번호를 다시 한 번 입력해주세요"
                 value={passwordVerify}
-                onChangeText={setPasswordVerify}
+                onChangeText={(e) => {
+                    setPasswordVerify(e)
+                    handleValidatePasswordVerify(e);
+                }}
                 secureTextEntry
+                borderColor={passwordVerifyValidColor.color}
             />
-            <TouchableOpacity style={styles.button} onPress={goToNextPage}>
+            <Text style={[styles.validateText, passwordVerifyValidColor]}>{passwordVerifyValidText}</Text>
+            </View>
+            <TouchableOpacity 
+            style={[styles.button, (!isValidId || !isValidPassword || !isValidPasswordVerify) && styles.buttonDisabled]} 
+            onPress={goToNextPage}
+            disabled={!isValidId || !isValidPassword || !isValidPasswordVerify}
+            >
                 <Text style={styles.buttonText}>다음</Text>
             </TouchableOpacity>
         </View>
@@ -97,6 +178,20 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
+    },
+    validateText: {
+        marginBottom: 5,
+    },
+    buttonDisabled: {
+        backgroundColor: 'gray',
+        paddingVertical: 5,
+        paddingHorizontal: 30,
+        borderRadius: 12,
+        marginBottom: 5,
+        width: 100,
+        height: 35,
+        marginTop: 30,
     },
     button: {
         backgroundColor: '#06A4FD',
@@ -125,7 +220,7 @@ const styles = StyleSheet.create({
         textAlign: 'left'
     },
     margin: {
-        marginBottom: 20,
+        marginBottom: 10,
     },
     subText: {
         fontSize: 17,

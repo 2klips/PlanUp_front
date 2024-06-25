@@ -3,30 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal, Butt
 import { useRoute, useNavigation } from '@react-navigation/native';
 import LoginInputBox from '../../components/ui/LoginInputBox';
 import Postcode from '@actbase/react-daum-postcode';
-
+import {validateEmail, validateHP, validateSSN, validateName} from '../../utils/validateRegex';
 function SignupPage2() {
     const route = useRoute();
     const { userid, password } = route.params;
 
     const [isModalVisible, setModalVisible] = useState(false);
-    // const [selectedAddress, setSelectedAddress] = useState('');
-
-    const handleAddressSelect = (data) => {
-        // setSelectedAddress(JSON.stringify(data));
-        setModalVisible(false);
-        Alert.alert('주소 선택', JSON.stringify(data));
-        const roadAddress = data.roadAddress;
-        setZoneCode(data.zonecode);
-        if(data.buildingName){
-            setAddress(roadAddress + ' ' + data.buildingName);
-        }
-        else{
-            setAddress(roadAddress);
-        }
-
-    };
-
-
     const [email, setEmail] = React.useState('');
     const [name, setName] = React.useState('');
     const [hp, setHp] = React.useState('');
@@ -36,6 +18,105 @@ function SignupPage2() {
     const [ssn1, setSsn1] = React.useState('');
     const [ssn2, setSsn2] = React.useState('');
     const [gender, setGender] = React.useState('');
+    const [isValidEmail, setIsValidEmail] = useState(false);
+    const [isValidName, setIsValidName] = useState(false);
+    const [isValidHP, setIsValidHP] = useState(false);
+    const [isValidSSN, setIsValidSSN] = useState(false);
+    const [isValidAddress, setIsValidAddress] = useState(false);
+    const [validNameText, setValidNameText] = useState('');
+    const [validNameColor, setValidNameColor] = useState({ color: '#06A4FD' });
+    const [validEmailText, setValidEmailText] = useState('');
+    const [validEmailColor, setValidEmailColor] = useState({ color: '#06A4FD' });
+    const [validHPText, setValidHPText] = useState('');
+    const [validHPColor, setValidHPColor] = useState({ color: '#06A4FD' });
+    const [validSSNText, setValidSSNText] = useState('');
+    const [validSSNColor, setValidSSNColor] = useState({ color: '#06A4FD' });
+
+    const handleValidateName = (name) => {
+        if (name === '') {
+            setIsValidName(false);
+            return;
+        }else{
+            const isValid = validateName(name);
+            if (!isValid) {
+                setIsValidName(false);
+                setValidNameText('이름을 다시 확인해주세요.');
+                setValidNameColor({ color: 'red' });
+            } else {
+                setValidNameColor({ color: '#06A4FD' });
+                setValidNameText('');
+                setIsValidName(true);
+            }
+        }
+    };
+    const handleValidateEmail = (email) => {
+        if (email === '') {
+            setIsValidEmail(false);
+            return;
+        }else{
+            const isValid = validateEmail(email);
+            if (!isValid) {
+                setIsValidEmail(false);
+                setValidEmailText('이메일 형식을 다시 확인해주세요.');
+                setValidEmailColor({ color: 'red' });
+            } else {
+                setValidEmailColor({ color: '#06A4FD' });
+                setValidEmailText('');
+                setIsValidEmail(true);
+            }
+        }
+    };
+    const handleValidateHP = (hp) => {
+        if (hp === '') {
+            setIsValidHP(false);
+            return;
+        }else{
+            const isValid = validateHP(hp);
+            if (!isValid) {
+                setIsValidHP(false);
+                setValidHPText('전화번호 형식을 다시 확인해주세요.');
+                setValidHPColor({ color: 'red' });
+            } else {
+                setValidHPText('')
+                setValidHPColor({ color: '#06A4FD' });
+                setIsValidHP(true);
+            }
+        }
+    };
+    const handleValidateSSN = (ssn1, ssn2) => {
+        if (ssn1 === '' || ssn2 === '') {
+            setIsValidSSN(false);
+            return;
+        }else{
+            const isValid = validateSSN(ssn1, ssn2);
+            if (!isValid) {
+                setIsValidSSN(false);
+                setValidSSNText('주민등록번호 형식을 다시 확인해주세요.');
+                setValidSSNColor({ color: 'red' });
+            } else {
+                setValidSSNColor({ color: '#06A4FD' });
+                setValidSSNText('');
+                setIsValidSSN(true);
+            }
+        }
+    };
+
+    const handleAddressSelect = (data) => {
+        setIsValidAddress(false);
+        setModalVisible(false);
+        Alert.alert('주소 선택', JSON.stringify(data));
+        const roadAddress = data.roadAddress;
+        setZoneCode(data.zonecode);
+        if(data.buildingName){
+            setAddress(roadAddress + ' ' + data.buildingName);
+            setIsValidAddress(true);
+        }
+        else{
+            setAddress(roadAddress);
+            setIsValidAddress(true);
+        }
+
+    };
 
     const isGender = (ssn2) => {
         if(ssn2[0] === '1' || ssn2[0] === '3'){
@@ -92,12 +173,19 @@ function SignupPage2() {
                     <View style={styles.textBox}>
                         <Text style={styles.subText}>추가 정보를 입력해주세요.</Text>
                     </View>
-                    <LoginInputBox
-                        title="이름"
-                        text="이름을 입력하세요"
-                        value={name}
-                        onChangeText={setName}
-                    />
+                    <View>
+                        <LoginInputBox
+                            title="이름"
+                            text="이름을 입력하세요"
+                            value={name}
+                            onChangeText={(e) => {
+                                setName(e);
+                                handleValidateName(e);
+                            }}
+                            borderColor={validNameColor.color}
+                        />
+                        <Text style={[styles.validateText, validNameColor]}>{validNameText}</Text>
+                    </View>
                     <View style={styles.labelBox}>
                         <Text style={styles.label}>주민등록번호</Text>
                     </View>
@@ -119,24 +207,43 @@ function SignupPage2() {
                             maxLength={7}
                             keyboardType="numeric"
                             value={ssn2}
-                            onChangeText={handleChange}
+                            onChangeText={(e) => {
+                                setSsn2(e);
+                                handleChange(e);
+                                handleValidateSSN(ssn1, e);
+                            }}
                             secureTextEntry
                         />
+                        <Text style={[styles.validateText, validSSNColor]}>{validSSNText}</Text>
                     </View>
-                    <LoginInputBox
-                        title="연락처"
-                        text="전화번호를 입력하세요"
-                        value={hp}
-                        onChangeText={setHp}
-                        keyboardType="numeric"
-                    />
-                    <LoginInputBox
-                        title="이메일"
-                        text="이메일을 입력하세요"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                    />
+                    <View>
+                        <LoginInputBox
+                            title="연락처"
+                            text="전화번호를 입력하세요"
+                            value={hp}
+                            onChangeText={(e) => {
+                                setHp(e);
+                                handleValidateHP(e);
+                            }}
+                            keyboardType="numeric"
+                            borderColor={validHPColor.color}
+                        />
+                        <Text style={[styles.validateText, validHPColor]}>{validHPText}</Text>
+                    </View>
+                    <View>
+                        <LoginInputBox
+                            title="이메일"
+                            text="이메일을 입력하세요"
+                            value={email}
+                            onChangeText={(e) => {
+                                setEmail(e);
+                                handleValidateEmail(e);
+                            }}
+                            keyboardType="email-address"
+                            borderColor={validEmailColor.color}
+                        />
+                        <Text style={[styles.validateText, validEmailColor]}>{validEmailText}</Text>
+                    </View>
                     <View>
                         <View>
                             <Modal visible={isModalVisible} animationType="slide">
@@ -192,6 +299,11 @@ function SignupPage2() {
 }
 
 const styles = StyleSheet.create({
+    validateText: {
+        position: 'absolute',
+        right: 10,
+        top: 5,
+    },
     safeArea: {
         flex: 1,
         backgroundColor: 'white',
