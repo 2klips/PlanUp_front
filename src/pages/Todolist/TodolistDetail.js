@@ -1,51 +1,93 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, Button, SafeAreaView } from 'react-native';
+// TodolistDetail.js
+// npm install axios
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import axios from 'axios';
+import moment from 'moment';
 
 const TodolistDetail = ({ navigation }) => {
-    const todoList = [
-        { title: '정보처리기능사 필기', date: '2024년 07월 21일', daysLeft: 28, color: 'blue' },
-        { title: '사용자 지정 메모', date: '2024년 08월 02일', daysLeft: 45, color: 'purple' },
-        { title: '빅데이터분석기사', date: '2025년 03월 21일', daysLeft: 228, color: 'green' },
-        { title: 'AI KOREA 세미나', date: '2025년 02월 24일', daysLeft: 231, color: 'red' },
-    ];
+    const [todoList, setTodoList] = useState([]);
+    const [showAll, setShowAll] = useState(false);
 
-    const renderTodo = ({ item }) => (
-        <View style={styles.item}>
-            <View style={styles.itemLeft}>
-                <View style={[styles.circle, { backgroundColor: item.color }]} />
-                <View>
-                    <Text style={styles.title}>{item.title}</Text>
-                    <Text style={styles.date}>{item.date}</Text>
+    useEffect(() => {
+        const fetchTodos = async () => {
+            try {
+                const response = await axios.get('http://192.168.9.25:8080/list', {
+                    headers: {
+                      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTU1NzcwMSwiZXhwIjoxNzE5NzMwNTAxfQ.AU9bisRo2ybqJ0SdMAFWOI_ehkg2MCU8Z9S2rCGzrr8`
+                    }
+                });
+                setTodoList(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchTodos();
+    }, []);
+
+    const markedDates = {};
+    todoList.forEach(item => {
+        markedDates[moment(item.examDate).format('YYYY-MM-DD')] = {
+            marked: true,
+            dotColor: item.color || 'red',
+        };
+    });
+
+    const renderTodo = ({ item }) => {
+        const examDate = moment(item.examDate);
+        const formattedDate = examDate.format('YYYY년 M월 D일');
+        const daysLeft = examDate.diff(moment(), 'days');
+
+        return (
+            <View style={styles.item}>
+                <View style={styles.itemLeft}>
+                    <View style={[styles.circle, { backgroundColor: item.color || 'blue' }]} />
+                    <View>
+                        <Text style={styles.title}>{item.title}</Text>
+                        <Text style={styles.examDate}>{formattedDate}</Text>
+                    </View>
                 </View>
+                <Text style={styles.daysLeft}>D-{daysLeft}일</Text>
             </View>
-            <Text style={styles.daysLeft}>D-{item.daysLeft}일</Text>
-        </View>
-    );
+        );
+    };
+
+    const displayedTodoList = showAll ? todoList : todoList.slice(0, 6);
 
     return (
-        <ScrollView >
+        <ScrollView>
             <View style={styles.container}>
-            <View style={styles.headerContainer}>
-                <Text style={styles.header}>Todo List</Text>
-                <Button title="+" onPress={() => navigation.navigate('AddTodo')} />
-            </View>
-            <Text style={styles.subtitle}>자격증 시험 일정이나, 면접 일정들을 잊지 않게 미리 추가해주세요!</Text>
-            <Calendar
-                style={styles.calendar}
-                current={'2024-07-01'}
-                monthFormat={'yyyy MM'}
-                onDayPress={(day) => console.log('selected day', day)}
-            />
-            <View style={styles.todoListHeader}>
-                <Text style={styles.todoListTitle}>등록된 모든 일정 | {todoList.length}개</Text>
-            </View>
-            <FlatList
-                data={todoList}
-                renderItem={renderTodo}
-                keyExtractor={(item, index) => index.toString()}
-            />
-            <Text style={styles.footerText}>일정이 지난 Todo list는 자동으로 삭제돼요.</Text>
+                <View style={styles.headerContainer}>
+                    <TextInput 
+                        style={styles.searchBar} 
+                        placeholder="공고 또는 자격증일정 검색" 
+                    />
+                    <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('TodolistCreate', { selectedDate: new Date().toISOString().split('T')[0] })}>
+                        <Text style={styles.addButtonText}>일정추가</Text>
+                    </TouchableOpacity>
+                </View>
+                <Calendar
+                    style={styles.calendar}
+                    current={'2024-07-01'}
+                    monthFormat={'yyyy MM'}
+                    onDayPress={(day) => navigation.navigate('TodolistCreate', { selectedDate: day.dateString })}
+                    markedDates={markedDates}
+                />
+                <View style={styles.todoListHeader}>
+                    <Text style={styles.todoListTitle}>등록된 모든 일정 | {todoList.length}개</Text>
+                </View>
+                <FlatList
+                    data={displayedTodoList}
+                    renderItem={renderTodo}
+                    keyExtractor={(item, index) => index.toString()}
+                />
+                {!showAll && todoList.length > 6 && (
+                    <TouchableOpacity onPress={() => setShowAll(true)}>
+                        <Text style={styles.moreText}>... 더보기</Text>
+                    </TouchableOpacity>
+                )}
+                <Text style={styles.footerText}>일정이 지난 Todo list는 자동으로 삭제돼요.</Text>
             </View>
         </ScrollView>
     );
@@ -55,7 +97,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#fff',  // 배경색을 흰색으로 설정
+        backgroundColor: '#fff',
     },
     headerContainer: {
         flexDirection: 'row',
@@ -63,14 +105,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 10,
     },
-    header: {
-        fontSize: 24,
-        fontWeight: 'bold',
+    searchBar: {
+        flex: 1,
+        padding: 10,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 5,
+        marginRight: 10,
     },
-    subtitle: {
-        fontSize: 14,
-        color: 'gray',
-        marginBottom: 20,
+    addButton: {
+        backgroundColor: '#06A4FD',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+    addButtonText: {
+        color: 'white',
+        fontSize: 16,
     },
     calendar: {
         marginBottom: 20,
@@ -84,7 +135,7 @@ const styles = StyleSheet.create({
     todoListTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#06A4FD'
+        color: '#06A4FD',
     },
     item: {
         flexDirection: 'row',
@@ -108,7 +159,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-    date: {
+    examDate: {
         fontSize: 14,
         color: '#888',
     },
@@ -123,11 +174,12 @@ const styles = StyleSheet.create({
         marginTop: 10,
         textAlign: 'center',
     },
+    moreText: {
+        fontSize: 16,
+        color: '#06A4FD',
+        textAlign: 'center',
+        marginVertical: 10,
+    },
 });
 
 export default TodolistDetail;
-
-// npm install @expo/vector-icons
-// npm install expo
-// expo r -c
-// npm install --save react-native-calendars

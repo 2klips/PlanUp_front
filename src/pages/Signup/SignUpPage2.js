@@ -135,7 +135,7 @@ function SignupPage2() {
     const navigation = useNavigation();
 
     const goToSignup = () => {
-        fetch('http://192.168.56.1:8080/user/signup', {
+        fetch('http://192.168.9.25:8080/user/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
