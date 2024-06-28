@@ -32,7 +32,7 @@ function LoginPage({ navigation }) {
 
             const data = await response.json();
 
-            if (data.success) {
+            if (data.token) {
                 await AsyncStorage.setItem('token', data.token);
                 setIsLoggedIn(true);
                 setUser(data.user);
