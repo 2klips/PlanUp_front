@@ -1,6 +1,6 @@
-// TodolistCreate.js
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
 import moment from 'moment';
@@ -12,15 +12,18 @@ const TodolistCreate = ({ route, navigation }) => {
   const { selectedDate } = route.params;
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
-  const [color, setColor] = useState(COLORS[0]); // 기본 색상 설정
+  const [color, setColor] = useState(COLORS[0]);
   const [todoList, setTodoList] = useState([]);
+  const [checklist, setChecklist] = useState([]);
+  const [checklistItem, setChecklistItem] = useState('');
+  const [isAddingChecklist, setIsAddingChecklist] = useState(false);
 
   useEffect(() => {
     const fetchTodos = async () => {
       try {
         const response = await axios.get('http://192.168.9.25:8080/list', {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTU1NzcwMSwiZXhwIjoxNzE5NzMwNTAxfQ.AU9bisRo2ybqJ0SdMAFWOI_ehkg2MCU8Z9S2rCGzrr8`
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTc5NDkyMiwiZXhwIjoxNzE5OTY3NzIyfQ.PjYrju1An1Jbwmyg6Oh3LoHchk5s-8MWZNgQiF-8mOg`
           }
         });
         setTodoList(response.data);
@@ -39,14 +42,15 @@ const TodolistCreate = ({ route, navigation }) => {
 
     try {
       const response = await axios.post('http://192.168.9.25:8080/list', {
-        userid: 'apple',
+        userid: 'apple1',
         title: title,
         text: text,
         color: color,
         examDate: selectedDate,
+        checklist: checklist,
       },{
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTU1NzI0NywiZXhwIjoxNzE5NzMwMDQ3fQ.7s2lGLnKXHWSrw3ToUBnW6U9wwofghfp7zYdm_qH2ww`
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTc5NDkyMiwiZXhwIjoxNzE5OTY3NzIyfQ.PjYrju1An1Jbwmyg6Oh3LoHchk5s-8MWZNgQiF-8mOg`
         }
       });
 
@@ -62,6 +66,46 @@ const TodolistCreate = ({ route, navigation }) => {
     }
   };
 
+  const handleAddChecklistItem = () => {
+    setIsAddingChecklist(true);
+  };
+
+  const handleSaveChecklistItem = async () => {
+    if (checklistItem.trim() !== '') {
+      const newChecklistItem = { text: checklistItem, completed: false };
+      try {
+        const response = await axios.post('http://192.168.9.25:8080/list/check', {
+          userid: 'apple1', 
+          color: color, 
+          examDate: selectedDate,
+          list: checklistItem, 
+          completed: false, 
+          todoId: 'TODO_ID_HERE' 
+        }, {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTc5NDkyMiwiZXhwIjoxNzE5OTY3NzIyfQ.PjYrju1An1Jbwmyg6Oh3LoHchk5s-8MWZNgQiF-8mOg`
+          }
+        });
+        if (response.status === 201) {
+          setChecklist([...checklist, newChecklistItem]);
+          setChecklistItem('');
+          setIsAddingChecklist(false);
+        } else {
+          Alert.alert('Error', 'Failed to add checklist item');
+        }
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'An error occurred while adding the checklist item');
+      }
+    }
+  };
+
+  const handleToggleChecklistItem = (index) => {
+    const newChecklist = [...checklist];
+    newChecklist[index].completed = !newChecklist[index].completed;
+    setChecklist(newChecklist);
+  };
+
   const markedDates = {};
   todoList.forEach(item => {
     markedDates[item.examDate] = {
@@ -73,50 +117,82 @@ const TodolistCreate = ({ route, navigation }) => {
   markedDates[selectedDate] = { selected: true, selectedColor: 'blue' };
 
   return (
-    <View style={styles.container}>
-      <Calendar
-        style={styles.calendar}
-        current={selectedDate}
-        onDayPress={(day) => console.log('selected day', day)}
-        markedDates={markedDates}
-        monthFormat={'yyyy년 MM월'}
-        theme={{
-          todayTextColor: '#00adf5',
-          dayTextColor: '#2d4150',
-          monthTextColor: '#000',
-          arrowColor: 'orange',
-          textMonthFontWeight: 'bold',
-          textDayFontSize: 16,
-          textMonthFontSize: 16,
-          textDayHeaderFontSize: 16
-        }}
-      />
-      <View style={styles.colorPicker}>
-        {COLORS.map((c, index) => (
-          <TouchableOpacity key={index} onPress={() => setColor(c)} style={[styles.colorCircle, { backgroundColor: c, borderColor: color === c ? 'black' : 'transparent' }]} />
-        ))}
-      </View>
-      <View style={styles.eventDetail}>
-        <View style={[styles.circle, { backgroundColor: color }]} />
-        <Text style={styles.eventDate}>{moment(selectedDate).locale('ko').format('YYYY년 M월 D일')}</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="제목"
-          value={title}
-          onChangeText={setTitle}
+    <ScrollView>
+      <View style={styles.container}>
+        <Calendar
+          style={styles.calendar}
+          current={selectedDate}
+          onDayPress={(day) => console.log('selected day', day)}
+          markedDates={markedDates}
+          monthFormat={'yyyy년 MM월'}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="상세내용"
-          value={text}
-          onChangeText={setText}
-          multiline
-        />
+        <View style={styles.colorPicker}>
+          {COLORS.map((c, index) => (
+            <TouchableOpacity key={index} onPress={() => setColor(c)} style={[styles.colorCircle, { backgroundColor: c, borderColor: color === c ? 'black' : 'transparent' }]} />
+          ))}
+        </View>
+        <View style={styles.eventDetail}>
+          <View style={[styles.circle, { backgroundColor: color }]} />
+          <Text style={styles.eventDate}>
+            {moment(selectedDate).locale('ko').format('YYYY년 M월 D일')}
+            <Text style={styles.checklistCount}> ({checklist.length})</Text>
+          </Text>
+          <Text style={styles.text1}>제목</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="제목을 입력하세요"
+            value={title}
+            onChangeText={setTitle}
+          />
+          <Text style={styles.text1}>상세내용</Text> 
+          <TextInput
+            style={styles.input}
+            placeholder="상세내용을 입력하세요"
+            value={text}
+            onChangeText={setText}
+            multiline
+          />
+          <View style={styles.checklistContainer}>
+            <Text style={styles.text2}>Check List</Text>
+            <TouchableOpacity style={styles.addButton1} onPress={handleAddChecklistItem}>
+              <Text style={styles.addButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+          {isAddingChecklist && (
+            <View style={styles.addChecklistContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="체크리스트 항목 입력"
+                value={checklistItem}
+                onChangeText={setChecklistItem}
+              />
+              <TouchableOpacity style={styles.saveButton} onPress={handleSaveChecklistItem}>
+                <Text style={styles.saveButtonText}>저장</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          <FlatList
+            data={checklist}
+            renderItem={({ item, index }) => (
+              <View style={styles.checklistItemContainer}>
+                <Text style={[styles.checklistItem, item.completed && styles.checklistItemCompleted]}>{item.text}</Text>
+                <CheckBox
+                  value={item.completed}
+                  onValueChange={() => handleToggleChecklistItem(index)}
+                />
+              </View>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        <View style={styles.style1}>
+          <Text style={styles.text3}>일정추가하기</Text>
+          <TouchableOpacity style={styles.addButton2} onPress={handleSave}>
+            <Text style={styles.addButtonText}>+</Text>
+          </TouchableOpacity>
+          </View>
+        </View>
       </View>
-      <TouchableOpacity style={styles.addButton} onPress={handleSave}>
-        <Text style={styles.addButtonText}>일정추가하기</Text>
-      </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -165,23 +241,91 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
   },
+  checklistCount: {
+    fontSize: 14,
+    color: 'gray',
+  },
+  text1: {
+    color: '#C8C8C8',
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
   input: {
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+    borderColor: '#C8C8C8',
+    borderBottomWidth: 1,
     borderRadius: 5,
-    marginBottom: 8,
+    marginBottom: 10,
     paddingHorizontal: 10,
   },
-  addButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 25,
+  checklistContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'center',
+    marginBottom: 8,
+  },
+  addChecklistContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  checklistItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    justifyContent: 'space-between',
+  },
+  checklistItem: {
+    fontSize: 16,
+  },
+  checklistItemCompleted: {
+    textDecorationLine: 'line-through',
+    color: 'gray',
+  },
+  text2: {
+    color: '#06A4FD',
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  addButton1: {
+    backgroundColor: '#06A4FD',
+    // padding: 10,
+    height: 25,
+    width: 25,
+    borderRadius: 3,
+    alignItems: 'center',
+  },
+  text3: {
+    color: '#06A4FD',
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  style1:{
+    flexDirection:'row',
+    alignItems:"center",
+    justifyContent:"center"
+  },
+  addButton2: {
+  backgroundColor: '#06A4FD',
+  // padding: 5,
+  width: 25,
+  height: 25,
+  borderRadius: 20,
+  alignItems: 'center',
   },
   addButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  saveButton: {
+    backgroundColor: '#06A4FD',
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+  saveButtonText: {
     color: 'white',
     fontSize: 16,
   },

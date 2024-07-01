@@ -1,12 +1,11 @@
-// TodolistDetail.js
-// npm install axios
+// TodolistnCalendar.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
 import moment from 'moment';
 
-const TodolistDetail = ({ navigation }) => {
+const TodolistCalendar = ({ navigation }) => {
     const [todoList, setTodoList] = useState([]);
     const [showAll, setShowAll] = useState(false);
 
@@ -15,7 +14,7 @@ const TodolistDetail = ({ navigation }) => {
             try {
                 const response = await axios.get('http://192.168.9.25:8080/list', {
                     headers: {
-                      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTU1NzcwMSwiZXhwIjoxNzE5NzMwNTAxfQ.AU9bisRo2ybqJ0SdMAFWOI_ehkg2MCU8Z9S2rCGzrr8`
+                      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTc5NDkyMiwiZXhwIjoxNzE5OTY3NzIyfQ.PjYrju1An1Jbwmyg6Oh3LoHchk5s-8MWZNgQiF-8mOg`
                     }
                 });
                 setTodoList(response.data);
@@ -33,6 +32,9 @@ const TodolistDetail = ({ navigation }) => {
             dotColor: item.color || 'red',
         };
     });
+
+    // markedDates 객체를 콘솔에 출력하여 디버깅
+    console.log('markedDates:', markedDates);
 
     const renderTodo = ({ item }) => {
         const examDate = moment(item.examDate);
@@ -53,75 +55,55 @@ const TodolistDetail = ({ navigation }) => {
         );
     };
 
-    const displayedTodoList = showAll ? todoList : todoList.slice(0, 6);
+    const displayedTodoList = showAll ? todoList : todoList.slice(0, 4);
 
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.headerContainer}>
-                    <TextInput 
-                        style={styles.searchBar} 
-                        placeholder="공고 또는 자격증일정 검색" 
+        <View style={styles.card}>
+            <ScrollView>
+                <View style={styles.container}>
+                    <Calendar
+                        style={styles.calendar}
+                        current={'2024-07-01'}
+                        monthFormat={'yyyy MM'}
+                        onDayPress={(day) => navigation.navigate('TodolistCreate', { selectedDate: day.dateString })}
+                        markedDates={markedDates}
                     />
-                    <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('TodolistCreate', { selectedDate: new Date().toISOString().split('T')[0] })}>
-                        <Text style={styles.addButtonText}>일정추가</Text>
-                    </TouchableOpacity>
+                    <View style={styles.todoListHeader}>
+                        <Text style={styles.todoListTitle}>등록된 모든 일정 | {todoList.length}개</Text>
+                    </View>
+                    <FlatList
+                        data={displayedTodoList}
+                        renderItem={renderTodo}
+                        keyExtractor={(item, index) => index.toString()}
+                    />
+                    {!showAll && todoList.length > 4 && (
+                        <TouchableOpacity onPress={() => setShowAll(true)}>
+                            <Text style={styles.moreText}>... 더보기</Text>
+                        </TouchableOpacity>
+                    )}
+                    <Text style={styles.footerText}>일정이 지난 Todo list는 자동으로 삭제돼요.</Text>
                 </View>
-                <Calendar
-                    style={styles.calendar}
-                    current={'2024-07-01'}
-                    monthFormat={'yyyy MM'}
-                    onDayPress={(day) => navigation.navigate('TodolistCreate', { selectedDate: day.dateString })}
-                    markedDates={markedDates}
-                />
-                <View style={styles.todoListHeader}>
-                    <Text style={styles.todoListTitle}>등록된 모든 일정 | {todoList.length}개</Text>
-                </View>
-                <FlatList
-                    data={displayedTodoList}
-                    renderItem={renderTodo}
-                    keyExtractor={(item, index) => index.toString()}
-                />
-                {!showAll && todoList.length > 6 && (
-                    <TouchableOpacity onPress={() => setShowAll(true)}>
-                        <Text style={styles.moreText}>... 더보기</Text>
-                    </TouchableOpacity>
-                )}
-                <Text style={styles.footerText}>일정이 지난 Todo list는 자동으로 삭제돼요.</Text>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 15,
+        marginVertical: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        elevation: 3,
+        flex: 1,
+    },
     container: {
         flex: 1,
-        padding: 20,
         backgroundColor: '#fff',
-    },
-    headerContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    searchBar: {
-        flex: 1,
-        padding: 10,
-        borderColor: '#ddd',
-        borderWidth: 1,
-        borderRadius: 5,
-        marginRight: 10,
-    },
-    addButton: {
-        backgroundColor: '#06A4FD',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-    },
-    addButtonText: {
-        color: 'white',
-        fontSize: 16,
     },
     calendar: {
         marginBottom: 20,
@@ -182,4 +164,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TodolistDetail;
+export default TodolistCalendar;
