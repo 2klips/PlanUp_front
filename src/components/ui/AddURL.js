@@ -1,20 +1,17 @@
 // AddURL.js
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const AddURL = () => {
   return (
     <View style={styles.container}>
       <View style={styles.item}>
-        <Ionicons name="card-outline" size={24} color="#00aaf0" style={styles.icon} />
         <Text style={styles.text}>자격증시험추가</Text>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.item}>
-        <Ionicons name="briefcase-outline" size={24} color="#00aaf0" style={styles.icon} />
         <Text style={styles.text}>취업공고추가</Text>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>+</Text>
@@ -38,9 +35,6 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  icon: {
-    marginRight: 8,
   },
   text: {
     color: '#00aaf0',
