@@ -2,8 +2,11 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const URLOnly = ({ navigation }) => {
+const URLOnly = () => {
+    const navigation = useNavigation();
+    
     return (
         <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('SearchMain')}>
             <View style={styles.card}>
@@ -24,7 +27,7 @@ const URLOnly = ({ navigation }) => {
                 </View>
                 <View style={styles.separator} />
                 <View style={styles.section}>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ExamScheduleCreate')}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SearchCertificate')}>
                         <Text style={styles.buttonText}>+</Text>
                     </TouchableOpacity>
                     <Text style={styles.addposting}>자격증 시험 추가</Text>
