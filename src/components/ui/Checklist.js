@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import CheckBox from '@react-native-community/checkbox'; 
 import axios from 'axios';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ChecklistItem = ({ title, date, color, isChecked, onValueChange }) => (
   <View style={styles.item}>
@@ -23,11 +24,13 @@ const Checklist = ({ navigation }) => {
   const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
+    
     const fetchChecklist = async () => {
+      const token = await AsyncStorage.getItem('token');
       try {
-        const response = await axios.get('http://192.168.9.25:8080/list/check', {
+        const response = await axios.get('http://10.0.2.2:8080/list/check', {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTc5NDkyMiwiZXhwIjoxNzE5OTY3NzIyfQ.PjYrju1An1Jbwmyg6Oh3LoHchk5s-8MWZNgQiF-8mOg`
+            Authorization: `Bearer ${token}`
           }
         });
         const checklistItems = response.data

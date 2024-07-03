@@ -139,7 +139,7 @@ function SignupPage2() {
             Alert.alert('오류', '모든 입력란을 올바르게 작성해주세요.');
             return;
         }
-        fetch('http://192.168.56.1:8080/user/signup', {
+        fetch('http://10.0.2.2:8080/user/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -5,6 +5,7 @@ import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/ko';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const COLORS = ['#06A4FD', '#97E5FF', '#FF0000', '#FF81EB', '#FF8E25', '#FFE871', '#70FF4D', '#35F2DC', '#48B704', '#8206FD'];
 
@@ -21,9 +22,10 @@ const TodolistCreate = ({ route, navigation }) => {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const response = await axios.get('http://192.168.9.25:8080/list', {
+        const token = await AsyncStorage.getItem('token');
+        const response = await axios.get('http://10.0.2.2:8080/list', {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTc5NDkyMiwiZXhwIjoxNzE5OTY3NzIyfQ.PjYrju1An1Jbwmyg6Oh3LoHchk5s-8MWZNgQiF-8mOg`
+            Authorization: `Bearer ${token}`
           }
         });
         setTodoList(response.data);
@@ -41,7 +43,7 @@ const TodolistCreate = ({ route, navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.9.25:8080/list', {
+      const response = await axios.post('http://10.0.2.2:8080/list', {
         userid: 'apple1',
         title: title,
         text: text,
@@ -50,7 +52,7 @@ const TodolistCreate = ({ route, navigation }) => {
         checklist: checklist,
       },{
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTc5NDkyMiwiZXhwIjoxNzE5OTY3NzIyfQ.PjYrju1An1Jbwmyg6Oh3LoHchk5s-8MWZNgQiF-8mOg`
+          Authorization: `Bearer ${token}`
         }
       });
 
@@ -74,7 +76,7 @@ const TodolistCreate = ({ route, navigation }) => {
     if (checklistItem.trim() !== '') {
       const newChecklistItem = { text: checklistItem, completed: false };
       try {
-        const response = await axios.post('http://192.168.9.25:8080/list/check', {
+        const response = await axios.post('http://10.0.2.2:8080/list/check', {
           userid: 'apple1', 
           color: color, 
           examDate: selectedDate,
@@ -83,7 +85,7 @@ const TodolistCreate = ({ route, navigation }) => {
           todoId: 'TODO_ID_HERE' 
         }, {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTc5NDkyMiwiZXhwIjoxNzE5OTY3NzIyfQ.PjYrju1An1Jbwmyg6Oh3LoHchk5s-8MWZNgQiF-8mOg`
+            Authorization: `Bearer ${token}`
           }
         });
         if (response.status === 201) {
