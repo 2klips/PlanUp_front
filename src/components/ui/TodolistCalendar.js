@@ -5,25 +5,32 @@ import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CalendarOnly from './CalendarOnly';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 
 const TodolistCalendar = ({ navigation }) => {
     const [todoList, setTodoList] = useState([]);
     const [showAll, setShowAll] = useState(false);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         const fetchTodos = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
                 const response = await axios.get('http://10.0.2.2:8080/list', {
-                    Authorization: `Bearer ${token}`
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
                 });
                 setTodoList(response.data);
+                console.log('--------------------------',response.data)
             } catch (error) {
                 console.error(error);
             }
         };
         fetchTodos();
-    }, []);
+    }, [isFocused]);
+
 
     const markedDates = {};
     todoList.forEach(item => {
@@ -56,6 +63,7 @@ const TodolistCalendar = ({ navigation }) => {
     };
 
     const displayedTodoList = showAll ? todoList : todoList.slice(0, 4);
+    
 
     return (
         <View style={styles.card}>

@@ -2,19 +2,24 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import moment from 'moment'; 
 
 const CalendarOnly = ({ navigation }) => {
+    const navigateToTodolistCreate = (dateString) => {
+        navigation.navigate('TodolistCreate', { selectedDate: dateString });
+    };
     return (
         <View style={styles.container}>
             <Calendar
                 current={'2024-07-01'}
                 monthFormat={'yyyy년 MM월'}
-                onDayPress={(day) => navigation.navigate('TodolistCreate', { selectedDate: day.dateString })}
+                onDayPress={(day) => navigateToTodolistCreate(day.dateString)}
                 hideExtraDays={false}
             />
             <View style={styles.container2}>
                 <Text style={styles.noScheduleText}>등록된 일정이 없어요.</Text>
-                <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('TodolistCreate')}>
+                <TouchableOpacity style={styles.addButton} 
+                    onPress={() => navigateToTodolistCreate(moment().format('YYYY-MM-DD'))}>
                     <Text style={styles.addButtonText}>+</Text>
                 </TouchableOpacity>
             </View>

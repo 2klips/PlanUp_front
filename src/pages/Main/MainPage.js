@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState }  from 'react';
 import {
     Image,
     SafeAreaView,
@@ -18,18 +18,51 @@ import CalendarOnly from '../../components/ui/CalendarOnly';
 import Checklist from '../../components/ui/Checklist';
 import AddURL from '../../components/ui/AddURL';
 import URLonly from '../../components/ui/URLonly';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function MainPage() {
     const { user } = useAuth();
     const route = useRoute();
-    console.log('MainPage:', user);
-
+    const [isChecklist, setIsChecklist] = useState(false);
+    const [isTodoList, setIsTodoList] = useState(false);
+    const isFocused = useIsFocused();
     const navigation = useNavigation();
 
-    const navigateToDetail = () => {
-        navigation.navigate('TodolistDetail'); // TodolistDetail 페이지로 이동
-    };
+    useEffect(() => {
+        const fetchChecklist = async () => {
+            const token = await AsyncStorage.getItem('token');
+            try {
+                const response = await axios.get('http://10.0.2.2:8080/list/check', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setIsChecklist(response.data.length > 0);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const fetchTodos = async () => {
+            const token = await AsyncStorage.getItem('token');
+            try {
+                const response = await axios.get('http://10.0.2.2:8080/list', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setIsTodoList(response.data.length > 0);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchChecklist();
+        fetchTodos();
+    }, [isFocused]); 
+
 
     if (!user) {
         return (
@@ -53,9 +86,12 @@ function MainPage() {
                 <Card title="새로운 공고" text="작성한 이력서에 맞게 추천 해드려요" num="6" style={{ borderRadius: 30, marginBottom:5}}/>
                 <AddURL navigation={navigation}/>
                 <URLonly />
-                <CalendarOnly />
-                <TodolistCalendar navigation={navigation} />
-                <Checklist /> 
+                {isTodoList ? (
+                    <TodolistCalendar navigation={navigation} />
+                ) : (
+                    <CalendarOnly navigation={navigation} />
+                )}
+                {isChecklist && <Checklist />}
             </View>
         </ScrollView>
     );

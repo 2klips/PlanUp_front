@@ -6,11 +6,14 @@ import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/ko';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../../context/AuthContext';
 
 const COLORS = ['#06A4FD', '#97E5FF', '#FF0000', '#FF81EB', '#FF8E25', '#FFE871', '#70FF4D', '#35F2DC', '#48B704', '#8206FD'];
 
 const TodolistCreate = ({ route, navigation }) => {
-  const { selectedDate } = route.params;
+  const { selectedDate: initialSelectedDate } = route.params;
+  const { user } = useAuth();
+  const [selectedDate, setSelectedDate] = useState(initialSelectedDate);
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
   const [color, setColor] = useState(COLORS[0]);
@@ -23,6 +26,7 @@ const TodolistCreate = ({ route, navigation }) => {
     const fetchTodos = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
+        console.log(token)
         const response = await axios.get('http://10.0.2.2:8080/list', {
           headers: {
             Authorization: `Bearer ${token}`
@@ -34,17 +38,17 @@ const TodolistCreate = ({ route, navigation }) => {
       }
     };
     fetchTodos();
-  }, []);
+  }, []);     
 
   const handleSave = async () => {
     if (title.trim() === '' || text.trim() === '') {
       Alert.alert('Error', 'Please fill out all fields');
       return;
     }
-
     try {
+      const token = await AsyncStorage.getItem('token');
       const response = await axios.post('http://10.0.2.2:8080/list', {
-        userid: 'apple1',
+        userid: user.userid,
         title: title,
         text: text,
         color: color,
@@ -58,7 +62,7 @@ const TodolistCreate = ({ route, navigation }) => {
 
       if (response.status === 201) {
         Alert.alert('Success', 'Todo added successfully');
-        navigation.navigate('TodolistDetail');
+        navigation.navigate('MainPage');
       } else {
         Alert.alert('Error', 'Failed to add todo');
       }
@@ -74,10 +78,12 @@ const TodolistCreate = ({ route, navigation }) => {
 
   const handleSaveChecklistItem = async () => {
     if (checklistItem.trim() !== '') {
+      const token = await AsyncStorage.getItem('token');
+      console.log(token)
       const newChecklistItem = { text: checklistItem, completed: false };
       try {
         const response = await axios.post('http://10.0.2.2:8080/list/check', {
-          userid: 'apple1', 
+          userid: user.userid, 
           color: color, 
           examDate: selectedDate,
           list: checklistItem, 
@@ -124,7 +130,7 @@ const TodolistCreate = ({ route, navigation }) => {
         <Calendar
           style={styles.calendar}
           current={selectedDate}
-          onDayPress={(day) => console.log('selected day', day)}
+          onDayPress={(day) => setSelectedDate(day.dateString)}
           markedDates={markedDates}
           monthFormat={'yyyy년 MM월'}
         />

@@ -4,6 +4,7 @@ import CheckBox from '@react-native-community/checkbox';
 import axios from 'axios';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 
 const ChecklistItem = ({ title, date, color, isChecked, onValueChange }) => (
   <View style={styles.item}>
@@ -22,6 +23,7 @@ const Checklist = ({ navigation }) => {
   const [checklist, setChecklist] = useState([]);
   const [visibleItems, setVisibleItems] = useState(4);
   const [showMore, setShowMore] = useState(false);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     
@@ -48,23 +50,15 @@ const Checklist = ({ navigation }) => {
       }
     };
     fetchChecklist();
-  }, []);
-
-  // const handleCheckboxChange = (id, value) => {
-  //   setChecklist(prevChecklist =>
-  //     prevChecklist.map(item =>
-  //       item.id === id ? { ...item, isChecked: value } : item
-  //     )
-  //   );
-  // };
+  }, [isFocused]);
 
   const handleToggleCheckbox = async (id, newValue) => {
     try {
-      await axios.get(`http://192.168.9.25:8080/list/check/`, {
+      const token = await AsyncStorage.getItem('token');
+      await axios.get(`http://10.0.2.2:8080/list/check/`, {
         completed: newValue,
-      }, {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTc5NDkyMiwiZXhwIjoxNzE5OTY3NzIyfQ.PjYrju1An1Jbwmyg6Oh3LoHchk5s-8MWZNgQiF-8mOg`
+          Authorization: `Bearer ${token}`
         }
       });
       setChecklist(prevChecklist =>
