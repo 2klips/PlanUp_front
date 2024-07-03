@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SearchCertificate = () => {
   const [jobName, setJobName] = useState('');
@@ -10,11 +11,12 @@ const SearchCertificate = () => {
   const handleSearch = async () => {
     try {
       console.log(`Searching for job name: ${jobName}`);
+      const token = await AsyncStorage.getItem('token');
       const response = await axios.post('http://192.168.9.25:8080/certifi/job_name', 
         { job_name: jobName },
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2U1YjBkMjc4ZDE4NmJhNmU0MjFlMSIsImlhdCI6MTcxOTk3NjQwMSwiZXhwIjoxNzIwMTQ5MjAxfQ.ocjS1CzjOjVWfPe4-W20dR-BNqjTD5x5Dy5DJuEeRJ8`
+            Authorization: `Bearer ${token}`
           }
         }
       );
