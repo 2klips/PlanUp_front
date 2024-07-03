@@ -79,7 +79,7 @@ function SignupPage() {
             return;
         }
         try {
-            const response = await fetch(`http://192.168.56.1:8080/user/get_user`, {
+            const response = await fetch(`http://192.168.9.25:8080/user/get_user`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

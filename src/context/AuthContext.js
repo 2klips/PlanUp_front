@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
             try {
                 const token = await AsyncStorage.getItem('token');
                 if (token) {
-                    const response = await fetch('http://192.168.56.1:8080/user/verifyToken', {
+                    const response = await fetch('http://192.168.9.25:8080/user/verifyToken', {
                         method: 'get',
                         headers: {
                             'Content-Type': 'application/json',
