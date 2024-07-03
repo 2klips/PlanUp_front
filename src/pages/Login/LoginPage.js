@@ -19,7 +19,7 @@ function LoginPage({ navigation }) {
 
     const onLogin = async () => {
         try {
-            const response = await fetch('http://192.168.56.1:8080/user/login', {
+            const response = await fetch('http://10.0.2.2:8080/user/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

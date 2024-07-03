@@ -135,7 +135,11 @@ function SignupPage2() {
     const navigation = useNavigation();
 
     const goToSignup = () => {
-        fetch('http://192.168.56.1:8080/user/signup', {
+        if (!isValidName || !isValidEmail || !isValidHP || !isValidSSN || !isValidAddress) {
+            Alert.alert('오류', '모든 입력란을 올바르게 작성해주세요.');
+            return;
+        }
+        fetch('http://10.0.2.2:8080/user/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -289,7 +293,11 @@ function SignupPage2() {
                         </View>
                     </View>
                     
-                    <TouchableOpacity style={styles.button} onPress={goToSignup}>
+                    <TouchableOpacity 
+                    style={[styles.button , (!isValidName || !isValidEmail || !isValidHP || !isValidSSN || !isValidAddress) && styles.buttonDisabled]} 
+                    onPress={goToSignup}
+                    disabled={!isValidName || !isValidEmail || !isValidHP || !isValidSSN || !isValidAddress}
+                    >
                         <Text style={styles.buttonText}>회원가입</Text>
                     </TouchableOpacity>
                 </View>
@@ -316,6 +324,15 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    buttonDisabled: {
+        backgroundColor: 'gray',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+        marginBottom: 5,
+        width: 100,
+        height: 35,
     },
     postcode: {
         width: '100%',
