@@ -16,6 +16,8 @@ import { useAuth } from '../../context/AuthContext';
 import TodolistCalendar from '../../components/ui/TodolistCalendar';
 import CalendarOnly from '../../components/ui/CalendarOnly';
 import Checklist from '../../components/ui/Checklist';
+import AddURL from '../../components/ui/AddURL';
+import URLonly from '../../components/ui/URLonly';
 import { useNavigation } from '@react-navigation/native';
 
 function MainPage() {
@@ -49,6 +51,8 @@ function MainPage() {
                 <Text style={styles.title}>{user.name}님 안녕하세요!</Text>
                 <Text style={{marginBottom:10}}>오늘도 새로운 회사가 {user.name}님을 필요로 해요!</Text>
                 <Card title="새로운 공고" text="작성한 이력서에 맞게 추천 해드려요" num="6" style={{ borderRadius: 30, marginBottom:5}}/>
+                <AddURL navigation={navigation}/>
+                <URLonly />
                 <CalendarOnly />
                 <TodolistCalendar navigation={navigation} />
                 <Checklist /> 
