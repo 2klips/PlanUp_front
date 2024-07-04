@@ -7,6 +7,8 @@ import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CalendarOnly from './CalendarOnly';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
+import VirtualizedView from '../../utils/VirutalizedList';
+import CustomCalendar from './CustomCalendar';
 
 const TodolistCalendar = ({ navigation }) => {
     const [todoList, setTodoList] = useState([]);
@@ -22,8 +24,11 @@ const TodolistCalendar = ({ navigation }) => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                setTodoList(response.data);
-                console.log('--------------------------',response.data)
+                const sortedTodoList = response.data.map(item => ({
+                    ...item,
+                    daysLeft: moment(item.examDate).diff(moment(), 'days')
+                })).sort((a, b) => a.daysLeft - b.daysLeft);
+                setTodoList(sortedTodoList);
             } catch (error) {
                 console.error(error);
             }
@@ -33,11 +38,22 @@ const TodolistCalendar = ({ navigation }) => {
 
 
     const markedDates = {};
+    // todoList.forEach(item => {
+    //     markedDates[moment(item.examDate).format('YYYY-MM-DD')] = {
+    //         marked: true,
+    //         dotColor: item.color || 'red',
+    //     };
+    // });
     todoList.forEach(item => {
-        markedDates[moment(item.examDate).format('YYYY-MM-DD')] = {
-            marked: true,
-            dotColor: item.color || 'red',
-        };
+        const dateKey = moment(item.examDate).format('YYYY-MM-DD');
+        if (!markedDates[dateKey]) {
+            markedDates[dateKey] = { dots: [] };
+        }
+        markedDates[dateKey].dots.push({
+            key: item.id,
+            color: item.color || 'red',
+            selectedDotColor: item.color || 'red',
+        });
     });
 
     // markedDates 객체를 콘솔에 출력하여 디버깅
@@ -46,7 +62,7 @@ const TodolistCalendar = ({ navigation }) => {
     const renderTodo = ({ item }) => {
         const examDate = moment(item.examDate);
         const formattedDate = examDate.format('YYYY년 M월 D일');
-        const daysLeft = examDate.diff(moment(), 'days');
+        const daysLeft = item.daysLeft;
 
         return (
             <View style={styles.item}>
@@ -67,13 +83,14 @@ const TodolistCalendar = ({ navigation }) => {
 
     return (
         <View style={styles.card}>
-            <ScrollView>
+            <VirtualizedView>
                 <View style={styles.container}>
-                    <Calendar
+                    <CustomCalendar   
                         style={styles.calendar}
                         current={'2024-07-01'}
-                        monthFormat={'yyyy MM'}
+                        monthFormat={'yyyy년 MM월'}
                         onDayPress={(day) => navigation.navigate('TodolistCreate', { selectedDate: day.dateString })}
+                        markingType={'multi-dot'}
                         markedDates={markedDates}
                     />
                     <View style={styles.todoListHeader}>
@@ -89,9 +106,14 @@ const TodolistCalendar = ({ navigation }) => {
                             <Text style={styles.moreText}>... 더보기</Text>
                         </TouchableOpacity>
                     )}
+                    {showAll && (
+                        <TouchableOpacity onPress={() => setShowAll(false)}>
+                            <Text style={styles.moreText}>접기</Text>
+                        </TouchableOpacity>
+                    )}
                     <Text style={styles.footerText}>일정이 지난 Todo list는 자동으로 삭제돼요.</Text>
                 </View>
-            </ScrollView>
+            </VirtualizedView>
         </View>
     );
 };
