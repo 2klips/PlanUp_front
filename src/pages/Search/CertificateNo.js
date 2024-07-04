@@ -1,11 +1,11 @@
-// SearchCertificate.js
+// CertificateNo.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SearchCertificate = () => {
+const CertificateNo = () => {
   const [jobName, setJobName] = useState('');
   const navigation = useNavigation();
 
@@ -23,7 +23,11 @@ const SearchCertificate = () => {
       );
       console.log('Certificates fetched successfully:', response.data);
       if (response.data.length === 0) {
-        navigation.navigate('CertificateNo');
+        Alert.alert(
+          "검색 결과 없음",
+          "이름이 잘못되었거나, 시험 예정 일정이 없어요.민간자격증의 경우, 검색되지 않아요.",
+          [{ text: "확인" }]
+        );
       } else {
         navigation.navigate('CertificateResult', { certificates: response.data });
       }
@@ -49,12 +53,11 @@ const SearchCertificate = () => {
           <Text style={styles.buttonText}>검색하기</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.infoContainer}>
-        <Image source={require('../../assets/images/엠블럼B1.png')} style={styles.infoIcon} />
-        <Text style={styles.infoTitle}>자격증시험 일정 추가</Text>
-        <Text style={styles.infoText}>원하시는 자격증 이름을 검색하면,</Text>
-        <Text style={styles.infoText}>올해 예정된 시험 일정을 추가할 수 있어요!</Text> 
-        <Image source={require('../../assets/images/엠블럼B1.png')} style={styles.hrdkLogo} />
+      <View style={styles.resultContainer}>
+        <Image source={require('../../assets/images/jobkorea_logo.png')} style={styles.notFoundIcon} />
+        <Text style={styles.noResultText}>검색결과가 없어요.</Text>
+        <Text style={styles.noResultDetailText}>이름이 잘못되었거나, 시험 예정 일정이 없어요.</Text>
+        <Text style={styles.noResultDetailText}>민간자격증의 경우, 검색되지 않아요.</Text>
       </View>
       <View style={styles.footer}>
         <Text style={styles.footerText}>※ 현재 국가공인 자격증만 검색할 수 있어요.</Text>
@@ -111,31 +114,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  infoContainer: {
+  resultContainer: {
     alignItems: 'center',
     marginBottom: 20,
   },
-  infoIcon: {
-    width: 50,
-    height: 50,
+  notFoundIcon: {
+    width: 100,
+    height: 100,
     marginBottom: 10,
   },
-  infoTitle: {
+  noResultText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'red',
     marginBottom: 10,
   },
-  infoText: {
+  noResultDetailText: {
     fontSize: 16,
     textAlign: 'center',
     color: 'black',
-    marginBottom: 10,
-  },
-  hrdkLogo: {
-    width: 100,
-    height: 90,
-    resizeMode: 'contain',
     marginBottom: 10,
   },
   footer: {
@@ -148,5 +145,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchCertificate;
+export default CertificateNo;
 
