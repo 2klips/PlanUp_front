@@ -11,8 +11,8 @@ const ChecklistItem = ({ title, date, color, isChecked, onValueChange }) => (
     <View style={styles.itemLeft}>
       <View style={[styles.circle, { backgroundColor: color || 'blue' }]} />
       <View>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.date}>{date}까지</Text>
+        <Text style={[styles.title, isChecked && styles.checklistItemCompleted]}>{title}</Text>
+        <Text style={[styles.date, isChecked && styles.checklistItemCompleted]}>{date}까지</Text>
       </View>
     </View>
     <CheckBox value={isChecked} onValueChange={onValueChange} /> 
@@ -30,20 +30,26 @@ const Checklist = ({ navigation }) => {
     const fetchChecklist = async () => {
       const token = await AsyncStorage.getItem('token');
       try {
-        const response = await axios.get('http://10.0.2.2:8080/list/check', {
+        const response = await axios.get('http://10.0.2.2:8080/checklist', {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
         const checklistItems = response.data
+          .filter(item => !item.completed)
           .map(item => ({
             id: item._id,
             title: item.list,
             date: moment(item.examDate).format('YYYY년 M월 D일'),
             color: item.color,
-            isChecked: item.completed, // Assuming `completed` is the correct property
+            isChecked: item.completed, 
           }))
-          .sort((a, b) => new Date(a.date) - new Date(b.date));
+          .sort((a, b) => {
+            if (a.isChecked === b.isChecked) {
+              return new Date(a.date) - new Date(b.date);
+            }
+            return a.isChecked - b.isChecked;
+          });
         setChecklist(checklistItems);
       } catch (error) {
         console.error(error);
@@ -55,24 +61,47 @@ const Checklist = ({ navigation }) => {
   const handleToggleCheckbox = async (id, newValue) => {
     try {
       const token = await AsyncStorage.getItem('token');
-      await axios.get(`http://10.0.2.2:8080/list/check/`, {
-        completed: newValue,
-        headers: {
-          Authorization: `Bearer ${token}`
+      await axios.put(
+        `http://10.0.2.2:8080/checklist/updateCompleted`,
+        { id,
+          completed: newValue 
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-      });
+      );
+      if (newValue === true) {
+        // 체크된 항목은 리스트에서 제외
+        setChecklist(prevChecklist =>
+          prevChecklist.filter(item => item.id !== id)
+        );
+      } else {
       setChecklist(prevChecklist =>
         prevChecklist.map(item =>
           item.id === id ? { ...item, isChecked: newValue } : item
-        )
+        ).sort((a, b) => {
+          if (a.isChecked === b.isChecked) {
+            return new Date(a.date) - new Date(b.date);
+          }
+          return a.isChecked - b.isChecked;
+        })
       );
+    }
     } catch (error) {
       console.error(error);
     }
   };
+
   const handleShowMore = () => {
     setShowMore(true);
   };
+
+  const handleShowLess = () => {
+    setShowMore(false);
+  };
+
 
   return (
     <View style={styles.card}>
@@ -95,6 +124,12 @@ const Checklist = ({ navigation }) => {
           <Text style={styles.showMoreText}>더보기</Text>
         </TouchableOpacity>
       )}
+      {showMore && (
+        <TouchableOpacity style={styles.showMoreButton} onPress={handleShowLess}>
+          <Text style={styles.showMoreText}>접기</Text>
+        </TouchableOpacity>
+      )}
+
       <Text style={styles.footer}>※ 완료된 체크리스트는 자동으로 사라져요.</Text>
     </View>
   );
@@ -157,6 +192,10 @@ const styles = StyleSheet.create({
     color: '#888',
     textAlign: 'center',
     marginTop: 10,
+  },
+  checklistItemCompleted: {
+    textDecorationLine: 'line-through',
+    color: 'gray',
   },
 });
 

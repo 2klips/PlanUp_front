@@ -4,6 +4,7 @@ import MainPage from '../pages/Main/MainPage';
 import TodolistCreate from '../pages/Todolist/TodolistCreate';
 import SearchCertificate from '../pages/Search/SearchCertificate';
 import CertificateResult from '../pages/Search/CertificateResult';
+import CertificateNo from '../pages/Search/CertificateNo';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,7 @@ function MainNavigator() {
             <Stack.Screen name="TodolistCreate" component={TodolistCreate} />
             <Stack.Screen name="SearchCertificate" component={SearchCertificate} />
             <Stack.Screen name="CertificateResult" component={CertificateResult} />
+            <Stack.Screen name="CertificateNo" component={CertificateNo} />
         </Stack.Navigator>
     );
 }

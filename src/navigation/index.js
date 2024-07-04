@@ -48,7 +48,7 @@ function AppNavigator() {
             ),
         })}>
             {isLoggedIn ? (
-                <Stack.Screen name="MainPage" component={MainNavigator} />
+                <Stack.Screen name="Main" component={MainNavigator} options={{ headerShown: false }}/>
             ) : (
                 <Stack.Screen name="Auth" component={AuthNavigator} options={{ headerShown: false }}/>
             )}
