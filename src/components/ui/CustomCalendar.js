@@ -16,9 +16,16 @@ LocaleConfig.defaultLocale = 'kr';
 const CustomCalendar = ({...props}) => {
 
     return (
-        <Calendar
-            {...props}
-        />
+    <Calendar
+        {...props}
+        theme={{
+            textSectionTitleColor: 'black',
+            textDayFontFamily: 'Arial',
+            textDayHeaderFontFamily: 'Arial',
+            textDayHeaderFontWeight: 'bold'
+        }}
+    />
     );
 };
+
 export default CustomCalendar;

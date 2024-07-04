@@ -30,7 +30,7 @@ const Checklist = ({ navigation }) => {
     const fetchChecklist = async () => {
       const token = await AsyncStorage.getItem('token');
       try {
-        const response = await axios.get('http://10.0.2.2:8080/checklist', {
+        const response = await axios.get('http://10.0.2.2:8080/checklist/userid', {
           headers: {
             Authorization: `Bearer ${token}`
           }

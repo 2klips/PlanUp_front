@@ -15,11 +15,12 @@ const TodolistCalendar = ({ navigation }) => {
     const [showAll, setShowAll] = useState(false);
     const isFocused = useIsFocused();
 
+
     useEffect(() => {
         const fetchTodos = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const response = await axios.get('http://10.0.2.2:8080/list', {
+                const response = await axios.get('http://10.0.2.2:8080/list/userid', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -33,17 +34,13 @@ const TodolistCalendar = ({ navigation }) => {
                 console.error(error);
             }
         };
+
+
         fetchTodos();
     }, [isFocused]);
 
 
     const markedDates = {};
-    // todoList.forEach(item => {
-    //     markedDates[moment(item.examDate).format('YYYY-MM-DD')] = {
-    //         marked: true,
-    //         dotColor: item.color || 'red',
-    //     };
-    // });
     todoList.forEach(item => {
         const dateKey = moment(item.examDate).format('YYYY-MM-DD');
         if (!markedDates[dateKey]) {
@@ -55,9 +52,14 @@ const TodolistCalendar = ({ navigation }) => {
             selectedDotColor: item.color || 'red',
         });
     });
+        
 
-    // markedDates 객체를 콘솔에 출력하여 디버깅
-    console.log('markedDates:', markedDates);
+    
+
+  const handleTodoPress = (item) => {
+    // 일정 클릭 시 navigation을 이용하여 상세 페이지로 이동
+    navigation.navigate('TodolistDetail', { selectedTodo: item });
+};
 
     const renderTodo = ({ item }) => {
         const examDate = moment(item.examDate);
@@ -65,16 +67,18 @@ const TodolistCalendar = ({ navigation }) => {
         const daysLeft = item.daysLeft;
 
         return (
-            <View style={styles.item}>
-                <View style={styles.itemLeft}>
-                    <View style={[styles.circle, { backgroundColor: item.color || 'blue' }]} />
-                    <View>
-                        <Text style={styles.title}>{item.title}</Text>
-                        <Text style={styles.examDate}>{formattedDate}</Text>
+            <TouchableOpacity onPress={() => handleTodoPress(item)}>
+                <View style={styles.item}>
+                    <View style={styles.itemLeft}>
+                        <View style={[styles.circle, { backgroundColor: item.color || 'blue' }]} />
+                        <View>
+                            <Text style={styles.title}>{item.title}</Text>
+                            <Text style={styles.examDate}>{formattedDate}</Text>
+                        </View>
                     </View>
+                    <Text style={styles.daysLeft}>D-{daysLeft}일</Text>
                 </View>
-                <Text style={styles.daysLeft}>D-{daysLeft}일</Text>
-            </View>
+            </TouchableOpacity>
         );
     };
 
@@ -85,13 +89,14 @@ const TodolistCalendar = ({ navigation }) => {
         <View style={styles.card}>
             <VirtualizedView>
                 <View style={styles.container}>
-                    <CustomCalendar   
+                    <CustomCalendar
                         style={styles.calendar}
                         current={'2024-07-01'}
-                        monthFormat={'yyyy년 MM월'}
+                        monthFormat={'yyyy MM'}
                         onDayPress={(day) => navigation.navigate('TodolistCreate', { selectedDate: day.dateString })}
-                        markingType={'multi-dot'}
                         markedDates={markedDates}
+                        markingType={'multi-dot'}
+                        
                     />
                     <View style={styles.todoListHeader}>
                         <Text style={styles.todoListTitle}>등록된 모든 일정 | {todoList.length}개</Text>

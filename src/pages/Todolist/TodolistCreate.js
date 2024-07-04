@@ -8,6 +8,7 @@ import 'moment/locale/ko';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../context/AuthContext';
 import VirtualizedView from '../../utils/VirutalizedList';
+import CustomCalendar from '../../components/ui/CustomCalendar';
 
 const COLORS = ['#06A4FD', '#97E5FF', '#FF0000', '#FF81EB', '#FF8E25', '#FFE871', '#70FF4D', '#35F2DC', '#48B704', '#8206FD'];
 
@@ -53,8 +54,6 @@ const TodolistCreate = ({ route, navigation }) => {
         title: title,
         text: text,
         color: color,
-        examDate: selectedDate,
-        checklist: checklist,
       },{
         headers: {
           Authorization: `Bearer ${token}`
@@ -136,12 +135,12 @@ const TodolistCreate = ({ route, navigation }) => {
     });
 });
 
-  markedDates[selectedDate] = { selected: true, selectedColor: 'blue' };
+  markedDates[selectedDate] = { selected: true, selectedColor: '#06A4FD' };
 
   return (
-    <VirtualizedView>
+    <ScrollView>
       <View style={styles.container}>
-        <Calendar
+        <CustomCalendar
           style={styles.calendar}
           current={selectedDate}
           onDayPress={(day) => setSelectedDate(day.dateString)}
@@ -215,7 +214,7 @@ const TodolistCreate = ({ route, navigation }) => {
           </View>
         </View>
       </View>
-    </VirtualizedView>
+    </ScrollView>
   );
 };
 
