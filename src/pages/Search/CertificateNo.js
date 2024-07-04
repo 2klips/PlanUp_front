@@ -13,7 +13,7 @@ const CertificateNo = () => {
     try {
       console.log(`Searching for job name: ${jobName}`);
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.post('http://192.168.9.25:8080/certifi/job_name', 
+      const response = await axios.post('http://10.0.2.2:8080/certifi/job_name', 
         { job_name: jobName },
         {
           headers: {

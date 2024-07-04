@@ -4,6 +4,7 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, FlatList } 
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder';
 
 const CertificateResult = ({ route }) => {
   const { certificates } = route.params;
@@ -23,7 +24,7 @@ const CertificateResult = ({ route }) => {
     try {
       console.log(`Searching for job name: ${jobName}`);
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.post('http://192.168.9.25:8080/certifi/job_name', 
+      const response = await axios.post('http://10.0.2.2:8080/certifi/job_name', 
         { job_name: jobName },
         {
           headers: {
@@ -89,6 +90,7 @@ const CertificateResult = ({ route }) => {
           placeholder="자격증의 이름을 입력하세요."
           value={jobName}
           onChangeText={setJobName}
+          
         />
         <TouchableOpacity style={styles.button} onPress={handleSearch}>
           <Text style={styles.buttonText}>검색하기</Text>
@@ -133,6 +135,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+
   input: {
     width: '100%',
     borderWidth: 1,
@@ -140,7 +143,9 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     padding: 10,
     marginBottom: 10,
+    placeholderTextColor:"#69C9FF"
   },
+
   button: {
     backgroundColor: '#47BDFF',
     borderRadius: 25,
