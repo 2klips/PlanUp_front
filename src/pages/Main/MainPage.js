@@ -21,6 +21,7 @@ import URLonly from '../../components/ui/URLonly';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import VirtualizedView from '../../utils/VirutalizedList';
 
 function MainPage() {
     const { user } = useAuth();
@@ -34,7 +35,7 @@ function MainPage() {
         const fetchChecklist = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const response = await axios.get('http://10.0.2.2:8080/list/check', {
+                const response = await axios.get('http://10.0.2.2:8080/checklist', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -73,27 +74,29 @@ function MainPage() {
     }
 
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <Image
-                    style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 10 }}
-                    source={{
-                    uri: 'https://reactnative.dev/docs/assets/p_cat2.png',
-                    }}
-                />
-                <Text style={styles.title}>{user.name}님 안녕하세요!</Text>
-                <Text style={{marginBottom:10}}>오늘도 새로운 회사가 {user.name}님을 필요로 해요!</Text>
-                <Card title="새로운 공고" text="작성한 이력서에 맞게 추천 해드려요" num="6" style={{ borderRadius: 30, marginBottom:5}}/>
-                <AddURL navigation={navigation}/>
-                <URLonly navigation={navigation}/>
-                {isTodoList ? (
-                    <TodolistCalendar navigation={navigation} />
-                ) : (
-                    <CalendarOnly navigation={navigation} />
-                )}
-                {isChecklist && <Checklist />}
-            </View>
-        </ScrollView>
+        <SafeAreaView style={{ flex: 1 }}>
+            <VirtualizedView>
+                <View style={styles.container}>
+                    <Image
+                        style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 10 }}
+                        source={{
+                        uri: 'https://reactnative.dev/docs/assets/p_cat2.png',
+                        }}
+                    />
+                    <Text style={styles.title}>{user.name}님 안녕하세요!</Text>
+                    <Text style={{marginBottom:10}}>오늘도 새로운 회사가 {user.name}님을 필요로 해요!</Text>
+                    <Card title="새로운 공고" text="작성한 이력서에 맞게 추천 해드려요" num="6" style={{ borderRadius: 30, marginBottom:5}}/>
+                    <AddURL navigation={navigation}/>
+                    <URLonly navigation={navigation}/>
+                    {isTodoList ? (
+                        <TodolistCalendar navigation={navigation} />
+                    ) : (
+                        <CalendarOnly navigation={navigation} />
+                    )}
+                    {isChecklist && <Checklist />}
+                </View>
+            </VirtualizedView>
+        </SafeAreaView>
     );
 }
 

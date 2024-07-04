@@ -7,6 +7,7 @@ import moment from 'moment';
 import 'moment/locale/ko';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../context/AuthContext';
+import VirtualizedView from '../../utils/VirutalizedList';
 
 const COLORS = ['#06A4FD', '#97E5FF', '#FF0000', '#FF81EB', '#FF8E25', '#FFE871', '#70FF4D', '#35F2DC', '#48B704', '#8206FD'];
 
@@ -61,7 +62,10 @@ const TodolistCreate = ({ route, navigation }) => {
       });
 
       if (response.status === 201) {
-        Alert.alert('Success', 'Todo added successfully');
+        Alert.alert('성공', '일정 추가 성공');
+        console.log(response.data)
+        const todoId = response.data
+        await saveChecklistItems(todoId);
         navigation.navigate('MainPage');
       } else {
         Alert.alert('Error', 'Failed to add todo');
@@ -76,35 +80,40 @@ const TodolistCreate = ({ route, navigation }) => {
     setIsAddingChecklist(true);
   };
 
-  const handleSaveChecklistItem = async () => {
+  const handleSaveChecklistItem = () => {
     if (checklistItem.trim() !== '') {
-      const token = await AsyncStorage.getItem('token');
-      console.log(token)
       const newChecklistItem = { text: checklistItem, completed: false };
-      try {
-        const response = await axios.post('http://10.0.2.2:8080/list/check', {
-          userid: user.userid, 
-          color: color, 
+      setChecklist([...checklist, newChecklistItem]);
+      setChecklistItem('');
+      setIsAddingChecklist(false);
+    }
+  };
+
+  const saveChecklistItems = async (todoId) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      for (const item of checklist) {
+        const response = await axios.post('http://10.0.2.2:8080/checklist', {
+          userid: user.userid,
+          color: color,
           examDate: selectedDate,
-          list: checklistItem, 
-          completed: false, 
-          todoId: 'TODO_ID_HERE' 
+          list: item.text,
+          completed: item.completed,
+          todoId: todoId
         }, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        if (response.status === 201) {
-          setChecklist([...checklist, newChecklistItem]);
-          setChecklistItem('');
-          setIsAddingChecklist(false);
-        } else {
+  
+        if (response.status !== 201) {
           Alert.alert('Error', 'Failed to add checklist item');
+          return;
         }
-      } catch (error) {
-        console.error(error);
-        Alert.alert('Error', 'An error occurred while adding the checklist item');
       }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'An error occurred while adding the checklist item');
     }
   };
 
@@ -116,21 +125,27 @@ const TodolistCreate = ({ route, navigation }) => {
 
   const markedDates = {};
   todoList.forEach(item => {
-    markedDates[item.examDate] = {
-      marked: true,
-      dotColor: item.color || 'red',
-    };
-  });
+    const dateKey = moment(item.examDate).format('YYYY-MM-DD');
+    if (!markedDates[dateKey]) {
+        markedDates[dateKey] = { dots: [] };
+    }
+    markedDates[dateKey].dots.push({
+        key: item.id,
+        color: item.color || 'red',
+        selectedDotColor: item.color || 'red',
+    });
+});
 
   markedDates[selectedDate] = { selected: true, selectedColor: 'blue' };
 
   return (
-    <ScrollView>
+    <VirtualizedView>
       <View style={styles.container}>
         <Calendar
           style={styles.calendar}
           current={selectedDate}
           onDayPress={(day) => setSelectedDate(day.dateString)}
+          markingType={'multi-dot'}
           markedDates={markedDates}
           monthFormat={'yyyy년 MM월'}
         />
@@ -200,7 +215,7 @@ const TodolistCreate = ({ route, navigation }) => {
           </View>
         </View>
       </View>
-    </ScrollView>
+    </VirtualizedView>
   );
 };
 
