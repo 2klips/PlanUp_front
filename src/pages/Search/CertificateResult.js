@@ -4,7 +4,8 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, FlatList } 
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder';
+// import { Placeholder, PlaceholderLine, Fade } from 'rn-placeholder';
+import B1 from '../../assets/images/emblemB1.png';
 
 const CertificateResult = ({ route }) => {
   const { certificates } = route.params;
@@ -81,7 +82,7 @@ const CertificateResult = ({ route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={require('../../assets/images/엠블럼B1.png')} style={styles.headerIcon} />
+        <Image source={B1} style={styles.headerIcon} />
         <Text style={styles.headerText}>자격증시험추가</Text>
       </View>
       <View style={styles.searchContainer}>

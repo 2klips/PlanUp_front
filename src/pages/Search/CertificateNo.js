@@ -4,6 +4,7 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Alert } fro
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import jobkoreaLogo from '../../assets/images/jobkorea_logo.png';
 
 const CertificateNo = () => {
   const [jobName, setJobName] = useState('');
@@ -54,7 +55,7 @@ const CertificateNo = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.resultContainer}>
-        <Image source={require('../../assets/images/jobkorea_logo.png')} style={styles.notFoundIcon} />
+        <Image source={jobkoreaLogo} style={styles.notFoundIcon} />
         <Text style={styles.noResultText}>검색결과가 없어요.</Text>
         <Text style={styles.noResultDetailText}>이름이 잘못되었거나, 시험 예정 일정이 없어요.</Text>
         <Text style={styles.noResultDetailText}>민간자격증의 경우, 검색되지 않아요.</Text>

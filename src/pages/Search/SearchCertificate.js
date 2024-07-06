@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import License from '../../assets/images/license_icon.svg';
+import HRDK_logo from '../../assets/images/HRDK_logo.png';
 
 const SearchCertificate = () => {
   const [jobName, setJobName] = useState('');
@@ -55,7 +56,7 @@ const SearchCertificate = () => {
         <Text style={styles.infoTitle}>자격증시험 일정 추가</Text>
         <Text style={styles.infoText}>원하시는 자격증 이름을 검색하면,</Text>
         <Text style={styles.infoText}>올해 예정된 시험 일정을 추가할 수 있어요!</Text> 
-        <Image source={require('../../assets/images/HRDK_logo.png')} style={styles.hrdkLogo} />
+        <Image source={HRDK_logo} style={styles.hrdkLogo} />
       </View>
       <View style={styles.footer}>
         <Text style={styles.footerText}>※ 현재 국가공인 자격증만 검색할 수 있어요.</Text>
