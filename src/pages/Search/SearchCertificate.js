@@ -13,10 +13,13 @@ const SearchCertificate = () => {
 
   const handleSearch = async () => {
     try {
-      console.log(`Searching for job name: ${jobName}`);
+      const trimmedJobName = jobName.trim(); // 수정된 부분: 양쪽 끝의 공백 제거
+      console.log(`Searching for job name: ${trimmedJobName}`);
+      // console.log(`Searching for job name: ${jobName}`);
       const token = await AsyncStorage.getItem('token');
       const response = await axios.post('http://10.0.2.2:8080/certifi/job_name', 
-        { job_name: jobName },
+        { job_name: trimmedJobName },
+        // { job_name: jobName },
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -46,6 +49,7 @@ const SearchCertificate = () => {
           placeholder="자격증의 이름을 입력하세요."
           value={jobName}
           onChangeText={setJobName}
+          onSubmitEditing={handleSearch} // 수정된 부분: Enter 키를 누르면 handleSearch 호출
         />
         <TouchableOpacity style={styles.button} onPress={handleSearch}>
           <Text style={styles.buttonText}>검색하기</Text>

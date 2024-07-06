@@ -4,7 +4,6 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Alert } fro
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import jobkoreaLogo from '../../assets/images/jobkorea_logo.png';
 
 const CertificateNo = () => {
   const [jobName, setJobName] = useState('');
@@ -12,10 +11,13 @@ const CertificateNo = () => {
 
   const handleSearch = async () => {
     try {
-      console.log(`Searching for job name: ${jobName}`);
+      const trimmedJobName = jobName.trim(); // 수정된 부분: 양쪽 끝의 공백 제거
+      console.log(`Searching for job name: ${trimmedJobName}`);
+      // console.log(`Searching for job name: ${jobName}`);
       const token = await AsyncStorage.getItem('token');
       const response = await axios.post('http://10.0.2.2:8080/certifi/job_name', 
-        { job_name: jobName },
+        { job_name: trimmedJobName }, // 수정된 부분: 트림된 jobName 사용
+        // { job_name: jobName },
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -49,13 +51,14 @@ const CertificateNo = () => {
           placeholder="자격증의 이름을 입력하세요."
           value={jobName}
           onChangeText={setJobName}
+          onSubmitEditing={handleSearch} // 수정된 부분: Enter 키를 누르면 handleSearch 호출
         />
         <TouchableOpacity style={styles.button} onPress={handleSearch}>
           <Text style={styles.buttonText}>검색하기</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.resultContainer}>
-        <Image source={jobkoreaLogo} style={styles.notFoundIcon} />
+        <Image source={require('../../assets/images/jobkorea_logo.png')} style={styles.notFoundIcon} />
         <Text style={styles.noResultText}>검색결과가 없어요.</Text>
         <Text style={styles.noResultDetailText}>이름이 잘못되었거나, 시험 예정 일정이 없어요.</Text>
         <Text style={styles.noResultDetailText}>민간자격증의 경우, 검색되지 않아요.</Text>
@@ -147,4 +150,3 @@ const styles = StyleSheet.create({
 });
 
 export default CertificateNo;
-
