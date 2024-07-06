@@ -12,6 +12,19 @@ import CustomCalendar from '../../components/ui/CustomCalendar';
 
 const COLORS = ['#06A4FD', '#97E5FF', '#FF0000', '#FF81EB', '#FF8E25', '#FFE871', '#70FF4D', '#35F2DC', '#48B704', '#8206FD'];
 
+const ChecklistItem = ({ title, date, color, completed, onValueChange }) => (
+  <View style={styles.item}>
+    <View style={styles.itemLeft}>
+      <View style={[styles.circle, { backgroundColor: color || 'blue' }]} />
+      <View>
+        <Text style={[styles.title, completed && styles.checklistItemCompleted]}>{title}</Text>
+        <Text style={[styles.date, completed && styles.checklistItemCompleted]}>{date}까지</Text>
+      </View>
+    </View>
+    <CheckBox value={completed} onValueChange={onValueChange} /> 
+  </View>
+);
+
 const TodolistCreate = ({ route, navigation }) => {
   const { selectedDate: initialSelectedDate } = route.params;
   const { user } = useAuth();
@@ -23,6 +36,7 @@ const TodolistCreate = ({ route, navigation }) => {
   const [checklist, setChecklist] = useState([]);
   const [checklistItem, setChecklistItem] = useState('');
   const [isAddingChecklist, setIsAddingChecklist] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); 
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -47,6 +61,7 @@ const TodolistCreate = ({ route, navigation }) => {
       Alert.alert('Error', 'Please fill out all fields');
       return;
     }
+    setIsButtonDisabled(true);
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await axios.post('http://10.0.2.2:8080/list', {
@@ -68,6 +83,7 @@ const TodolistCreate = ({ route, navigation }) => {
         navigation.navigate('MainPage');
       } else {
         Alert.alert('Error', 'Failed to add todo');
+        setIsButtonDisabled(false);
       }
     } catch (error) {
       console.error(error);
@@ -81,7 +97,7 @@ const TodolistCreate = ({ route, navigation }) => {
 
   const handleSaveChecklistItem = () => {
     if (checklistItem.trim() !== '') {
-      const newChecklistItem = { text: checklistItem, completed: false };
+      const newChecklistItem = { color: color, text: checklistItem, completed: false };
       setChecklist([...checklist, newChecklistItem]);
       setChecklistItem('');
       setIsAddingChecklist(false);
@@ -154,11 +170,14 @@ const TodolistCreate = ({ route, navigation }) => {
           ))}
         </View>
         <View style={styles.eventDetail}>
-          <View style={[styles.circle, { backgroundColor: color }]} />
-          <Text style={styles.eventDate}>
-            {moment(selectedDate).locale('ko').format('YYYY년 M월 D일')}
-            <Text style={styles.checklistCount}> ({checklist.length})</Text>
-          </Text>
+          <View style={styles.dateContainer}>
+            <View style={[styles.circle, { backgroundColor: color }]} />
+            <Text></Text>
+            <Text style={styles.eventDate}>
+              {moment(selectedDate).locale('ko').format('YYYY년 M월 D일')}
+              <Text style={styles.checklistCount}> ({checklist.length})</Text>
+            </Text>
+          </View>
           <Text style={styles.text1}>제목</Text>
           <TextInput
             style={styles.input}
@@ -196,19 +215,22 @@ const TodolistCreate = ({ route, navigation }) => {
           <FlatList
             data={checklist}
             renderItem={({ item, index }) => (
-              <View style={styles.checklistItemContainer}>
-                <Text style={[styles.checklistItem, item.completed && styles.checklistItemCompleted]}>{item.text}</Text>
-                <CheckBox
-                  value={item.completed}
-                  onValueChange={() => handleToggleChecklistItem(index)}
-                />
-              </View>
+              <ChecklistItem
+                title={item.text}
+                date={item.date}
+                color={item.color}
+                isChecked={item.completed}
+                onValueChange={() => handleToggleChecklistItem(index)}
+            />
             )}
             keyExtractor={(item, index) => index.toString()}
           />
         <View style={styles.style1}>
-          <Text style={styles.text3}>일정추가하기</Text>
-          <TouchableOpacity style={styles.addButton2} onPress={handleSave}>
+          <Text style={[styles.text3, isButtonDisabled && styles.disabledText3]}>일정추가하기</Text>
+          <TouchableOpacity 
+          style={[styles.addButton2, isButtonDisabled && styles.disabledButton]} 
+          onPress={handleSave}
+          disabled={isButtonDisabled}>
             <Text style={styles.addButtonText}>+</Text>
           </TouchableOpacity>
           </View>
@@ -224,6 +246,11 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: 'white',
   },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+
+},
   calendar: {
     marginBottom: 16,
   },
@@ -257,6 +284,7 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     marginBottom: 8,
+    marginRight: 8,
   },
   eventDate: {
     fontSize: 18,
@@ -273,7 +301,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   input: {
-    height: 40,
+    height: 'auto',
     borderColor: '#C8C8C8',
     borderBottomWidth: 1,
     borderRadius: 5,
@@ -323,6 +351,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginRight: 10,
   },
+  disabledText3: {
+    color: '#A9A9A9',
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
   style1:{
     flexDirection:'row',
     alignItems:"center",
@@ -350,6 +384,34 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  disabledButton: {
+    backgroundColor: '#A9A9A9',
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+
+  item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+},
+  itemLeft: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  },
+  title: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  },
+  date: {
+  fontSize: 14,
+  color: '#888',
   },
 });
 

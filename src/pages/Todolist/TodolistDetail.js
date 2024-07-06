@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../context/AuthContext';
 import VirtualizedView from '../../utils/VirutalizedList';
 import CustomCalendar from '../../components/ui/CustomCalendar';
+import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 
 const ChecklistItem = ({ title, date, color, completed, onValueChange }) => (
     <View style={styles.item}>
@@ -22,6 +23,18 @@ const ChecklistItem = ({ title, date, color, completed, onValueChange }) => (
       <CheckBox value={completed} onValueChange={onValueChange} /> 
     </View>
   );
+
+  const toastConfig = {
+    Error: (props) => (
+      <ErrorToast
+        {...props}
+        style={{ borderLeftColor: 'red' }}
+        text1Style={{ fontSize: 17 }}
+        text2Style={{ fontSize: 15 }}
+        visibilityTime={3000}
+      />
+    )
+  };
 
 
 const COLORS = ['#06A4FD', '#97E5FF', '#FF0000', '#FF81EB', '#FF8E25', '#FFE871', '#70FF4D', '#35F2DC', '#48B704', '#8206FD'];
@@ -38,6 +51,7 @@ const TodolistDetail = ({ route, navigation }) => {
     const [isAddingChecklist, setIsAddingChecklist] = useState(false);
     const [isDeleting, setIsDeleting] = useState(true);
     const [todo, setTodo] = useState('');
+    const [newChecklist, setNewChecklist] = useState([]);
     const marked = {};
     marked[selectedDate] = { selected: true, selectedColor: '#06A4FD' };
     console.log("-------------Todo-------------",todo)
@@ -107,7 +121,14 @@ const TodolistDetail = ({ route, navigation }) => {
         }
     }
     
-
+  const showToast = () => {
+    console.log('토스트 호출')
+    Toast.show({
+      type: 'Error',
+      text1: '현재 읽기 전용 상태입니다.',
+      text2: '수정을 원하시면 수정 버튼을 눌러주세요.',
+      visibilityTime: 3000,
+    });}  
   const handleSave = async () => {
     if (title.trim() === '' || text.trim() === '') {
       Alert.alert('Error', 'Please fill out all fields');
@@ -147,8 +168,9 @@ const TodolistDetail = ({ route, navigation }) => {
 
   const handleSaveChecklistItem = () => {
     if (checklistItem.trim() !== '') {
-      const newChecklistItem = { text: checklistItem, completed: false };
+      const newChecklistItem = { color:color ,text: checklistItem, completed: false };
       setChecklists([...checklists, newChecklistItem]);
+      setNewChecklist([...newChecklist, newChecklistItem]);
       setChecklistItem('');
       setIsAddingChecklist(false);
     }
@@ -157,7 +179,7 @@ const TodolistDetail = ({ route, navigation }) => {
   const saveChecklistItems = async (todoId) => {
     try {
       const token = await AsyncStorage.getItem('token');
-      for (const item of checklists) {
+      for (const item of newChecklist) {
         const response = await axios.post('http://10.0.2.2:8080/checklist', {
           userid: user.userid,
           color: color,
@@ -218,7 +240,7 @@ const TodolistDetail = ({ route, navigation }) => {
         <CustomCalendar
             style={styles.calendar}
             current={selectedDate}
-            onDayPress={isDeleting ? null : (day) => setSelectedDate(day.dateString)}
+            onDayPress={isDeleting ? showToast : (day) => setSelectedDate(day.dateString)}
             markingType={'multi-dot'}
             markedDates={marked}
             monthFormat={'yyyy년 MM월'}
@@ -261,7 +283,10 @@ const TodolistDetail = ({ route, navigation }) => {
           />
           <View style={styles.checklistContainer}>
             <Text style={styles.text2}>Check List</Text>
-            <TouchableOpacity style={styles.addButton1} onPress={handleAddChecklistItem}>
+            <TouchableOpacity 
+            style={[isDeleting ? styles.disabledAddButton1 : styles.addButton1]} 
+            onPress={isDeleting ? showToast : handleAddChecklistItem}
+            >
               <Text style={styles.addButtonText}>+</Text>
             </TouchableOpacity>
           </View>
@@ -281,7 +306,6 @@ const TodolistDetail = ({ route, navigation }) => {
           <FlatList
             data={checklists}
             renderItem={({ item }) => (
-                console.log("item",item),
                 <ChecklistItem
                 title={item.text}
                 date={item.date}
@@ -289,14 +313,6 @@ const TodolistDetail = ({ route, navigation }) => {
                 isChecked={item.completed}
                 onValueChange={(value) => handleToggleCheckbox(item.id, value)}
             />
-            // <View style={styles.checklistItemContainer}>
-            //     <Text style={[styles.checklistItem, item.completed && styles.checklistItemCompleted]}>{item.text}</Text>
-            //     <Text>{item.date}까지</Text>
-            //     <CheckBox
-            //     value={item.completed}
-            //     onValueChange={(value) => handleToggleCheckbox(item.id, value )}
-            //     />
-            // </View>
             )}
             keyExtractor={(item, index) => index.toString()}
           />
@@ -319,6 +335,7 @@ const TodolistDetail = ({ route, navigation }) => {
             </View>
         </View>
       </View>
+      <Toast config={toastConfig} />
     </ScrollView>
   );
 };
@@ -380,7 +397,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   input: {
-    height: 40,
+    height: 'auto',
     borderColor: '#C8C8C8',
     borderBottomWidth: 1,
     borderRadius: 5,
@@ -428,6 +445,14 @@ const styles = StyleSheet.create({
   },
   addButton1: {
     backgroundColor: '#06A4FD',
+    // padding: 10,
+    height: 25,
+    width: 25,
+    borderRadius: 3,
+    alignItems: 'center',
+  },
+  disabledAddButton1: {
+    backgroundColor: 'gray',
     // padding: 10,
     height: 25,
     width: 25,
