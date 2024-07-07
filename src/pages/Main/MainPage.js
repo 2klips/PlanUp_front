@@ -1,12 +1,10 @@
-import React, { useEffect, useState }  from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Image,
     SafeAreaView,
     ScrollView,
-    StatusBar,
     StyleSheet,
     Text,
-    useColorScheme,
     View,
     TouchableOpacity,
 } from 'react-native';
@@ -35,7 +33,7 @@ function MainPage() {
         const fetchChecklist = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const response = await axios.get('http://10.0.2.2:8080/checklist/userid', {
+                const response = await axios.get('http://10.0.2.2:8080/checklist', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -49,7 +47,7 @@ function MainPage() {
         const fetchTodos = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const response = await axios.get('http://10.0.2.2:8080/list/userid', {
+                const response = await axios.get('http://10.0.2.2:8080/list', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -80,20 +78,28 @@ function MainPage() {
                     <Image
                         style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 10 }}
                         source={{
-                        uri: 'https://reactnative.dev/docs/assets/p_cat2.png',
+                            uri: 'https://reactnative.dev/docs/assets/p_cat2.png',
                         }}
                     />
                     <Text style={styles.title}>{user.name}님 안녕하세요!</Text>
-                    <Text style={{marginBottom:10}}>오늘도 새로운 회사가 {user.name}님을 필요로 해요!</Text>
-                    <Card title="새로운 공고" text="작성한 이력서에 맞게 추천 해드려요" num="6" style={{ borderRadius: 30, marginBottom:5}}/>
-                    <AddURL navigation={navigation}/>
-                    <URLonly navigation={navigation}/>
+                    <Text style={{ marginBottom: 10 }}>오늘도 새로운 회사가 {user.name}님을 필요로 해요!</Text>
+                    <Card title="새로운 공고" text="작성한 이력서에 맞게 추천 해드려요" num="6" style={{ borderRadius: 30, marginBottom: 5 }} />
+                    <AddURL navigation={navigation} />
+                    <URLonly navigation={navigation} />    
                     {isTodoList ? (
                         <TodolistCalendar navigation={navigation} />
                     ) : (
                         <CalendarOnly navigation={navigation} />
                     )}
                     {isChecklist && <Checklist />}
+
+                    {/* 새로운 컴포넌트로 이동하는 버튼 추가 */}
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => navigation.navigate('JobDetailsCard')}
+                    >
+                        <Text style={styles.buttonText}>채용 정보 보기</Text>
+                    </TouchableOpacity>
                 </View>
             </VirtualizedView>
         </SafeAreaView>
@@ -105,11 +111,22 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 20,
         paddingTop: 20,
-        },
+    },
     title: {
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 5,
+    },
+    button: {
+        backgroundColor: '#4CAF50',
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 20,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
     },
 });
 export default MainPage;

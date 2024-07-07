@@ -1,4 +1,3 @@
-// AddURL.js
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -16,7 +15,7 @@ const AddURL = () => {
             </View>
             <View style={styles.item}>
                 <Text style={styles.text}>취업공고추가</Text>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SearchMainJob')}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('URLInputPage')}>
                     <Text style={styles.buttonText}>+</Text>
                 </TouchableOpacity>
             </View>
@@ -42,7 +41,7 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     button: {
-        backgroundColor: '#00aaf0',
+        backgroundColor: '#00aaf0', 
         borderRadius: 2,
         paddingHorizontal: 4,
         paddingVertical: 1,
@@ -55,4 +54,3 @@ const styles = StyleSheet.create({
 });
 
 export default AddURL;
-
