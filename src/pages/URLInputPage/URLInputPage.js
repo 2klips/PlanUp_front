@@ -64,6 +64,7 @@ const URLInputPage = ({ navigation }) => {
                         placeholderTextColor={'#47BDFF'}
                         value={inputUrl}
                         onChangeText={setInputUrl}
+                        maxLength={40}
                     />
                     <TouchableOpacity style={styles.copy} onPress={handleUrlSubmit}>
                         <Copy width={24} height={24} />

@@ -19,13 +19,14 @@ const styles = StyleSheet.create({
     },
     detailLabel: {
         fontSize: 14,
-        fontWeight: 'bold',
-        color: '#0077B6',
+        fontFamily: 'NanumSquareEB',
+        color: '#06A4FD',
         flex: 1, // 추가: 레이아웃 정리
     },
     detailValue: {
         fontSize: 14,
-        color: '#555',
+        fontFamily: 'NanumSquareB',
+        color: 'black',
         flex: 2, // 추가: 레이아웃 정리
     },
 });

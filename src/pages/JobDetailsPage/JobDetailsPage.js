@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import SaraminDetails from '../../components/ui/SaraminDetails';
 import SaraminCompanyDetails from '../../components/ui/SaraminCompanyDetails';
@@ -11,11 +12,16 @@ import JobKoreaCompanyDetails from '../../components/ui/JobKoreaCompanyDetails';
 import WantedDetails from '../../components/ui/WantedDetails';
 import JobPlanetDetails from '../../components/ui/JobPlanetDetails';
 
+import Saramin_logo from '../../assets/images/saramin_logo.png';
+import Success from '../../assets/images/success_icon.svg';
+import Back from '../../assets/images/back_icon.svg';
+
 const JobDetailsPage = ({ route }) => {
     const { url } = route.params;
     const [jobDetails, setJobDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [platform, setPlatform] = useState('');
+    const navigation = useNavigation();
 
     useEffect(() => {
         const fetchJobDetails = async () => {
@@ -58,48 +64,60 @@ const JobDetailsPage = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={addToCalendar} style={styles.calendarButton}>
-                <Text style={styles.calendarButtonText}>해당 공고를 캘린더에 추가하기</Text>
-            </TouchableOpacity>
+            
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {jobDetails ? (
                     <>
                         {platform === 'saramin' && (
                             <>
-                                <Text style={styles.title}>채용 정보</Text>
+                                <TouchableOpacity style={styles.backbutton} onPress={() => navigation.navigate('URLInputPage')}>
+                                    <Text style={styles.backText}>다시 입력하기</Text>
+                                    <Back width={18} height={18} style={styles.backIcon} />
+                                </TouchableOpacity>
+                                <View style={styles.header}>
+                                    <Success width={60} height={60} style={styles.success}/>
+                                    <Image style={styles.saramin_logo} source={Saramin_logo} />
+                                    <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                </View>
+                                <View style={styles.item}>
+                                    <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
+                                    <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
+                                        <Text Text style={styles.buttonText}>+</Text>
+                                    </TouchableOpacity>
+                                </View>
                                 <SaraminDetails jobDetails={jobDetails} />
                                 <SaraminCompanyDetails jobDetails={jobDetails} />
                             </>
                         )}
                         {platform === 'worknetV1' && (
                             <>
-                                <Text style={styles.title}>채용 정보</Text>
+                                <Text style={styles.title}>취업공고를 불러왔어요!</Text>
                                 <WorkNetDetails jobDetails={jobDetails} />
                                 <WorkNetCompanyDetails jobDetails={jobDetails} />
                             </>
                         )}
                         {platform === 'worknetV2' && (
                             <>
-                                <Text style={styles.title}>회사 정보</Text>
+                                <Text style={styles.title}>취업공고를 불러왔어요!</Text>
                                 <WorkNetDetailsV2 jobDetails={jobDetails} />
                             </>
                         )}
                         {platform === 'jobkorea' && (
                             <>
-                                <Text style={styles.title}>채용 정보</Text>
+                                <Text style={styles.title}>취업공고를 불러왔어요!</Text>
                                 <JobKoreaDetails jobDetails={jobDetails} />
                                 <JobKoreaCompanyDetails jobDetails={jobDetails} />
                             </>
                         )}
                         {platform === 'wanted' && (
                             <>
-                                <Text style={styles.title}>채용 정보</Text>
+                                <Text style={styles.title}>취업공고를 불러왔어요!</Text>
                                 <WantedDetails jobDetails={jobDetails} />
                             </>
                         )}
                         {platform === 'jobplanet' && (
                             <>
-                                <Text style={styles.title}>채용 정보</Text>
+                                <Text style={styles.title}>취업공고를 불러왔어요!</Text>
                                 <JobPlanetDetails jobDetails={jobDetails} />
                             </>
                         )}
@@ -115,11 +133,12 @@ const JobDetailsPage = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'white',
     },
     scrollContainer: {
         flexGrow: 1,
         padding: 20,
-        backgroundColor: '#f0f0f0',
+        backgroundColor: 'white',
     },
     loaderContainer: {
         flex: 1,
@@ -128,21 +147,64 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 24,
-        fontWeight: 'bold',
+        fontFamily: 'NanumSquareEB',
+        color: 'black',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    backbutton: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginBottom: 20,
     },
-    calendarButton: {
-        backgroundColor: '#0077B6',
-        padding: 15,
+    backText: {
+        fontSize: 14,
+        fontFamily: 'NanumSquareEB',
+        color: '#06A4FD',
+        marginRight: 4,
+    },
+    backIcon: {
+        marginRight: 10,
+    },
+    header: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#e1e1e1',
+        marginBottom: 20,
     },
-    calendarButtonText: {
-        fontSize: 16,
+    success: {
+        marginBottom: 4,
+    },
+    
+    saramin_logo: {
+        width: 120,
+        height: 26,
+        resizeMode: 'contain',
+        marginBottom: 2,
+    },
+
+    item: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 20,
+    },
+    addText: {
+        fontSize: 18,
+        fontFamily: 'NanumSquareEB',
+        color: '#06A4FD',
+        marginRight: 10,
+    },
+    addbutton: {
+        backgroundColor: '#06A4FD', 
+        borderRadius: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 1,
+    },
+    buttonText: {
+        textAlign: 'center',
         color: '#fff',
-        fontWeight: 'bold',
+        fontSize: 20,
+        lineHeight: 30,
     },
 });
 

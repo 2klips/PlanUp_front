@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 40,
-    fontFamily: 'NanumSquareR',
+    fontFamily: 'NanumSquareBR',
     paddingLeft: 10, 
   },
   button: {
@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   infoIcon: {
-    marginRight : 10,
     marginTop : 16,
     marginBottom : 0
 

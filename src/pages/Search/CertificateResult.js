@@ -4,6 +4,9 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, FlatList } 
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import License from '../../assets/images/license_icon.svg';
+import HRDK_text from '../../assets/images/HRDK_text_logo.png';
+import Zoom from '../../assets/images/zoom_icon.svg';
 
 const CertificateResult = ({ route }) => {
   const { certificates } = route.params;
@@ -63,6 +66,7 @@ const CertificateResult = ({ route }) => {
     return (
       <View style={styles.card}>
         <Text style={styles.title}>{item.job_name}</Text>
+        <Image source={HRDK_text} style={styles.hrdk} />
         <View style={styles.scheduleContainer}>
           {item.schedules.map((schedule, index) => {
             const 필기시험년도 = schedule.필기시험시작일자.slice(0, 4);
@@ -74,34 +78,43 @@ const CertificateResult = ({ route }) => {
               <React.Fragment key={index}>
                 {dDay필기 >= 0 && (
                   <View style={styles.examBox_1}>
-                    <Text style={styles.examTitle}>{필기시험년도}년 {item.job_name} {index + 1}회 필기</Text>
+                      <View style={styles.titleContainer}>
+                      <Text style={styles.examTitle}>{필기시험년도}년 {item.job_name} {index + 1}회 필기</Text>
+                      <TouchableOpacity style={styles.addButton}>
+                        <Text style={styles.addButtonText}>+</Text>
+                      </TouchableOpacity>
+                    </View>
                     {/* YYYY-MM-DD 바꿈 */}
                     <Text style={styles.scheduleText}>원서접수: {formatDateString(schedule.필기시험원서접수시작일자)} ~ {formatDateString(schedule.필기시험원서접수종료일자)}</Text>
                     <Text style={styles.scheduleText1}>합격 발표: {formatDateString(schedule.필기시험합격발표일자)}</Text>
-                    <View style={styles.dDayContainer}>
-                      <Text style={styles.dDay}>D-{dDay필기}</Text>
-                      {/* 시험 시작 날짜 추가 */}
-                      <Text style={styles.examStartDate}>{formatDateString(schedule.필기시험시작일자)}</Text>
+                    <View style={styles.dDayWrapper}>
+                      <View style={styles.dDayContainer}>
+                        <Text style={styles.dDay}>D-{dDay필기}</Text>
+                        {/* 시험 시작 날짜 추가 */}
+                        <Text style={styles.examStartDate}>{formatDateString(schedule.필기시험시작일자)}</Text>
+                      </View>
                     </View>
-                    <TouchableOpacity style={styles.addButton}>
-                      <Text style={styles.addButtonText}>+</Text>
-                    </TouchableOpacity>
                   </View>
                 )}
                 {dDay실기 >= 0 && (
                   <View style={styles.examBox_2}>
-                    <Text style={styles.examTitle}>{실기시험년도}년 {item.job_name} {index + 1}회 실기</Text>
+                      <View style={styles.titleContainer}>
+                      <Text style={styles.examTitle}>{실기시험년도}년 {item.job_name} {index + 1}회 실기</Text>
+                      <TouchableOpacity style={styles.addButton}>
+                        <Text style={styles.addButtonText}>+</Text>
+                      </TouchableOpacity>
+                    </View>
                     {/* YYYY-MM-DD 바꿈 */}
                     <Text style={styles.scheduleText}>원서접수: {formatDateString(schedule.실기시험원서접수시작일자)} ~ {formatDateString(schedule.실기시험원서접수종료일자)}</Text>
                     <Text style={styles.scheduleText1}>합격 발표: {formatDateString(schedule.합격자발표시작일자)}</Text>
-                    <View style={styles.dDayContainer}>
-                      <Text style={styles.dDay}>D-{dDay실기}</Text>
-                      {/* 시험 시작 날짜 추가 */}
-                      <Text style={styles.examStartDate}>{formatDateString(schedule.실기시험시작일자)}</Text>
+                    <View style={styles.dDayWrapper}>
+                      <View style={styles.dDayContainer}>
+                        <Text style={styles.dDay}>D-{dDay실기}</Text>
+                        {/* 시험 시작 날짜 추가 */}
+                        <Text style={styles.examStartDate}>{formatDateString(schedule.실기시험시작일자)}</Text>
+                      </View>
                     </View>
-                    <TouchableOpacity style={styles.addButton}>
-                      <Text style={styles.addButtonText}>+</Text>
-                    </TouchableOpacity>
+
                   </View>
                 )}
               </React.Fragment>
@@ -124,20 +137,26 @@ const CertificateResult = ({ route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={require('../../assets/images/wanted_logo.png')} style={styles.headerIcon} />
+        <License width={40} style={styles.headerIcon}/> 
         <Text style={styles.headerText}>자격증시험추가</Text>
       </View>
       <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="자격증의 이름을 입력하세요."
-          value={jobName}
-          onChangeText={setJobName}
-          onSubmitEditing={handleSearch}
-        />
-        <TouchableOpacity style={styles.button} onPress={handleSearch}>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.input}
+            placeholder=" 자격증의 이름을 입력하세요."
+            placeholderTextColor={'#47BDFF'}
+            value={jobName}
+            onChangeText={setJobName}
+            onSubmitEditing={handleSearch}
+          />
+          <TouchableOpacity style={styles.zoom} onPress={handleSearch}>
+            <Zoom width={24} height={24} />
+          </TouchableOpacity>
+        </View>
+        {/* <TouchableOpacity style={styles.button} onPress={handleSearch}>
           <Text style={styles.buttonText}>검색하기</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {/* Display the count of valid schedules */}
       <Text style={styles.resultCount}>총 {validDDayCount}개의 시험 일정이 검색되었어요.</Text>
@@ -172,7 +191,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'NanumSquareEB',
+    color: 'black',
   },
   searchContainer: {
     width: '100%',
@@ -180,12 +200,25 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    width: '100%',
-    borderWidth: 1,
+    flex: 1,
+    height: 40,
+    fontFamily: 'NanumSquareBR',
+    paddingLeft: 10, 
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '92%',
+    borderWidth: 1.5,
     borderColor: '#47BDFF',
     borderRadius: 25,
-    padding: 10,
+    paddingLeft: 8,
     marginBottom: 10,
+    backgroundColor: '#fff',
+  },
+  zoom: {
+    position: 'absolute',
+    right: 16,
   },
   button: {
     backgroundColor: '#47BDFF',
@@ -206,8 +239,17 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 22,
+    color: 'black',
+    textAlign: 'center',
+    fontFamily: 'NanumSquareEB',
+    marginBottom: 0,
+  },
+  hrdk: {
+    width: 140,
+    height: 20,
+    alignSelf: 'center',
+    resizeMode: 'contain',
     marginBottom: 10,
   },
   scheduleContainer: {
@@ -218,8 +260,8 @@ const styles = StyleSheet.create({
   examBox_1: {
     backgroundColor: '#fff',
     padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
+    borderRadius: 20,
+    marginBottom: 20,
     position: 'relative',
     borderColor: '#06A4FD',
     borderWidth: 2,
@@ -228,12 +270,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 3,
+    
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
   examBox_2: {
     backgroundColor: '#fff',
     padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
+    borderRadius: 20,
+    marginBottom: 20,
     position: 'relative',
     borderColor: '#97E5FF',
     borderWidth: 2,
@@ -244,42 +292,53 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   examTitle: {
+    flex : 1,
     color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
+    fontSize: 20,
+    fontFamily: 'NanumSquareEB',
+    marginBottom: 6,
   },
   scheduleText: {
+    fontFamily: 'NanumSquareB',
     color: 'black',
-    fontSize: 14,
-    marginBottom: 5,
+    fontSize: 12,
+    marginBottom: 2,
   },
   scheduleText1: {
     color: '#06A4FD',
-    fontSize: 14,
-    marginBottom: 5,
+    fontFamily: 'NanumSquareB',
+    fontSize: 12,
+    marginBottom: 6,
   },
-  dDayContainer: { // 새로운 스타일 추가
+  dDayWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end', 
+    alignItems: 'center',
+  },
+  dDayContainer: { 
     flexDirection: 'column',
-    alignItems: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: -20,
   },
   dDay: {
-    fontSize: 24,
+    fontSize: 30,
     color: 'black',
-    fontWeight: 'bold',
+    fontFamily: 'NanumSquareEB',
   },
-  examStartDate: { // 새로운 스타일 추가
+  examStartDate: { 
     fontSize: 10,
+    fontFamily: 'NanumSquareB',
     color: 'black',
+    marginTop: -2,
   },
   addButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 0,
+    right: 0,
     backgroundColor: '#06A4FD',
     borderRadius: 2,
     width: 24,
-    height: 24,
+    height: 26,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -290,18 +349,21 @@ const styles = StyleSheet.create({
   },
   resultCount: {
     fontSize: 16,
-    color: "#47BDFF",
-    fontWeight: 'bold',
-    marginBottom: 10,
+    color: "#06A4FD",
+    fontFamily: 'NanumSquareEB',
+    marginBottom: 24,
+    textAlign: 'center',
   },
   footer: {
     marginTop: 20,
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 14,
+    fontSize: 12,
+    fontFamily: 'NanumSquareB',
     color: '#47BDFF',
     textAlign: 'center',
+    marginBottom: 4,
   },
 });
 
