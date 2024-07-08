@@ -6,6 +6,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import License from '../../assets/images/license_icon.svg';
 import HRDK_logo from '../../assets/images/HRDK_logo.png';
+import Zoom from '../../assets/images/zoom_icon.svg';
 
 const SearchCertificate = () => {
   const [jobName, setJobName] = useState('');
@@ -44,13 +45,19 @@ const SearchCertificate = () => {
         <Text style={styles.headerText}>자격증시험추가</Text>
       </View>
       <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="자격증의 이름을 입력하세요."
-          value={jobName}
-          onChangeText={setJobName}
-          onSubmitEditing={handleSearch} // 수정된 부분: Enter 키를 누르면 handleSearch 호출
-        />
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.input}
+            placeholder=" 자격증의 이름을 입력하세요."
+            placeholderTextColor={'#47BDFF'}
+            value={jobName}
+            onChangeText={setJobName}
+            onSubmitEditing={handleSearch}
+          />
+          <TouchableOpacity style={styles.zoom} onPress={handleSearch}>
+            <Zoom width={24} height={24} />
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity style={styles.button} onPress={handleSearch}>
           <Text style={styles.buttonText}>검색하기</Text>
         </TouchableOpacity>
@@ -76,7 +83,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#fff',
-    // alignItems: 'center',
   },
   header: {
     flexDirection: 'row',
@@ -84,16 +90,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginBottom: 16
   },
-
   headerIcon: {
     width: 24,
     height: 24,
     marginRight: 10,
-    marginTop: 5
+    marginTop: 0
   },
   headerText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily : 'NanumSquareEB',
     color : 'black',
   },
   searchContainer: {
@@ -101,43 +106,60 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  input: {
-    width: '100%',
-    borderWidth: 1,
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '92%',
+    borderWidth: 1.5,
     borderColor: '#47BDFF',
     borderRadius: 25,
-    padding: 10,
+    paddingLeft: 8,
     marginBottom: 10,
+    backgroundColor: '#fff',
+  },
+  zoom: {
+    position: 'absolute',
+    right: 16,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    fontFamily: 'NanumSquareR',
+    paddingLeft: 10, 
   },
   button: {
     backgroundColor: '#06A4FD',
     borderRadius: 18,
-    paddingVertical: 10,
-    paddingHorizontal: 35,
+    paddingVertical: 8,
+    paddingHorizontal: 32,
     alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 2,
   },
   infoContainer: {
     alignItems: 'center',
     marginBottom: 20,
   },
   infoIcon: {
-    marginRight : 10
+    marginRight : 10,
+    marginTop : 16,
+    marginBottom : 0
 
   },
   infoTitle: {
-    fontSize: 25,
-    fontWeight: 'bold',
+    fontSize: 30,
+    fontFamily : 'NanumSquareEB',
     color: 'black',
-    marginBottom: 10,
-    fontFamily : 'NanumSquareEB.ttf'
+    marginBottom: 6,
+
   },
   infoText: {
     fontSize: 16,
+    fontFamily : 'NanumSquareR',
     textAlign: 'center',
     color: 'black',
   },
@@ -145,25 +167,25 @@ const styles = StyleSheet.create({
     width: 120,
     height: 100,
     resizeMode: 'contain',
-    marginBottom: 10,
-    marginTop: 30
+    marginBottom: 6,
+    marginTop: 20
   },
   footer: {
     alignItems: 'center',
   },
   footerText: {
     fontSize: 14,
-    fontWeight : 'medium',
+    fontFamily : 'NanumSquareB',
     color: '#06A4FD',
     textAlign: 'center',
-    marginTop : -3
+    marginTop : 1
   },
   footerText2: {
     fontSize: 14,
-    fontWeight : 'medium',
+    fontFamily : 'NanumSquareB',
     color: '#06A4FD',
     textAlign: 'center',
-    marginTop : 5
+    marginTop : 10
   },
 });
 

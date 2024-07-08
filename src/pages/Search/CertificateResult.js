@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   card: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: 'white',
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,

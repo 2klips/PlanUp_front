@@ -20,6 +20,7 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import VirtualizedView from '../../utils/VirutalizedList';
+import Logo from '../../assets/images/logo.svg'
 
 function MainPage() {
     const { user } = useAuth();
@@ -72,18 +73,12 @@ function MainPage() {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }}>
             <VirtualizedView>
                 <View style={styles.container}>
-                    <Image
-                        style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 10 }}
-                        source={{
-                            uri: 'https://reactnative.dev/docs/assets/p_cat2.png',
-                        }}
-                    />
+                    <Logo width={60} height={100} style={styles.logo} />
                     <Text style={styles.title}>{user.name}님 안녕하세요!</Text>
-                    <Text style={{ marginBottom: 10 }}>오늘도 새로운 회사가 {user.name}님을 필요로 해요!</Text>
-                    <Card title="새로운 공고" text="작성한 이력서에 맞게 추천 해드려요" num="6" style={{ borderRadius: 30, marginBottom: 5 }} />
+                    <Text style={styles.welcome}>목표를 꼭 이루시길 바래요!</Text>
                     <AddURL navigation={navigation} />
                     <URLonly navigation={navigation} />    
                     {isTodoList ? (
@@ -112,10 +107,21 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: 20,
     },
+    logo: {
+        alignSelf: 'center',
+    },
     title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 5,
+        fontSize: 26,
+        fontFamily : 'NanumSquareEB',
+        color: 'black',
+        marginBottom: 3,
+    },
+    welcome: {
+        fontSize: 16,
+        fontFamily : 'NanumSquareR',
+        color: 'black',
+        marginBottom: 10,
+        marginLeft: 3,
     },
     button: {
         backgroundColor: '#4CAF50',
