@@ -14,6 +14,7 @@ import WantedDetails from '../../components/ui/WantedDetails';
 
 const URLInputPage = ({ navigation }) => {
     const [inputUrl, setInputUrl] = useState('');
+    const [displayText, setDisplayText] = useState('');
     const [jobDetails, setJobDetails] = useState(null);
     const [platform, setPlatform] = useState('');
     const isFocused = useIsFocused();
@@ -21,6 +22,7 @@ const URLInputPage = ({ navigation }) => {
     useEffect(() => {
         if (!isFocused) {
             setInputUrl('');
+            setDisplayText('');
         }
     }, [isFocused]);
 
@@ -51,6 +53,11 @@ const URLInputPage = ({ navigation }) => {
         }
     };
 
+    const handleTextChange = (text) => {
+        setInputUrl(text);
+        setDisplayText(text.length > 40 ? text.substring(0, 40) + '...' : text);
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -62,9 +69,9 @@ const URLInputPage = ({ navigation }) => {
                         style={styles.input}
                         placeholder="취업 공고 페이지의 URL주소를 복사하세요."
                         placeholderTextColor={'#47BDFF'}
-                        value={inputUrl}
-                        onChangeText={setInputUrl}
-                        maxLength={40}
+                        value={displayText}
+                        onChangeText={handleTextChange}
+                
                     />
                     <TouchableOpacity style={styles.copy} onPress={handleUrlSubmit}>
                         <Copy width={24} height={24} />
