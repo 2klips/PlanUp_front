@@ -55,7 +55,7 @@ const URLInputPage = ({ navigation }) => {
 
     const handleTextChange = (text) => {
         setInputUrl(text);
-        setDisplayText(text.length > 40 ? text.substring(0, 40) + '...' : text);
+        setDisplayText(text.length > 39 ? text.substring(0, 39) + '..' : text);
     };
 
     return (

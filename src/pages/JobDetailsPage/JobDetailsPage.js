@@ -13,6 +13,7 @@ import WantedDetails from '../../components/ui/WantedDetails';
 import JobPlanetDetails from '../../components/ui/JobPlanetDetails';
 
 import Saramin_logo from '../../assets/images/saramin_logo.png';
+import Jobkorea_logo from '../../assets/images/jobkorea_logo.png';
 import Success from '../../assets/images/success_icon.svg';
 import Back from '../../assets/images/back_icon.svg';
 
@@ -104,7 +105,21 @@ const JobDetailsPage = ({ route }) => {
                         )}
                         {platform === 'jobkorea' && (
                             <>
-                                <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                <TouchableOpacity style={styles.backbutton} onPress={() => navigation.navigate('URLInputPage')}>
+                                    <Text style={styles.backText}>다시 입력하기</Text>
+                                    <Back width={18} height={18} style={styles.backIcon} />
+                                </TouchableOpacity>
+                                <View style={styles.header}>
+                                    <Success width={60} height={60} style={styles.success}/>
+                                    <Image style={styles.jobkorea_logo} source={Jobkorea_logo} />
+                                    <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                </View>
+                                <View style={styles.item}>
+                                    <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
+                                    <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
+                                        <Text Text style={styles.buttonText}>+</Text>
+                                    </TouchableOpacity>
+                                </View>
                                 <JobKoreaDetails jobDetails={jobDetails} />
                                 <JobKoreaCompanyDetails jobDetails={jobDetails} />
                             </>
@@ -178,6 +193,12 @@ const styles = StyleSheet.create({
     saramin_logo: {
         width: 120,
         height: 26,
+        resizeMode: 'contain',
+        marginBottom: 2,
+    },
+    jobkorea_logo: {
+        width: 140,
+        height: 40,
         resizeMode: 'contain',
         marginBottom: 2,
     },

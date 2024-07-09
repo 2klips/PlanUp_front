@@ -40,11 +40,8 @@ const SaraminDetails = ({ jobDetails }) => {
                 <View style={styles.details}>
                     <DetailRow label="경력 조건" value={jobDetails.경력} />
                     <DetailRow label="학력" value={jobDetails.학력} />
-                    {/* <DetailRow label="급여" value={jobDetails.급여} /> */}
-                    {/* <DetailRow label="근무 시간" value={jobDetails.근무시간} /> */}
                     <DetailRow label="근무지역" value={jobDetails.근무지역} />
                     <DetailRow label="근무형태" value={jobDetails.근무형태} />
-                    {/* <DetailRow label="근무일시" value={jobDetails.근무일시} /> */}
                 </View>
                 <Text style={styles.date}>{closingDateText}</Text>
                 <Text style={styles.closingDate}>{jobDetails.마감일}</Text>
@@ -119,7 +116,7 @@ const styles = StyleSheet.create({
         marginTop: -4,
     },
     logo: {
-        width: 300,
+        width: 200,
         height: 100,
         resizeMode: 'contain',
         alignSelf: 'center',
