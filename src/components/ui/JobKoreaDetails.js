@@ -27,7 +27,6 @@ const JobKoreaDetails = ({ jobDetails }) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.cardContainer}>
                 <View style={styles.card}>
                     <View style={styles.header}>
                         <Image style={styles.jobkorea_logo} source={Jobkorea_logo} />
@@ -42,6 +41,8 @@ const JobKoreaDetails = ({ jobDetails }) => {
                     <DetailRow label="학력" value={jobDetails.학력} />
                     <DetailRow label="고용형태" value={jobDetails.고용형태} />
                     <DetailRow label="지역" value={jobDetails.지역} />
+                    <Text style={styles.date}>{closingDateText}</Text>
+                    <Text style={styles.closingDate}>{jobDetails.마감일}</Text>
                     <View style={styles.footer}>
                         <Text style={styles.footerText}>접수 시작일: {jobDetails.접수시작일 || '수시채용'}</Text>
                         <Text style={styles.footerText}>접수 마감일: {jobDetails.마감일 || '수시채용'}</Text>
@@ -58,7 +59,6 @@ const JobKoreaDetails = ({ jobDetails }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
         </ScrollView>
     );
 };
@@ -67,20 +67,28 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        backgroundColor: 'white',
-    },
-    cardContainer: {
-        borderTopWidth: 4,
-        borderBottomWidth: 4,
-        borderTopColor: '#ff7e5f', // 첫 번째 색상
-        borderBottomColor: '#feb47b', // 두 번째 색상
         borderRadius: 30,
-        overflow: 'hidden',
+        backgroundColor : 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 3,
+        marginBottom: 20
+        
     },
     card: {
-        backgroundColor: '#fff',
         borderRadius: 26,
         padding: 16,
+        borderTopWidth: 3,
+        borderLeftWidth: 3,
+        borderRightWidth: 3,
+        borderBottomWidth: 3,
+        borderTopColor: '#111AFF', // 첫 번째 색상
+        borderLeftColor : '#111AFF',
+        borderRightColor: '#B8FF00', // 세 번째 색상
+        borderBottomColor: '#B8FF00', // 두 번째 색상
+        borderRadius: 30,
     },
     header: {
         marginBottom: 16,
@@ -107,11 +115,23 @@ const styles = StyleSheet.create({
         marginTop: -4,
     },
     logo: {
-        width: 200,
-        height: 100,
+        width: 240,
+        height: 140,
         resizeMode: 'contain',
         alignSelf: 'center',
         marginBottom: 0,
+    },
+    date: {
+        fontSize: 30,
+        fontFamily: 'NanumSquareEB',
+        color: 'black',
+        textAlign: 'center',
+        marginVertical: 16,
+    },
+    closingDate: {
+        fontSize: 14,
+        color: '#555',
+        textAlign: 'center',
     },
     footer: {
         borderTopWidth: 1,
