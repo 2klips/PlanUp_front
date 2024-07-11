@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
@@ -18,6 +18,12 @@ const URLInputPage = ({ navigation }) => {
     const [jobDetails, setJobDetails] = useState(null);
     const [platform, setPlatform] = useState('');
     const isFocused = useIsFocused();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerShown: false,
+        });
+    }, [navigation]);
 
     useEffect(() => {
         if (!isFocused) {

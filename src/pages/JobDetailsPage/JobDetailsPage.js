@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { View, StyleSheet, ScrollView, Text, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
@@ -6,6 +6,7 @@ import SaraminDetails from '../../components/ui/SaraminDetails';
 import SaraminCompanyDetails from '../../components/ui/SaraminCompanyDetails';
 import WorkNetDetails from '../../components/ui/WorkNetDetails';
 import WorkNetCompanyDetails from '../../components/ui/WorkNetCompanyDetails';
+import WorkNetCompanyDetailsV2 from '../../components/ui/WorkNetCompanyDetailsV2';
 import WorkNetDetailsV2 from '../../components/ui/WorkNetDetailsV2';
 import JobKoreaDetails from '../../components/ui/JobKoreaDetails';
 import JobKoreaCompanyDetails from '../../components/ui/JobKoreaCompanyDetails';
@@ -15,6 +16,8 @@ import JobPlanetDetails from '../../components/ui/JobPlanetDetails';
 import Saramin_logo from '../../assets/images/saramin_logo.png';
 import Jobkorea_logo from '../../assets/images/jobkorea_logo.png';
 import Jobplanet_logo from '../../assets/images/jobplanet_logo.png';
+import Worknet_logo from '../../assets/images/worknet_logo.png';
+import Wanted_logo from '../../assets/images/wanted_logo.png';
 import Success from '../../assets/images/success_icon.svg';
 import Back from '../../assets/images/back_icon.svg';
 
@@ -24,6 +27,12 @@ const JobDetailsPage = ({ route }) => {
     const [loading, setLoading] = useState(true);
     const [platform, setPlatform] = useState('');
     const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerShown: false,
+        });
+    }, [navigation])
 
     useEffect(() => {
         const fetchJobDetails = async () => {
@@ -100,8 +109,23 @@ const JobDetailsPage = ({ route }) => {
                         )}
                         {platform === 'worknetV2' && (
                             <>
-                                <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                <TouchableOpacity style={styles.backbutton} onPress={() => navigation.navigate('URLInputPage')}>
+                                    <Text style={styles.backText}>다시 입력하기</Text>
+                                    <Back width={18} height={18} style={styles.backIcon} />
+                                </TouchableOpacity>
+                                <View style={styles.header}>
+                                    <Success width={60} height={60} style={styles.success}/>
+                                    <Image style={styles.worknet_logo} source={Worknet_logo} />
+                                    <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                </View>
+                                <View style={styles.item}>
+                                    <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
+                                    <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
+                                        <Text Text style={styles.buttonText}>+</Text>
+                                    </TouchableOpacity>
+                                </View>
                                 <WorkNetDetailsV2 jobDetails={jobDetails} />
+                                <WorkNetCompanyDetailsV2 jobDetails={jobDetails} />
                             </>
                         )}
                         {platform === 'jobkorea' && (
@@ -127,7 +151,21 @@ const JobDetailsPage = ({ route }) => {
                         )}
                         {platform === 'wanted' && (
                             <>
-                                <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                <TouchableOpacity style={styles.backbutton} onPress={() => navigation.navigate('URLInputPage')}>
+                                    <Text style={styles.backText}>다시 입력하기</Text>
+                                    <Back width={18} height={18} style={styles.backIcon} />
+                                </TouchableOpacity>
+                                <View style={styles.header}>
+                                    <Success width={60} height={60} style={styles.success}/>
+                                    <Image style={styles.jobplanet_logo} source={Wanted_logo} />
+                                    <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                </View>
+                                <View style={styles.item}>
+                                    <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
+                                    <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
+                                        <Text Text style={styles.buttonText}>+</Text>
+                                    </TouchableOpacity>
+                                </View>
                                 <WantedDetails jobDetails={jobDetails} />
                             </>
                         )}
@@ -222,6 +260,18 @@ const styles = StyleSheet.create({
         height: 40,
         resizeMode: 'contain',
         marginBottom: 2,
+    },
+    worknet_logo: {
+        width: 140,
+        height: 40,
+        resizeMode: 'contain',
+        marginBottom: 4,
+    },
+    wanted_logo: {
+        width: 140,
+        height: 40,
+        resizeMode: 'contain',
+        marginBottom: 4,
     },
 
     item: {

@@ -1,5 +1,5 @@
 // CertificateResult.js 
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -12,6 +12,12 @@ const CertificateResult = ({ route }) => {
   const { certificates } = route.params;
   const [jobName, setJobName] = useState('');
   const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+        headerShown: false,
+    });
+  }, [navigation]);
 
   const calculateDDay = (examDate) => {
     if (!examDate) return 'N/A';
