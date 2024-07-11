@@ -127,6 +127,7 @@ const TodolistDetail = ({ route, navigation }) => {
       text2: '수정을 원하시면 수정 버튼을 눌러주세요.',
       visibilityTime: 3000,
     });}  
+
   const handleSave = async () => {
     if (title.trim() === '' || text.trim() === '') {
       Alert.alert('Error', 'Please fill out all fields');
@@ -150,6 +151,7 @@ const TodolistDetail = ({ route, navigation }) => {
         Alert.alert('성공', '일정 수정 성공');
         const todoId = response.data._id
         await saveChecklistItems(todoId);
+        await updateExistingChecklistItems();
         setIsDeleting(true);
       } else {
         Alert.alert('Error', 'Failed to add todo');
@@ -202,6 +204,36 @@ const TodolistDetail = ({ route, navigation }) => {
     }
   };
 
+
+  const updateExistingChecklistItems = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      for (const item of checklists) {
+        if (!newChecklist.includes(item)) { // 기존 체크리스트 항목만 업데이트
+          const response = await axios.put('http://10.0.2.2:8080/checklist/update', {
+            id: item.id,
+            color: item.color,
+            examDate: selectedDate,
+            completed: item.completed,
+            list: item.text
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+
+          if (response.status !== 200) {
+            Alert.alert('Error', 'Failed to update checklist item');
+            return;
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'An error occurred while updating the checklist item');
+    }
+  };
+
     const handleToggleCheckbox = async (id, newValue) => {
     try {
         const token = await AsyncStorage.getItem('token');
@@ -248,8 +280,8 @@ const TodolistDetail = ({ route, navigation }) => {
       );
     }
 
-  return (
-    <ScrollView>
+  return (        
+  <ScrollView>
       <View style={styles.container}>
         <CustomCalendar
             style={styles.calendar}
@@ -324,7 +356,7 @@ const TodolistDetail = ({ route, navigation }) => {
                 title={item.text}
                 date={item.date}
                 color={item.color}
-                isChecked={item.completed}
+                completed={item.completed}
                 onValueChange={(value) => handleToggleCheckbox(item.id, value)}
             />
             )}
