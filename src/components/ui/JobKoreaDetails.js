@@ -83,10 +83,10 @@ const styles = StyleSheet.create({
         borderLeftWidth: 3,
         borderRightWidth: 3,
         borderBottomWidth: 3,
-        borderTopColor: '#111AFF', // 첫 번째 색상
+        borderTopColor: '#111AFF', 
         borderLeftColor : '#111AFF',
-        borderRightColor: '#B8FF00', // 세 번째 색상
-        borderBottomColor: '#B8FF00', // 두 번째 색상
+        borderRightColor: '#B8FF00', 
+        borderBottomColor: '#B8FF00', 
         borderRadius: 30,
     },
     header: {

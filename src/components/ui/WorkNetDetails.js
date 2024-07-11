@@ -1,6 +1,9 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, Linking, TouchableOpacity } from 'react-native';
 import DetailRow from './DetailRow';
+import moment from 'moment';
+import Worknet_logo from '../../assets/images/worknet_logo.png';
+import Arrow from '../../assets/images/arrow_black.svg';
 
 const WorkNetDetails = ({ jobDetails }) => {
     return (

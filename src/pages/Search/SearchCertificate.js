@@ -1,5 +1,5 @@
 // SearchCertificate.js
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -11,6 +11,12 @@ import Zoom from '../../assets/images/zoom_icon.svg';
 const SearchCertificate = () => {
   const [jobName, setJobName] = useState('');
   const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+        headerShown: false,
+    });
+  }, [navigation]);
 
   const handleSearch = async () => {
     try {
