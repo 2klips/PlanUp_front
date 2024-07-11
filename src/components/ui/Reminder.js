@@ -59,10 +59,11 @@ const Reminder = () => {
                 <View style={styles.itemLeft}>
                     <View>
                         {sameDayCount > 1 && (
-                            <Text style={styles.sameDayCountText}>같은 D-Day 일정 {sameDayCount}개</Text>
+                            <Text style={styles.sameDayCountText}>같은 D-Day 일정이 {sameDayCount}개 있어요.</Text>
                         )}
-                        <Text style={styles.examDate}>{examDate}</Text>
                         <Text style={styles.title}>{nextTodo.title}</Text>
+                        <Text style={styles.examDate}>{examDate}</Text>
+                        
                    
                     </View>
                 </View>
@@ -74,32 +75,38 @@ const Reminder = () => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 15,
+        padding: 16,
         borderWidth: 3,
-        borderRadius: 30,
+        borderRadius: 32,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: '#fff',
         margin: 10,
+        height: 80,
     },
     itemLeft: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginLeft: 6,
     },
     title: {
         fontSize: 20,
         color: 'black',
-        fontWeight: 'bold',
+        fontFamily: 'NanumSquareEB',
         marginRight: 10,
+        marginTop: 0,
     },
     examDate: {
         fontSize: 10,
+        fontFamily: 'NanumSquareB',
         color: 'black',
+        marginTop: 0,
     },
     sameDayCountText: {
         fontSize: 12,
-        color: 'black',
+        color: '#06A4FD', 
+        fontFamily: 'NanumSquareEB',
     },
     daysLeft: {
         fontSize: 30,

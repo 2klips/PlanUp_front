@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { Calendar } from 'react-native-calendars';
@@ -37,6 +37,13 @@ const TodolistCreate = ({ route, navigation }) => {
   const [checklistItem, setChecklistItem] = useState('');
   const [isAddingChecklist, setIsAddingChecklist] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); 
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+        headerShown: false,
+    });
+}, [navigation]);
+
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -192,14 +199,14 @@ const handleSelectDate = (date) => {
           <Text style={styles.text1}>제목</Text>
           <TextInput
             style={styles.input}
-            placeholder="제목을 입력하세요"
+            placeholder="제목을 입력하세요."
             value={title}
             onChangeText={setTitle}
           />
           <Text style={styles.text1}>상세내용</Text> 
           <TextInput
             style={styles.input}
-            placeholder="상세내용을 입력하세요"
+            placeholder="상세내용을 입력하세요."
             value={text}
             onChangeText={setText}
             multiline
@@ -271,8 +278,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   colorCircle: {
-    width: 30,
-    height: 30,
+    width: 24,
+    height: 24,
     borderRadius: 15,
     borderWidth: 2,
   },
@@ -300,7 +307,9 @@ const styles = StyleSheet.create({
   eventDate: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
+    fontFamily: 'NanumSquareEB',
+    color: 'black',
+    marginBottom: 14,
   },
   checklistCount: {
     fontSize: 14,
@@ -308,8 +317,9 @@ const styles = StyleSheet.create({
   },
   text1: {
     color: '#C8C8C8',
-    fontWeight: 'bold',
+    fontFamily: 'NanumSquareEB',
     marginBottom: 5,
+    marginTop: 6,
   },
   input: {
     height: 'auto',
@@ -317,12 +327,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderRadius: 5,
     marginBottom: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
   },
+
   checklistContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
+    marginTop: 10,
   },
   addChecklistContainer: {
     flexDirection: 'row',
@@ -371,7 +383,9 @@ const styles = StyleSheet.create({
   style1:{
     flexDirection:'row',
     alignItems:"center",
-    justifyContent:"center"
+    justifyContent:"center",
+    marginTop: 20,
+    marginBottom: 20,
   },
   addButton2: {
   backgroundColor: '#06A4FD',
@@ -387,13 +401,14 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: '#06A4FD',
-    padding: 5,
+    padding: 8,
     borderRadius: 5,
     alignItems: 'center',
     marginLeft: 8,
   },
   saveButtonText: {
     color: 'white',
+    fontFamily: 'NanumSquareB',
     fontSize: 16,
   },
   disabledButton: {

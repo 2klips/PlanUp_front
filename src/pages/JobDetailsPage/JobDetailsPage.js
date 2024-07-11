@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react';
-import { View, StyleSheet, ScrollView, Text, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, ActivityIndicator, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import SaraminDetails from '../../components/ui/SaraminDetails';
@@ -32,7 +32,7 @@ const JobDetailsPage = ({ route }) => {
         navigation.setOptions({
             headerShown: false,
         });
-    }, [navigation])
+    }, [navigation]);
 
     useEffect(() => {
         const fetchJobDetails = async () => {
@@ -61,8 +61,8 @@ const JobDetailsPage = ({ route }) => {
     }, [url]);
 
     const addToCalendar = () => {
-        // 여기에 캘린더에 이벤트를 추가하는 로직을 구현하세요.
-        Alert.alert("캘린더에 추가", "해당 공고가 캘린더에 추가되었습니다.");
+        jobDetails.source = platform;
+        navigation.navigate('CalendarPage', { jobDetails });
     };
 
     if (loading) {
@@ -75,7 +75,9 @@ const JobDetailsPage = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            
+            <TouchableOpacity onPress={addToCalendar} style={styles.calendarButton}>
+                <Text style={styles.calendarButtonText}>해당 공고를 캘린더에 추가하기</Text>
+            </TouchableOpacity>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {jobDetails ? (
                     <>
@@ -86,14 +88,14 @@ const JobDetailsPage = ({ route }) => {
                                     <Back width={18} height={18} style={styles.backIcon} />
                                 </TouchableOpacity>
                                 <View style={styles.header}>
-                                    <Success width={60} height={60} style={styles.success}/>
+                                    <Success width={60} height={60} style={styles.success} />
                                     <Image style={styles.saramin_logo} source={Saramin_logo} />
                                     <Text style={styles.title}>취업공고를 불러왔어요!</Text>
                                 </View>
                                 <View style={styles.item}>
                                     <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
                                     <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
-                                        <Text Text style={styles.buttonText}>+</Text>
+                                        <Text style={styles.buttonText}>+</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <SaraminDetails jobDetails={jobDetails} />
@@ -102,7 +104,21 @@ const JobDetailsPage = ({ route }) => {
                         )}
                         {platform === 'worknetV1' && (
                             <>
-                                <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                <TouchableOpacity style={styles.backbutton} onPress={() => navigation.navigate('URLInputPage')}>
+                                    <Text style={styles.backText}>다시 입력하기</Text>
+                                    <Back width={18} height={18} style={styles.backIcon} />
+                                </TouchableOpacity>
+                                <View style={styles.header}>
+                                    <Success width={60} height={60} style={styles.success} />
+                                    <Image style={styles.worknet_logo} source={Worknet_logo} />
+                                    <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                </View>
+                                <View style={styles.item}>
+                                    <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
+                                    <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
+                                        <Text style={styles.buttonText}>+</Text>
+                                    </TouchableOpacity>
+                                </View>
                                 <WorkNetDetails jobDetails={jobDetails} />
                                 <WorkNetCompanyDetails jobDetails={jobDetails} />
                             </>
@@ -114,14 +130,14 @@ const JobDetailsPage = ({ route }) => {
                                     <Back width={18} height={18} style={styles.backIcon} />
                                 </TouchableOpacity>
                                 <View style={styles.header}>
-                                    <Success width={60} height={60} style={styles.success}/>
+                                    <Success width={60} height={60} style={styles.success} />
                                     <Image style={styles.worknet_logo} source={Worknet_logo} />
                                     <Text style={styles.title}>취업공고를 불러왔어요!</Text>
                                 </View>
                                 <View style={styles.item}>
                                     <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
                                     <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
-                                        <Text Text style={styles.buttonText}>+</Text>
+                                        <Text style={styles.buttonText}>+</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <WorkNetDetailsV2 jobDetails={jobDetails} />
@@ -135,14 +151,14 @@ const JobDetailsPage = ({ route }) => {
                                     <Back width={18} height={18} style={styles.backIcon} />
                                 </TouchableOpacity>
                                 <View style={styles.header}>
-                                    <Success width={60} height={60} style={styles.success}/>
+                                    <Success width={60} height={60} style={styles.success} />
                                     <Image style={styles.jobkorea_logo} source={Jobkorea_logo} />
                                     <Text style={styles.title}>취업공고를 불러왔어요!</Text>
                                 </View>
                                 <View style={styles.item}>
                                     <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
                                     <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
-                                        <Text Text style={styles.buttonText}>+</Text>
+                                        <Text style={styles.buttonText}>+</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <JobKoreaDetails jobDetails={jobDetails} />
@@ -156,14 +172,14 @@ const JobDetailsPage = ({ route }) => {
                                     <Back width={18} height={18} style={styles.backIcon} />
                                 </TouchableOpacity>
                                 <View style={styles.header}>
-                                    <Success width={60} height={60} style={styles.success}/>
-                                    <Image style={styles.jobplanet_logo} source={Wanted_logo} />
+                                    <Success width={60} height={60} style={styles.success} />
+                                    <Image style={styles.wanted_logo} source={Wanted_logo} />
                                     <Text style={styles.title}>취업공고를 불러왔어요!</Text>
                                 </View>
                                 <View style={styles.item}>
                                     <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
                                     <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
-                                        <Text Text style={styles.buttonText}>+</Text>
+                                        <Text style={styles.buttonText}>+</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <WantedDetails jobDetails={jobDetails} />
@@ -176,14 +192,14 @@ const JobDetailsPage = ({ route }) => {
                                     <Back width={18} height={18} style={styles.backIcon} />
                                 </TouchableOpacity>
                                 <View style={styles.header}>
-                                    <Success width={60} height={60} style={styles.success}/>
+                                    <Success width={60} height={60} style={styles.success} />
                                     <Image style={styles.jobplanet_logo} source={Jobplanet_logo} />
                                     <Text style={styles.title}>취업공고를 불러왔어요!</Text>
                                 </View>
                                 <View style={styles.item}>
                                     <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
                                     <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
-                                        <Text Text style={styles.buttonText}>+</Text>
+                                        <Text style={styles.buttonText}>+</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <JobPlanetDetails jobDetails={jobDetails} />
@@ -242,7 +258,6 @@ const styles = StyleSheet.create({
     success: {
         marginBottom: 4,
     },
-    
     saramin_logo: {
         width: 120,
         height: 26,
@@ -273,7 +288,6 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         marginBottom: 4,
     },
-
     item: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -297,6 +311,19 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 20,
         lineHeight: 30,
+    },
+    calendarButton: {
+        backgroundColor: '#0077B6',
+        padding: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#e1e1e1',
+    },
+    calendarButtonText: {
+        fontSize: 16,
+        color: '#fff',
+        fontWeight: 'bold',
     },
 });
 

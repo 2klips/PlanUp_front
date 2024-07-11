@@ -1,17 +1,16 @@
 import React from 'react';
 import { FlatList } from 'react-native';
 
-const VirtualizedView = (props) => {
+export default function VirtualizedView(props) {
   return (
     <FlatList
       data={[]}
       ListEmptyComponent={null}
       keyExtractor={() => "dummy"}
       renderItem={null}
-      ListHeaderComponent={() => <>{props.children}</>}
-      {...props}
+      ListHeaderComponent={() => (
+        <React.Fragment>{props.children}</React.Fragment>
+      )}
     />
   );
-};
-
-export default VirtualizedView;
+}

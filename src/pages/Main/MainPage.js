@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Image,
     SafeAreaView,
@@ -22,7 +22,6 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import VirtualizedView from '../../utils/VirutalizedList';
 import Logo from '../../assets/images/logo.svg'
-import { AppState } from 'react-native';
 
 function MainPage() {
     const { user } = useAuth();
@@ -31,25 +30,6 @@ function MainPage() {
     const [isTodoList, setIsTodoList] = useState(false);
     const isFocused = useIsFocused();
     const navigation = useNavigation();
-    const appState = useRef(AppState.currentState);
-    
-      useEffect(() => {
-        const handleAppStateChange = (nextAppState) => {
-            if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-                console.log('앱이 포그라운드로 전환됩니다!');
-            } else if (appState.current === 'active' && nextAppState.match(/inactive|background/)) {
-                console.log('앱이 백그라운드로 전환됩니다!');
-            }
-            appState.current = nextAppState;
-            console.log('AppState', appState.current);
-        };
-
-        AppState.addEventListener('change', handleAppStateChange);
-
-        return () => {
-            AppState.removeEventListener('change', handleAppStateChange);
-        };
-    }, []);
 
     useEffect(() => {
         const fetchChecklist = async () => {
