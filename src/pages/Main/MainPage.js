@@ -16,6 +16,7 @@ import CalendarOnly from '../../components/ui/CalendarOnly';
 import Checklist from '../../components/ui/Checklist';
 import AddURL from '../../components/ui/AddURL';
 import URLonly from '../../components/ui/URLonly';
+import Reminder from '../../components/ui/Reminder';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -79,8 +80,17 @@ function MainPage() {
                     <Logo width={60} height={100} style={styles.logo} />
                     <Text style={styles.title}>{user.name}님 안녕하세요!</Text>
                     <Text style={styles.welcome}>목표를 꼭 이루시길 바래요!</Text>
-                    <AddURL navigation={navigation} />
-                    <URLonly navigation={navigation} />    
+
+                    <Reminder />
+                    
+                    {/* <AddURL navigation={navigation} />
+                    <URLonly navigation={navigation} />   */}
+                    {isTodoList ? (
+                        <AddURL navigation={navigation} />
+                    ) : (
+                        <URLonly navigation={navigation} />
+                    )}  
+
                     {isTodoList ? (
                         <TodolistCalendar navigation={navigation} />
                     ) : (

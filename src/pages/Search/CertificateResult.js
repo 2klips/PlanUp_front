@@ -58,6 +58,14 @@ const CertificateResult = ({ route }) => {
     }
   };
 
+  // 수정된 handleAddPress 함수
+  const handleAddPress = (schedule, examType, jobName) => { // jobName 추가
+    navigation.navigate('TodolistCreate', {
+      examDate: examType === '필기' ? schedule.필기시험시작일자 : schedule.실기시험시작일자,
+      jobName // jobName 전달
+    });
+  };
+
   const renderItem = ({ item }) => {
     const hasValidDDay = item.schedules.some((schedule) => {
       const dDay필기 = calculateDDay(schedule.필기시험시작일자);
@@ -86,7 +94,8 @@ const CertificateResult = ({ route }) => {
                   <View style={styles.examBox_1}>
                       <View style={styles.titleContainer}>
                       <Text style={styles.examTitle}>{필기시험년도}년 {item.job_name} {index + 1}회 필기</Text>
-                      <TouchableOpacity style={styles.addButton}>
+                      {/* handleAddPress 함수에 jobName 추가 */}
+                      <TouchableOpacity style={styles.addButton} onPress={() => handleAddPress(schedule, '필기', item.job_name)}>
                         <Text style={styles.addButtonText}>+</Text>
                       </TouchableOpacity>
                     </View>
@@ -106,7 +115,8 @@ const CertificateResult = ({ route }) => {
                   <View style={styles.examBox_2}>
                       <View style={styles.titleContainer}>
                       <Text style={styles.examTitle}>{실기시험년도}년 {item.job_name} {index + 1}회 실기</Text>
-                      <TouchableOpacity style={styles.addButton}>
+                      {/* handleAddPress 함수에 jobName 추가 */}
+                      <TouchableOpacity style={styles.addButton} onPress={() => handleAddPress(schedule, '실기', item.job_name)}>
                         <Text style={styles.addButtonText}>+</Text>
                       </TouchableOpacity>
                     </View>
@@ -165,7 +175,7 @@ const CertificateResult = ({ route }) => {
         </TouchableOpacity> */}
       </View>
       {/* Display the count of valid schedules */}
-      <Text style={styles.resultCount}>총 {validDDayCount}개의 시험 일정이 검색되었어요.</Text>
+      <Text style={styles.resultCount}>총 {validDDayCount}개의 시험이 검색되었어요.</Text>
       <FlatList
         data={certificates}
         renderItem={renderItem}
