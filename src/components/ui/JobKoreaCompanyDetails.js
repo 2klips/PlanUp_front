@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Linking, TouchableOpacity, Image } from 'react-native';
+import moment from 'moment';
 import DetailRow from './DetailRow';
 import Arrow from '../../assets/images/arrow_black.svg';
 
@@ -13,7 +14,7 @@ const JobKoreaCompanyDetails = ({ jobDetails }) => {
             <View style={styles.card}>
                 <Text style={styles.sectionTitle}>기업정보</Text>
                 <Image style={styles.logo} source={{ uri: jobDetails.회사로고 }} />
-                <DetailRow label="산업(업종)" value={jobDetails.산업업종} />
+                <DetailRow label="업종" value={jobDetails.업종} />
                 <DetailRow label="사원수" value={jobDetails.사원수} />
                 <DetailRow label="설립년도" value={jobDetails.설립년도} />
                 <DetailRow label="기업형태" value={jobDetails.기업형태} />
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
         height: 100,
         resizeMode: 'contain',
         alignSelf: 'center',
-        marginBottom: 0,
+        marginBottom: 20,
     },
     sectionTitle: {
         fontSize: 16,

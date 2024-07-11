@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
+import moment from 'moment';
 import DetailRow from './DetailRow';
 import Jobkorea_logo from '../../assets/images/jobkorea_logo.png';
 import Arrow from '../../assets/images/arrow_black.svg';
@@ -18,11 +19,11 @@ const JobKoreaDetails = ({ jobDetails }) => {
     // D-day 계산
     const calculateDday = (endDate) => {
         const today = moment();
-        const end = moment(endDate, 'YYYY.MM.DD HH:mm');
+        const end = moment(endDate, 'YYYY.MM.DD');
         return end.diff(today, 'days');
     };
 
-    const dDay = jobDetails.마감일 ? calculateDday(jobDetails.마감일) : null;
+    const dDay = jobDetails.접수마감일 ? calculateDday(jobDetails.접수마감일) : null;
     const closingDateText = dDay !== null ? `D-${dDay}` : '수시채용';
 
     return (
@@ -35,17 +36,15 @@ const JobKoreaDetails = ({ jobDetails }) => {
                     <Text style={styles.title}>{jobDetails.제목}</Text>
                     <Image style={styles.logo} source={{ uri: jobDetails.회사로고 }} />
                     <DetailRow label="회사명" value={jobDetails.회사명} />
-                    {/* <DetailRow label="접수일" value={jobDetails.접수일} />
-                    <DetailRow label="마감일" value={jobDetails.마감일} /> */}
                     <DetailRow label="경력" value={jobDetails.경력} />
                     <DetailRow label="학력" value={jobDetails.학력} />
                     <DetailRow label="고용형태" value={jobDetails.고용형태} />
                     <DetailRow label="지역" value={jobDetails.지역} />
                     <Text style={styles.date}>{closingDateText}</Text>
-                    <Text style={styles.closingDate}>{jobDetails.마감일}</Text>
+                    <Text style={styles.closingDate}>{jobDetails.접수마감일}</Text>
                     <View style={styles.footer}>
                         <Text style={styles.footerText}>접수 시작일: {jobDetails.접수시작일 || '수시채용'}</Text>
-                        <Text style={styles.footerText}>접수 마감일: {jobDetails.마감일 || '수시채용'}</Text>
+                        <Text style={styles.footerText}>접수 마감일: {jobDetails.접수마감일 || '수시채용'}</Text>
                     </View>
                     <View style={styles.moveToSite}>
                         <TouchableOpacity onPress={handlePress}>
@@ -122,16 +121,18 @@ const styles = StyleSheet.create({
         marginBottom: 0,
     },
     date: {
-        fontSize: 30,
+        fontSize: 34,
         fontFamily: 'NanumSquareEB',
         color: 'black',
         textAlign: 'center',
-        marginVertical: 16,
+        marginTop: 12,
     },
     closingDate: {
         fontSize: 14,
         color: '#555',
         textAlign: 'center',
+        marginTop: -4,
+        marginBottom: 20,
     },
     footer: {
         borderTopWidth: 1,

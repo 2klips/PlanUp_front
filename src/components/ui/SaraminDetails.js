@@ -146,16 +146,18 @@ const styles = StyleSheet.create({
         flex: 2,  // 추가: 레이아웃 정리
     },
     date: {
-        fontSize: 30,
+        fontSize: 34,
         fontFamily: 'NanumSquareEB',
         color: 'black',
-        textAlign: 'right',
-        marginVertical: 16,
+        textAlign: 'center',
+        marginTop: 12,
     },
     closingDate: {
         fontSize: 14,
         color: '#555',
-        textAlign: 'right',
+        textAlign: 'center',
+        marginTop: -4,
+        marginBottom: 20,
     },
     footer: {
         borderTopWidth: 1,
