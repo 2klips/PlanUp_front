@@ -34,7 +34,7 @@ function MainPage() {
         const fetchChecklist = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const response = await axios.get('http://10.0.2.2:8080/checklist', {
+                const response = await axios.get('http://10.0.2.2:8080/checklist/userid', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -48,7 +48,7 @@ function MainPage() {
         const fetchTodos = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const response = await axios.get('http://10.0.2.2:8080/list', {
+                const response = await axios.get('http://10.0.2.2:8080/list/userid', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

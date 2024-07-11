@@ -54,7 +54,6 @@ const TodolistDetail = ({ route, navigation }) => {
     const [newChecklist, setNewChecklist] = useState([]);
     const marked = {};
     marked[selectedDate] = { selected: true, selectedColor: '#06A4FD' };
-    console.log("-------------Todo-------------",todo)
 
     useEffect(() => {
         setTitle(selectedTodo.title);
@@ -82,7 +81,6 @@ const TodolistDetail = ({ route, navigation }) => {
                   }
                 }
               );
-            console.log("-------------response data-------------",response.data)
           const checklistItems = response.data
                 .map(item => ({
                     id: item._id,
@@ -168,7 +166,7 @@ const TodolistDetail = ({ route, navigation }) => {
 
   const handleSaveChecklistItem = () => {
     if (checklistItem.trim() !== '') {
-      const newChecklistItem = { color:color ,text: checklistItem, completed: false };
+      const newChecklistItem = { date:moment(selectedDate).format('YYYY년 M월 D일'), color:color ,text: checklistItem, completed: false };
       setChecklists([...checklists, newChecklistItem]);
       setNewChecklist([...newChecklist, newChecklistItem]);
       setChecklistItem('');
@@ -234,20 +232,36 @@ const TodolistDetail = ({ route, navigation }) => {
     }
     };
 
+    const handleColorChange = (newColor) => {
+      setColor(newColor);
+      setChecklists(checklists.map(item => ({ ...item, color: newColor })));
+    };
+    
+    const handleSelectDate = (date) => {
+      setSelectedDate(date);
+      const formattedDate = moment(date).format('YYYY년 M월 D일');
+      setChecklists(prevChecklists => 
+        prevChecklists.map(item => ({ ...item, date: formattedDate }))
+      );
+      setNewChecklist(prevNewChecklist => 
+        prevNewChecklist.map(item => ({ ...item, date: formattedDate }))
+      );
+    }
+
   return (
     <ScrollView>
       <View style={styles.container}>
         <CustomCalendar
             style={styles.calendar}
             current={selectedDate}
-            onDayPress={isDeleting ? showToast : (day) => setSelectedDate(day.dateString)}
+            onDayPress={isDeleting ? showToast : (day) => handleSelectDate(day.dateString)}
             markingType={'multi-dot'}
             markedDates={marked}
             monthFormat={'yyyy년 MM월'}
         />
         <View style={styles.colorPicker}>
           {COLORS.map((c, index) => (
-            <TouchableOpacity key={index} onPress={() => setColor(c)} style={[styles.colorCircle, { backgroundColor: c, borderColor: color === c ? 'black' : 'transparent' }]} />
+            <TouchableOpacity key={index} onPress={isDeleting ? showToast : () => handleColorChange(c)} style={[styles.colorCircle, { backgroundColor: c, borderColor: color === c ? 'black' : 'transparent' }]} />
           ))}
         </View>
         <View style={styles.eventDetail}>

@@ -69,6 +69,7 @@ const TodolistCreate = ({ route, navigation }) => {
         title: title,
         text: text,
         color: color,
+        examDate: selectedDate,
       },{
         headers: {
           Authorization: `Bearer ${token}`
@@ -97,7 +98,7 @@ const TodolistCreate = ({ route, navigation }) => {
 
   const handleSaveChecklistItem = () => {
     if (checklistItem.trim() !== '') {
-      const newChecklistItem = { color: color, text: checklistItem, completed: false };
+      const newChecklistItem = { date:moment(selectedDate).format('YYYY년 M월 D일'), color: color, text: checklistItem, completed: false };
       setChecklist([...checklist, newChecklistItem]);
       setChecklistItem('');
       setIsAddingChecklist(false);
@@ -151,6 +152,16 @@ const TodolistCreate = ({ route, navigation }) => {
     });
 });
 
+const handleColorChange = (newColor) => {
+  setColor(newColor);
+  setChecklist(checklist.map(item => ({ ...item, color: newColor })));
+};
+
+const handleSelectDate = (date) => {
+  setSelectedDate(date);
+  setChecklist(checklist.map(item => ({ ...item, date: moment(date).format('YYYY년 M월 D일') })));
+}
+
   markedDates[selectedDate] = { selected: true, selectedColor: '#06A4FD' };
 
   return (
@@ -159,14 +170,14 @@ const TodolistCreate = ({ route, navigation }) => {
         <CustomCalendar
           style={styles.calendar}
           current={selectedDate}
-          onDayPress={(day) => setSelectedDate(day.dateString)}
+          onDayPress={(day) => handleSelectDate(day.dateString)}
           markingType={'multi-dot'}
           markedDates={markedDates}
           monthFormat={'yyyy년 MM월'}
         />
         <View style={styles.colorPicker}>
           {COLORS.map((c, index) => (
-            <TouchableOpacity key={index} onPress={() => setColor(c)} style={[styles.colorCircle, { backgroundColor: c, borderColor: color === c ? 'black' : 'transparent' }]} />
+            <TouchableOpacity key={index} onPress={() => handleColorChange(c)} style={[styles.colorCircle, { backgroundColor: c, borderColor: color === c ? 'black' : 'transparent' }]} />
           ))}
         </View>
         <View style={styles.eventDetail}>
