@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect,} from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { Calendar } from 'react-native-calendars';
@@ -37,13 +37,6 @@ const TodolistCreate = ({ route, navigation }) => {
   const [checklistItem, setChecklistItem] = useState('');
   const [isAddingChecklist, setIsAddingChecklist] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); 
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-        headerShown: false,
-    });
-}, [navigation]);
-
 
   useEffect(() => {
     const fetchTodos = async () => {

@@ -71,8 +71,8 @@ const TodolistCalendar = ({ navigation }) => {
                 <View style={styles.item}>
                     <View style={styles.itemLeft}>
                         <View style={[styles.circle, { backgroundColor: item.color || 'blue' }]} />
-                        <View>
-                            <Text style={styles.title}>{item.title}</Text>
+                        <View style={{width:'80%'}}>
+                            <Text style={styles.title} numberOfLines={1} ellipsizeMode='tail'>{item.title}</Text>
                             <Text style={styles.examDate}>{formattedDate}</Text>
                         </View>
                     </View>
@@ -92,7 +92,7 @@ const TodolistCalendar = ({ navigation }) => {
                     <CustomCalendar
                         style={styles.calendar}
                         current={'2024-07-01'}
-                        monthFormat={'yyyy MM'}
+                        monthFormat={'yyyy년 MM월'}
                         onDayPress={(day) => navigation.navigate('TodolistCreate', { selectedDate: day.dateString })}
                         markedDates={markedDates}
                         markingType={'multi-dot'}
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 16,
         fontWeight: 'bold',
+        width: '100%',
     },
     examDate: {
         fontSize: 14,
