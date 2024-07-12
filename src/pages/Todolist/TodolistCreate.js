@@ -299,7 +299,6 @@ const styles = StyleSheet.create({
   },
   eventDate: {
     fontSize: 18,
-    fontWeight: 'bold',
     fontFamily: 'NanumSquareEB',
     color: 'black',
     marginBottom: 14,
@@ -394,7 +393,7 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: '#06A4FD',
-    padding: 8,
+    padding: 5,
     borderRadius: 5,
     alignItems: 'center',
     marginLeft: 8,
@@ -402,7 +401,7 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: 'white',
     fontFamily: 'NanumSquareB',
-    fontSize: 16,
+    fontSize: 14,
   },
   disabledButton: {
     backgroundColor: '#A9A9A9',

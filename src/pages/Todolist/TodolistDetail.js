@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { Calendar } from 'react-native-calendars';
@@ -10,6 +10,9 @@ import { useAuth } from '../../context/AuthContext';
 import VirtualizedView from '../../utils/VirutalizedList';
 import CustomCalendar from '../../components/ui/CustomCalendar';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
+
+import Edit_icon from '../../assets/images/edit_icon.svg';
+import Delelte_icon from '../../assets/images/delete_circle_icon.svg';
 
 const ChecklistItem = ({ title, date, color, completed, onValueChange }) => (
     <View style={styles.item}>
@@ -66,6 +69,12 @@ const TodolistDetail = ({ route, navigation }) => {
         
         fetchChecklist();
     }, []);
+
+    useLayoutEffect(() => {
+      navigation.setOptions({
+          headerShown: false,
+      });
+    }, [navigation]);
     
 
     const fetchChecklist = async () => {
@@ -303,10 +312,10 @@ const TodolistDetail = ({ route, navigation }) => {
                 {moment(selectedDate).locale('ko').format('YYYY년 M월 D일')}
                 <Text style={styles.checklistCount}> ({checklists.length})</Text>
             </Text>
-                <TouchableOpacity 
+                <TouchableOpacity style={styles.editButton} 
                     onPress={() => setIsDeleting(prev => !prev)}
                 >
-                    <Text style={styles.editButton}>수정</Text>
+                    <Edit_icon width={28} height={28} style={styles.edit_icon} ></Edit_icon>
                 </TouchableOpacity>
             </View>
           <Text style={styles.text1}>제목</Text>
@@ -365,8 +374,8 @@ const TodolistDetail = ({ route, navigation }) => {
                 {isDeleting ? (
                     <View style={styles.style1}>
                     <Text style={styles.deltext}>일정삭제하기</Text>
-                    <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-                        <Text style={styles.addButtonText}>-</Text>
+                    <TouchableOpacity onPress={handleDelete}>
+                        <Delelte_icon width={24} style={styles.delete_icon}></Delelte_icon>
                     </TouchableOpacity>
                     </View>
                 ) : (
@@ -400,8 +409,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   colorCircle: {
-    width: 30,
-    height: 30,
+    width: 24,
+    height: 24,
     borderRadius: 15,
     borderWidth: 2,
   },
@@ -429,7 +438,8 @@ const styles = StyleSheet.create({
   },
   eventDate: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'NanumSquareEB',
+    color: 'black',
     marginBottom: 8,
   },
   checklistCount: {
@@ -438,8 +448,9 @@ const styles = StyleSheet.create({
   },
   text1: {
     color: '#C8C8C8',
-    fontWeight: 'bold',
+    fontFamily: 'NanumSquareEB',
     marginBottom: 5,
+    marginTop: 6,
   },
   input: {
     height: 'auto',
@@ -447,7 +458,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderRadius: 5,
     marginBottom: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
   },
   inputTitle: {
     height: 40,
@@ -455,14 +466,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderRadius: 5,
     marginBottom: 10,
-    paddingHorizontal: 10,
-    fontWeight: 'bold',
+    paddingHorizontal: 8,
+    fontFamily: 'NanumSquareEB',
     fontSize: 18,
   },
   checklistContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
+    marginTop: 14,
   },
   addChecklistContainer: {
     flexDirection: 'row',
@@ -484,8 +496,8 @@ const styles = StyleSheet.create({
   },
   text2: {
     color: '#06A4FD',
-    fontSize: 15,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontFamily: 'NanumSquareEB',
     marginRight: 10,
   },
   addButton1: {
@@ -497,7 +509,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   disabledAddButton1: {
-    backgroundColor: 'gray',
+    backgroundColor: '#06A4FD',
     // padding: 10,
     height: 25,
     width: 25,
@@ -507,25 +519,29 @@ const styles = StyleSheet.create({
   text3: {
     color: '#06A4FD',
     fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: 'NanumSquareEB',
     marginRight: 10,
   },
   style1:{
     flexDirection:'row',
     alignItems:"center",
-    justifyContent:"center"
+    justifyContent:"center",
+    marginTop: 24,
+    marginBottom: 20,
   },
   addButton2: {
-  backgroundColor: '#06A4FD',
-  // padding: 5,
-  width: 25,
-  height: 25,
-  borderRadius: 20,
-  alignItems: 'center',
+    backgroundColor: '#06A4FD',
+    // padding: 5,
+    width: 24,
+    height: 24,
+    borderRadius: 20,
+    alignItems: 'center',
+    marginLeft: -2,
   },
   addButtonText: {
     color: 'white',
     fontSize: 16,
+    marginTop: 1,
   },
   saveButton: {
     backgroundColor: '#06A4FD',
@@ -536,62 +552,59 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontFamily: 'NanumSquareEB',
+    fontSize: 14,
   },
 
   deltext: {
     color: 'red',
     fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: 'NanumSquareEB',
     marginRight: 10,
   },
-  deleteButton: {
-    backgroundColor: 'red',
-    // padding: 5,
-    width: 25,
-    height: 25,
-    borderRadius: 20,
-    alignItems: 'center',
-    },
+  delete_icon : {
+    marginLeft: -2,
+    marginTop: 0,
+  },
 
-
-    dateContainer: {
+  dateContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-    },
+  },
 
 
-    editButton: {
-        backgroundColor: '#06A4FD',
-        // position: 'absolute',
-        // right: 0,
-        // top: 0,
-    },
-    item: {
+  editButton: {
+      alignItems: 'center',
+      marginLeft: 8,
+  },
+  edit_icon: {
+      marginTop: -8,
+  },
+  item: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#eee',
-    },
-    itemLeft: {
+  },
+  itemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    },
-    title: {
+  },
+  title: {
     fontSize: 16,
     fontWeight: 'bold',
-    },
-    date: {
+  },
+  date: {
     fontSize: 14,
     color: '#888',
-    },
-    checklistItemCompleted: {
+  },
+  checklistItemCompleted: {
         textDecorationLine: 'line-through',
         color: 'gray',
-      },
+  },
     
 });
 

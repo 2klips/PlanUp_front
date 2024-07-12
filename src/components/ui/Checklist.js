@@ -138,8 +138,8 @@ const Checklist = ({ navigation }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 15,
+    borderRadius: 30,
+    padding: 20,
     marginVertical: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'NanumSquareEB',
     color: '#06A4FD',
     marginBottom: 10,
   },
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+
   circle: {
     width: 10,
     height: 10,
@@ -188,10 +189,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footer: {
-    fontSize: 14,
-    color: '#888',
+    fontSize: 13,
+    color: '#06A4FD',
+    fontFamily: 'NanumSquareB',
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 30,
+    marginBottom: 14,
   },
   checklistItemCompleted: {
     textDecorationLine: 'line-through',

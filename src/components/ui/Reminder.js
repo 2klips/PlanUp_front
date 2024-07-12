@@ -22,7 +22,7 @@ const Reminder = () => {
                 });
 
                 const sortedTodoList = response.data.map(item => ({
-                    ...item,
+                    ...item, 
                     daysLeft: moment(item.examDate).diff(moment(), 'days')
                 })).sort((a, b) => a.daysLeft - b.daysLeft);
 
@@ -61,13 +61,13 @@ const Reminder = () => {
                         {sameDayCount > 1 && (
                             <Text style={styles.sameDayCountText}>같은 D-Day 일정이 {sameDayCount}개 있어요.</Text>
                         )}
-                        <Text style={styles.title}>{nextTodo.title}</Text>
+                        <Text style={styles.title} numberOfLines={1} ellipsizeMode='tail'>{nextTodo.title}</Text>
                         <Text style={styles.examDate}>{examDate}</Text>
                         
                    
                     </View>
                 </View>
-                <Text style={styles.daysLeft}>D-{daysLeft}</Text>
+                <Text style={[styles.daysLeft, { color:nextTodo.color || 'black' }]}>D-{daysLeft}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -80,10 +80,11 @@ const styles = StyleSheet.create({
         borderRadius: 32,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         backgroundColor: '#fff',
         margin: 10,
-        height: 80,
+        height: 74,
+        
     },
     itemLeft: {
         flexDirection: 'row',
@@ -94,8 +95,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: 'black',
         fontFamily: 'NanumSquareEB',
-        marginRight: 10,
+        marginRight: 0,
         marginTop: 0,
+        maxWidth: '90%',
     },
     examDate: {
         fontSize: 10,
@@ -110,8 +112,8 @@ const styles = StyleSheet.create({
     },
     daysLeft: {
         fontSize: 30,
-        fontWeight: '700',
-        color: '#06A4FD',
+        fontFamily: 'NanumSquareEB',
+        marginLeft: 'auto',
     },
     noTodoText: {
         fontSize: 18,

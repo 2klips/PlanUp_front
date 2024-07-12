@@ -126,7 +126,7 @@ const TodolistCalendar = ({ navigation }) => {
 const styles = StyleSheet.create({
     card: {
         backgroundColor: '#fff',
-        borderRadius: 10,
+        borderRadius: 30,
         padding: 15,
         marginVertical: 10,
         shadowColor: '#000',
@@ -174,11 +174,13 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 16,
-        fontWeight: 'bold',
+        fontFamily: 'NanumSquareEB',
+        color: 'black',
         width: '100%',
     },
     examDate: {
-        fontSize: 14,
+        fontSize: 13,
+        fontFamily: 'NanumSquareR',
         color: '#888',
     },
     daysLeft: {
@@ -187,9 +189,11 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     footerText: {
-        fontSize: 12,
-        color: 'gray',
-        marginTop: 10,
+        fontSize: 13,
+        fontFamily: 'NanumSquareB',
+        color: '#06A4FD',
+        marginTop: 34,
+        marginBottom: 20,
         textAlign: 'center',
     },
     moreText: {
