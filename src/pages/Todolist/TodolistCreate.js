@@ -70,6 +70,7 @@ const TodolistCreate = ({ route, navigation }) => {
         text: text,
         color: color,
         examDate: selectedDate,
+        type: '0',
       },{
         headers: {
           Authorization: `Bearer ${token}`

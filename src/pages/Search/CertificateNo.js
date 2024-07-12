@@ -46,7 +46,7 @@ const CertificateNo = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={No_result} style={styles.headerIcon} />
+        {/* <Image source={No_result} style={styles.headerIcon} /> */}
         <Text style={styles.headerText}>자격증시험추가</Text>
       </View>
       <View style={styles.searchContainer}>

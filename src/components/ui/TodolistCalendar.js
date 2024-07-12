@@ -9,6 +9,9 @@ import CalendarOnly from './CalendarOnly';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import VirtualizedView from '../../utils/VirutalizedList';
 import CustomCalendar from './CustomCalendar';
+import liceneimg from '../../assets/images/license_icon.svg'
+import usertodoimg from '../../assets/images/user_todo_icon.svg'
+import jopimg from '../../assets/images/saramin_logo.png'
 
 const TodolistCalendar = ({ navigation }) => {
     const [todoList, setTodoList] = useState([]);

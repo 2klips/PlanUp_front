@@ -71,6 +71,7 @@ const CertifiCalendar = ({ route, navigation }) => {
         text: text,
         color: color,
         examDate: selectedDate,
+        type: '1'
       },{
         headers: {
           Authorization: `Bearer ${token}`
