@@ -1,5 +1,5 @@
 // CertificateNo.js
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -7,11 +7,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import License from '../../assets/images/license_icon.svg';
 import HRDK_logo from '../../assets/images/HRDK_logo.png';
 import Zoom from '../../assets/images/zoom_icon.svg';
-// import No_result from '../../assets/images/delete_icon.png';
+import No_result from '../../assets/images/delete_icon.svg';
+import Back from '../../assets/images/back_icon.svg';
 
 const CertificateNo = () => {
   const [jobName, setJobName] = useState('');
   const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+        headerShown: false,
+    });
+  }, [navigation]);
 
   const handleSearch = async () => {
     try {
@@ -46,7 +53,7 @@ const CertificateNo = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={No_result} style={styles.headerIcon} />
+        <License width={40} style={styles.headerIcon} />
         <Text style={styles.headerText}>자격증시험추가</Text>
       </View>
       <View style={styles.searchContainer}>
@@ -64,7 +71,7 @@ const CertificateNo = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.resultContainer}>
-        <Image source={require('../../assets/images/jobkorea_logo.png')} style={styles.notFoundIcon} />
+        <No_result style={styles.No_result_icon} />
         <Text style={styles.infoTitle}>검색결과가 없어요.</Text>
         <Text style={styles.infoText}>이름이 잘못되었거나, 시험 예정 일정이 없어요.</Text>
         <Text style={styles.infoText}>민간자격증의 경우, 검색되지 않아요.</Text>
@@ -72,7 +79,7 @@ const CertificateNo = () => {
       <View style={styles.footer}>
         <Text style={styles.footerText}>※ 현재 국가공인 자격증만 검색할 수 있어요.</Text>
         <Text style={styles.footerText}>검색에 되지 않는 자격증은 자격 일정으로 추가해주세요.</Text>
-        <Text style={styles.footerText}>※ 시험이 종료된 시험 일정은 검색되지 않아요.</Text>
+        <Text style={styles.footerText2}>※ 시험이 종료된 시험 일정은 검색되지 않아요.</Text>
       </View>
     </View>
   );
@@ -84,11 +91,26 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
+  backbutton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backText: {
+      fontSize: 14,
+      fontFamily: 'NanumSquareEB',
+      color: '#06A4FD',
+      marginRight: 4,
+  },
+  backIcon: {
+      marginRight: 10,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginBottom: 16
+    marginBottom: 16,
+    marginTop: -14
   },
   headerIcon: {
     width: 24,
@@ -140,14 +162,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 2,
   },
-  infoContainer: {
+  resultContainer: {
     alignItems: 'center',
     marginBottom: 20,
   },
-  infoIcon: {
+  No_result_icon: {
     marginTop : 16,
-    marginBottom : 0
-
+    marginBottom : 24
   },
   infoTitle: {
     fontSize: 30,
@@ -158,7 +179,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 16,
-    fontFamily : 'NanumSquareR',
+    fontFamily : 'NanumSquareB',
     textAlign: 'center',
     color: 'black',
   },
