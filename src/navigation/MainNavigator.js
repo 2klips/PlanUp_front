@@ -9,6 +9,7 @@ import CertificateResult from '../pages/Search/CertificateResult';
 import CertificateNo from '../pages/Search/CertificateNo';
 import CalendarPage from '../pages/CalendarPage/CalendarPage'; // 경로를 적절히 설정하세요
 import TodolistDetail from '../pages/Todolist/TodolistDetail';
+import CertifiCalendar from '../pages/Search/CertifiCalendar';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ function MainNavigator() {
             <Stack.Screen name="SearchCertificate" component={SearchCertificate} />
             <Stack.Screen name="CertificateResult" component={CertificateResult} />
             <Stack.Screen name="CertificateNo" component={CertificateNo} />
+            <Stack.Screen name="CertifiCalendar" component={CertifiCalendar} />
             <Stack.Screen name="CalendarPage" component={CalendarPage} />
         </Stack.Navigator>
     );

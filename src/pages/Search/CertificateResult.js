@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import License from '../../assets/images/license_icon.svg';
 import HRDK_text from '../../assets/images/HRDK_text_logo.png';
 import Zoom from '../../assets/images/zoom_icon.svg';
+import moment from 'moment';
 
 const CertificateResult = ({ route }) => {
   const { certificates } = route.params;
@@ -60,8 +61,10 @@ const CertificateResult = ({ route }) => {
 
   // 수정된 handleAddPress 함수
   const handleAddPress = (schedule, examType, jobName) => { // jobName 추가
-    navigation.navigate('TodolistCreate', {
-      examDate: examType === '필기' ? schedule.필기시험시작일자 : schedule.실기시험시작일자,
+    const examDateString = examType === '필기' ? schedule.필기시험시작일자 : schedule.실기시험시작일자;
+    const examDate = moment(examDateString, 'YYYY-MM-DD').toDate();
+    navigation.navigate('CertifiCalendar', {
+      examDate,
       jobName // jobName 전달
     });
   };
