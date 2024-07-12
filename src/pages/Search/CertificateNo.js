@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import License from '../../assets/images/license_icon.svg';
 import HRDK_logo from '../../assets/images/HRDK_logo.png';
 import Zoom from '../../assets/images/zoom_icon.svg';
-import No_result from '../../assets/images/delete_icon.png';
+// import No_result from '../../assets/images/delete_icon.png';
 
 const CertificateNo = () => {
   const [jobName, setJobName] = useState('');
