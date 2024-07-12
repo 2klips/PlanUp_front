@@ -111,7 +111,7 @@ const TodolistCalendar = ({ navigation }) => {
                     />
                     {!showAll && todoList.length > 4 && (
                         <TouchableOpacity onPress={() => setShowAll(true)}>
-                            <Text style={styles.moreText}>... 더보기</Text>
+                            <Text style={styles.moreText}>..더보기</Text>
                         </TouchableOpacity>
                     )}
                     {showAll && (
@@ -201,9 +201,11 @@ const styles = StyleSheet.create({
     },
     moreText: {
         fontSize: 16,
+        fontFamily: 'NanumSquareEB',
         color: '#06A4FD',
         textAlign: 'center',
         marginVertical: 10,
+        marginTop: 20,
     },
 });
 

@@ -1,5 +1,5 @@
 // CertifiCalendar.js
-import React, { useState, useEffect, } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { Calendar } from 'react-native-calendars';
@@ -57,6 +57,12 @@ const CertifiCalendar = ({ route, navigation }) => {
     fetchTodos();
   }, []);     
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+        headerShown: false,
+    });
+  }, [navigation]);
+  
   const handleSave = async () => {
     if (title.trim() === '' || text.trim() === '') {
       Alert.alert('Error', 'Please fill out all fields');
@@ -200,7 +206,7 @@ const handleSelectDate = (date) => {
           />
           <Text style={styles.text1}>상세내용</Text> 
           <TextInput
-            style={styles.input}
+            style={styles.input2}
             placeholder="상세내용을 입력하세요."
             value={text}
             onChangeText={setText}
@@ -215,7 +221,7 @@ const handleSelectDate = (date) => {
           {isAddingChecklist && (
             <View style={styles.addChecklistContainer}>
               <TextInput
-                style={styles.input}
+                style={styles.input3}
                 placeholder="체크리스트 항목 입력"
                 value={checklistItem}
                 onChangeText={setChecklistItem}
@@ -269,7 +275,7 @@ const styles = StyleSheet.create({
   colorPicker: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 26,
   },
   colorCircle: {
     width: 24,
@@ -322,6 +328,29 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 8,
+    fontFamily: 'NanumSquareEB',
+    fontSize: 16,
+  },
+  input2: {
+    height: 'auto',
+    borderColor: '#C8C8C8',
+    borderBottomWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 8,
+    fontFamily: 'NanumSquareB',
+    fontSize: 15,
+  },
+  input3: {
+    height: 'auto',
+    borderColor: '#C8C8C8',
+    borderBottomWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 8,
+    fontFamily: 'NanumSquareR',
+    fontSize: 14,
+
   },
   checklistContainer: {
     flexDirection: 'row',
@@ -363,7 +392,7 @@ const styles = StyleSheet.create({
   text3: {
     color: '#06A4FD',
     fontSize: 15,
-    fontWeight: 'bold',
+    fontFamily: 'NanumSquareEB',
     marginRight: 10,
   },
   disabledText3: {
@@ -381,10 +410,11 @@ const styles = StyleSheet.create({
   },
   addButton2: {
     backgroundColor: '#06A4FD',
-    width: 25,
-    height: 25,
+    width: 23,
+    height: 23,
     borderRadius: 20,
     alignItems: 'center',
+    marginLeft: -4,
   },
   addButtonText: {
     color: 'white',

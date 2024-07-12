@@ -61,8 +61,9 @@ const Reminder = () => {
                         {sameDayCount > 1 && (
                             <Text style={styles.sameDayCountText}>같은 D-Day 일정이 {sameDayCount}개 있어요.</Text>
                         )}
-                        <Text style={styles.title} numberOfLines={1} ellipsizeMode='tail'>{nextTodo.title}</Text>
                         <Text style={styles.examDate}>{examDate}</Text>
+                        <Text style={styles.title} numberOfLines={1} ellipsizeMode='tail'>{nextTodo.title}</Text>
+                        
                         
                    
                     </View>
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
         fontFamily: 'NanumSquareEB',
         marginRight: 0,
         marginTop: 0,
-        maxWidth: '90%',
+        maxWidth: '92%',
     },
     examDate: {
         fontSize: 10,
