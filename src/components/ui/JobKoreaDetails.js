@@ -23,7 +23,7 @@ const JobKoreaDetails = ({ jobDetails }) => {
         return end.diff(today, 'days');
     };
 
-    const dDay = jobDetails.접수마감일 ? calculateDday(jobDetails.접수마감일) : null;
+    const dDay = jobDetails.마감일 ? calculateDday(jobDetails.마감일) : null;
     const closingDateText = dDay !== null ? `D-${dDay}` : '수시채용';
 
     return (
@@ -43,8 +43,8 @@ const JobKoreaDetails = ({ jobDetails }) => {
                     <Text style={styles.date}>{closingDateText}</Text>
                     <Text style={styles.closingDate}>{jobDetails.접수마감일}</Text>
                     <View style={styles.footer}>
-                        <Text style={styles.footerText}>접수 시작일: {jobDetails.접수시작일 || '수시채용'}</Text>
-                        <Text style={styles.footerText}>접수 마감일: {jobDetails.접수마감일 || '수시채용'}</Text>
+                        <Text style={styles.footerText}>시작일: {jobDetails.시작일 || '수시채용'}</Text>
+                        <Text style={styles.footerText}>마감일: {jobDetails.마감일 || '수시채용'}</Text>
                     </View>
                     <View style={styles.moveToSite}>
                         <TouchableOpacity onPress={handlePress}>

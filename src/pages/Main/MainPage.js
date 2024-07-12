@@ -1,15 +1,13 @@
-import React, { useEffect, useState , useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
-    Image,
     SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     View,
     TouchableOpacity,
+    AppState
 } from 'react-native';
-import Card from '../../components/ui/Card';
-import { useRoute } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import TodolistCalendar from '../../components/ui/TodolistCalendar';
 import CalendarOnly from '../../components/ui/CalendarOnly';
@@ -21,36 +19,33 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import VirtualizedView from '../../utils/VirutalizedList';
-import Logo from '../../assets/images/logo.svg'
-import { AppState } from 'react-native';
-
-
+import Logo from '../../assets/images/logo.svg';
 
 function MainPage() {
     const { user } = useAuth();
-    const route = useRoute();
     const [isChecklist, setIsChecklist] = useState(false);
     const [isTodoList, setIsTodoList] = useState(false);
+    const [jobPostings, setJobPostings] = useState([]); // 채용 정보를 저장할 상태
     const isFocused = useIsFocused();
     const navigation = useNavigation();
     const appState = useRef(AppState.currentState);
 
     useEffect(() => {
-    const handleAppStateChange = (nextAppState) => {
-        if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-            console.log('앱이 포그라운드로 전환됩니다!');
-        } else if (appState.current === 'active' && nextAppState.match(/inactive|background/)) {
-            console.log('앱이 백그라운드로 전환됩니다!');
-        }
-        appState.current = nextAppState;
-        console.log('AppState', appState.current);
-    };
+        const handleAppStateChange = (nextAppState) => {
+            if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+                console.log('앱이 포그라운드로 전환됩니다!');
+            } else if (appState.current === 'active' && nextAppState.match(/inactive|background/)) {
+                console.log('앱이 백그라운드로 전환됩니다!');
+            }
+            appState.current = nextAppState;
+            console.log('AppState', appState.current);
+        };
 
-    AppState.addEventListener('change', handleAppStateChange);
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
 
-    return () => {
-        AppState.removeEventListener('change', handleAppStateChange);
-    };
+        return () => {
+            subscription.remove();
+        };
     }, []);
 
     useEffect(() => {
@@ -82,10 +77,24 @@ function MainPage() {
             }
         };
 
+        const fetchJobPostings = async () => {
+            const token = await AsyncStorage.getItem('token');
+            try {
+                const response = await axios.get(`http://10.0.2.2:8080/jobPostings/${user.userid}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setJobPostings(response.data); // 채용 정보 상태 업데이트
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
         fetchChecklist();
         fetchTodos();
-    }, [isFocused]); 
-
+        fetchJobPostings();
+    }, [isFocused]);
 
     if (!user) {
         return (
@@ -104,14 +113,12 @@ function MainPage() {
                     <Text style={styles.welcome}>목표를 꼭 이루시길 바래요!</Text>
 
                     <Reminder />
-                    
-                    {/* <AddURL navigation={navigation} />
-                    <URLonly navigation={navigation} />   */}
+
                     {isTodoList ? (
                         <AddURL navigation={navigation} />
                     ) : (
                         <URLonly navigation={navigation} />
-                    )}  
+                    )}
 
                     {isTodoList ? (
                         <TodolistCalendar navigation={navigation} />
@@ -119,6 +126,18 @@ function MainPage() {
                         <CalendarOnly navigation={navigation} />
                     )}
                     {isChecklist && <Checklist />}
+
+                    {/* 채용 정보 표시 */}
+                    <View>
+                        <Text style={styles.sectionTitle}>채용 정보</Text>
+                        {jobPostings.map((job) => (
+                            <View key={job._id} style={styles.jobPosting}>
+                                <Text style={styles.jobTitle}>{job.title}</Text>
+                                <Text style={styles.jobCompany}>{job.company}</Text>
+                                <Text style={styles.jobDeadline}>{job.deadline}</Text>
+                            </View>
+                        ))}
+                    </View>
 
                     {/* 새로운 컴포넌트로 이동하는 버튼 추가 */}
                     <TouchableOpacity
@@ -145,16 +164,44 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 26,
-        fontFamily : 'NanumSquareEB',
+        fontFamily: 'NanumSquareEB',
         color: 'black',
         marginBottom: 3,
     },
     welcome: {
         fontSize: 16,
-        fontFamily : 'NanumSquareR',
+        fontFamily: 'NanumSquareR',
         color: 'black',
         marginBottom: 10,
         marginLeft: 3,
+    },
+    sectionTitle: {
+        fontSize: 22,
+        fontFamily: 'NanumSquareEB',
+        color: 'black',
+        marginVertical: 10,
+    },
+    jobPosting: {
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        marginVertical: 5,
+    },
+    jobTitle: {
+        fontSize: 18,
+        fontFamily: 'NanumSquareEB',
+        color: 'black',
+    },
+    jobCompany: {
+        fontSize: 16,
+        fontFamily: 'NanumSquareR',
+        color: 'black',
+    },
+    jobDeadline: {
+        fontSize: 14,
+        fontFamily: 'NanumSquareR',
+        color: 'gray',
     },
     button: {
         backgroundColor: '#4CAF50',

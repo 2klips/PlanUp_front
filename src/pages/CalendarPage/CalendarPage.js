@@ -45,6 +45,8 @@ const CalendarPage = ({ route, navigation }) => {
   const [showComponent, setShowComponent] = useState(false);
   const [ComponentToShow, setComponentToShow] = useState(null);
   const [showExtraButtons, setShowExtraButtons] = useState(false);
+  const [selectedTodo, setSelectedTodo] = useState(null);
+  const [jobPostId, setJobPostId] = useState(null);  // 채용 공고 ID 저장용 상태 추가
 
   useEffect(() => {
     if (jobDetails) {
@@ -54,7 +56,7 @@ const CalendarPage = ({ route, navigation }) => {
       setMarkedDates({
         [formattedDate]: { selected: true, marked: true, selectedColor: 'blue' }
       });
-      determineComponentToShow(); // 컴포넌트를 결정
+      determineComponentToShow();
     }
   }, [jobDetails]);
 
@@ -81,14 +83,38 @@ const CalendarPage = ({ route, navigation }) => {
       if (response.status === 201) {
         Alert.alert('성공', '일정이 저장되었습니다.');
         const todoId = response.data;
+        console.log('todoid-----------------------------------',response.data)
+        setSelectedTodo(todoId);
         await saveChecklistItems(todoId);
-        setJobPosts([...jobPosts, { title: eventTitle, company: jobDetails.회사명, deadline: eventDate }]);
+
+        // 새로운 컬렉션에 채용 공고 저장
+        const jobPostResponse = await axios.post('http://10.0.2.2:8080/jobPostings', {
+          title: eventTitle,
+          company: jobDetails.회사명,
+          deadline: eventDate,
+          userid: user.userid
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (jobPostResponse.status === 201) {
+          setJobPosts([...jobPosts, { title: eventTitle, company: jobDetails.회사명, deadline: eventDate }]);
+          console.log('-----------------------------',jobPostResponse.data)
+          setJobPostId(jobPostResponse.data._id)
+          console.log(jobPostResponse.data._id)
+        } else {
+          Alert.alert('오류', '채용 공고 저장에 실패했습니다.');
+        }
+
         setChecklist([]);
         setChecklistItem('');
         setIsAddingChecklist(false);
         setIsButtonDisabled(false);
-        setShowComponent(true); // 컴포넌트를 표시
-        setShowExtraButtons(true); // 일정 저장 후 추가 버튼 표시
+        setShowComponent(true);
+        setShowExtraButtons(true);
+        
       } else {
         Alert.alert('오류', '일정 저장에 실패했습니다.');
         setIsButtonDisabled(false);
@@ -102,7 +128,7 @@ const CalendarPage = ({ route, navigation }) => {
 
   const determineComponentToShow = () => {
     const source = jobDetails.source;
-    console.log('source:', source); // 디버깅을 위해 source 로그 출력
+    console.log('source:', source);
     if (source === 'saramin') {
       setComponentToShow(
         <>
@@ -205,13 +231,53 @@ const CalendarPage = ({ route, navigation }) => {
     setMarkedDates({});
   };
 
+  const handleDelete = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.delete(`http://10.0.2.2:8080/list/delete/${selectedTodo}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (response.status === 200) {
+        Alert.alert('성공', '일정 삭제 성공');
+        console.log('삭제성공')
+        navigation.navigate('MainPage');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleDeleteJobPost = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.delete(`http://10.0.2.2:8080/jobPostings/${jobPostId}`, {  // jobPostId 사용
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (response.status === 200) {
+        Alert.alert('성공', '채용 공고 삭제 성공');
+        console.log('삭제성공')
+      }
+    } catch (error) {
+      console.error('Error deleting job posting:', error);
+    }
+  }
+
   const handleDeleteEvent = () => {
+    handleDeleteJobPost();
+    handleDelete();
     setEventDate('');
     setEventTitle('');
     setEventDescription('');
     setChecklist([]);
     setMarkedDates({});
     setShowExtraButtons(false);
+    setShowComponent(false);
+    setSelectedTodo(null);
+    setJobPostId(null);  // 초기화
   };
 
   return (
