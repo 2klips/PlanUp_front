@@ -1,6 +1,6 @@
 // TodolistnCalendar.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
 import moment from 'moment';
@@ -9,9 +9,10 @@ import CalendarOnly from './CalendarOnly';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import VirtualizedView from '../../utils/VirutalizedList';
 import CustomCalendar from './CustomCalendar';
-import liceneimg from '../../assets/images/license_icon.svg'
-import usertodoimg from '../../assets/images/user_todo_icon.svg'
-import jopimg from '../../assets/images/saramin_logo.png'
+import licenseimg from '../../assets/images/license_icon.svg'
+import userimg from '../../assets/images/user_todo_icon.svg'
+import jobimg from '../../assets/images/saramin_logo.png'
+import { Image } from 'react-native';
 
 const TodolistCalendar = ({ navigation }) => {
     const [todoList, setTodoList] = useState([]);
@@ -68,6 +69,25 @@ const TodolistCalendar = ({ navigation }) => {
         const examDate = moment(item.examDate);
         const formattedDate = examDate.format('YYYY년 M월 D일');
         const daysLeft = item.daysLeft;
+        const type = item.type;
+
+        // let source = null;
+
+        // // type 값에 따라 이미지를 선택합니다.
+        // switch (type) {
+        //     case '0':
+        //         source = userimg;
+        //         break;
+        //     case '1':
+        //         source = licenseimg;
+        //         break;
+        //     case '2':
+        //         source = jobimg;
+        //         break;
+        //     default:
+        //         source = userimg;
+        //         break;
+        // }
 
         return (
             <TouchableOpacity onPress={() => handleTodoPress(item)}>
@@ -76,6 +96,7 @@ const TodolistCalendar = ({ navigation }) => {
                         <View style={[styles.circle, { backgroundColor: item.color || 'blue' }]} />
                         <View style={{width:'80%'}}>
                             <Text style={styles.title} numberOfLines={1} ellipsizeMode='tail'>{item.title}</Text>
+                            {/* <Image source={jobimg} style={styles.todoIcon} /> */}
                             <Text style={styles.examDate}>{formattedDate}</Text>
                         </View>
                     </View>
@@ -145,6 +166,10 @@ const styles = StyleSheet.create({
     },
     calendar: {
         marginBottom: 20,
+    },
+    todoIcon: {
+        width: 20,
+        height: 20,
     },
     todoListHeader: {
         flexDirection: 'row',
