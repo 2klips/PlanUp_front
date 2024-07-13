@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
+import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text, Image, } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import Logo from '../../assets/images/logo.svg'
@@ -59,9 +59,10 @@ const URLInputPage = ({ navigation }) => {
         }
     };
 
+
     const handleTextChange = (text) => {
         setInputUrl(text);
-        setDisplayText(text.length > 39 ? text.substring(0, 39) + '..' : text);
+        setDisplayText(text.length > 36 ? text.substring(0, 36) + '..' : text);
     };
 
     return (

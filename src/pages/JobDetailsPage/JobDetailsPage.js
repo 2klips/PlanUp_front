@@ -8,10 +8,13 @@ import WorkNetDetails from '../../components/ui/WorkNetDetails';
 import WorkNetCompanyDetails from '../../components/ui/WorkNetCompanyDetails';
 import WorkNetCompanyDetailsV2 from '../../components/ui/WorkNetCompanyDetailsV2';
 import WorkNetDetailsV2 from '../../components/ui/WorkNetDetailsV2';
+import WorkNetDetailsV3 from '../../components/ui/WorkNetDetailsV3';
 import JobKoreaDetails from '../../components/ui/JobKoreaDetails';
 import JobKoreaCompanyDetails from '../../components/ui/JobKoreaCompanyDetails';
 import WantedDetails from '../../components/ui/WantedDetails';
 import JobPlanetDetails from '../../components/ui/JobPlanetDetails';
+
+import LoadingScreen from '../../components/ui/Loadingpage';
 
 import Saramin_logo from '../../assets/images/saramin_logo.png';
 import Jobkorea_logo from '../../assets/images/jobkorea_logo.png';
@@ -38,22 +41,32 @@ const JobDetailsPage = ({ route }) => {
         const fetchJobDetails = async () => {
             try {
                 const response = await axios.post('http://10.0.2.2:8000/scrape', { url });
-                setJobDetails(response.data);
-                if (url.includes('saramin')) {
-                    setPlatform('saramin');
-                } else if (url.includes('work')) {
-                    setPlatform(url.includes('detail') ? 'worknetV1' : 'worknetV2');
-                } else if (url.includes('jobkorea')) {
-                    setPlatform('jobkorea');
-                } else if (url.includes('wanted')) {
-                    setPlatform('wanted');
-                } else if (url.includes('jobplanet')) {
-                    setPlatform('jobplanet');
+                if (response.data) {
+                    setJobDetails(response.data);
+                    if (url.includes('saramin')) {
+                        setPlatform('saramin');
+                    } else if (url.includes('work')) {
+                        setPlatform(url.includes('detail') ? 'worknetV1' : 'worknetV2');
+                    } else if (url.includes('jobkorea')) {
+                        setPlatform('jobkorea');
+                    } else if (url.includes('wanted')) {
+                        setPlatform('wanted');
+                    } else if (url.includes('jobplanet')) {
+                        setPlatform('jobplanet');
+                    } else {
+                        navigation.navigate('NoResultsPage'); // 조건에 맞지 않는 URL일 경우 이동
+                        return;
+                    }
+                } else {
+                    navigation.navigate('NoResultsPage'); // 데이터가 없을 경우 이동
+                    return;
                 }
             } catch (error) {
                 console.error('Error fetching job details:', error);
+                navigation.navigate('NoResultsPage'); // 오류 발생 시 이동
+                return;
             } finally {
-                setLoading(false);
+                setLoading(false); // 로딩 상태 해제
             }
         };
 
@@ -67,9 +80,10 @@ const JobDetailsPage = ({ route }) => {
 
     if (loading) {
         return (
-            <View style={styles.loaderContainer}>
-                <ActivityIndicator size="large" color="#0000ff" />
-            </View>
+            // <View style={styles.loaderContainer}>
+            //     <ActivityIndicator size="large" color="#0000ff" />
+            // </View>
+            <LoadingScreen />
         );
     }
 
@@ -141,6 +155,27 @@ const JobDetailsPage = ({ route }) => {
                                     </TouchableOpacity>
                                 </View>
                                 <WorkNetDetailsV2 jobDetails={jobDetails} />
+                                <WorkNetCompanyDetailsV2 jobDetails={jobDetails} />
+                            </>
+                        )}
+                        {platform === 'worknetV3' && (
+                            <>
+                                <TouchableOpacity style={styles.backbutton} onPress={() => navigation.navigate('URLInputPage')}>
+                                    <Text style={styles.backText}>다시 입력하기</Text>
+                                    <Back width={18} height={18} style={styles.backIcon} />
+                                </TouchableOpacity>
+                                <View style={styles.header}>
+                                    <Success width={60} height={60} style={styles.success} />
+                                    <Image style={styles.worknet_logo} source={Worknet_logo} />
+                                    <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                </View>
+                                <View style={styles.item}>
+                                    <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
+                                    <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
+                                        <Text style={styles.buttonText}>+</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <WorkNetDetailsV3 jobDetails={jobDetails} />
                                 <WorkNetCompanyDetailsV2 jobDetails={jobDetails} />
                             </>
                         )}

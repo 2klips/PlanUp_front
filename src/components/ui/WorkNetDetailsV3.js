@@ -5,7 +5,7 @@ import moment from 'moment';
 import Worknet_logo from '../../assets/images/worknet_logo.png';
 import Arrow from '../../assets/images/arrow_black.svg';
 
-const WorkNetDetails = ({ jobDetails }) => {
+const WorkNetDetailsV3 = ({ jobDetails }) => {
     const handlePress = () => {
         const { URL } = jobDetails;
         if (URL) {
@@ -16,6 +16,15 @@ const WorkNetDetails = ({ jobDetails }) => {
         }
     };
 
+    const calculateDday = (endDate) => {
+        const today = moment();
+        const end = moment(endDate, 'YYYY년 MM월 DD일');
+        return end.diff(today, 'days');
+    };
+
+    const dDay = jobDetails.공고마감일 ? calculateDday(jobDetails.공고마감일) : null;
+    const closingDateText = dDay !== null ? `D-${dDay}` : '수시채용';
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.card}>
@@ -25,13 +34,16 @@ const WorkNetDetails = ({ jobDetails }) => {
                 </View>
                 <Text style={styles.title}>{jobDetails.직무}</Text>
                 <Image style={styles.logo} source={{ uri: jobDetails.로고이미지 }} />
-                <DetailRow label="마감일" value={jobDetails.마감일} />
-                <DetailRow label="경력" value={jobDetails.경력} />
-                <DetailRow label="학력" value={jobDetails.학력} />
-                <DetailRow label="지역" value={jobDetails.지역} />
+                <DetailRow label="모집직종" value={jobDetails.모집직종} />
+                <DetailRow label="경력" value={jobDetails.경력조건} />
+                <DetailRow label="학력" value={jobDetails.학력조건} />
+                <DetailRow label="지역" value={jobDetails.근무지역} />
                 <DetailRow label="고용형태" value={jobDetails.고용형태} />
+                <Text style={styles.date}>{closingDateText}</Text>
+                <Text style={styles.closingDate}>{jobDetails.공고마감일}</Text>
                 <View style={styles.footer}>
-                        <Text style={styles.footerText}>{jobDetails.접수기간 || '수시채용'}</Text>
+                    <Text style={styles.footerText}>접수 시작일: {jobDetails.공고시작일 || '수시채용'}</Text>
+                    <Text style={styles.footerText}>접수 마감일: {jobDetails.공고마감일 || '수시채용'}</Text>
                 </View>
 
                 <View style={styles.moveToSite}>
@@ -143,4 +155,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default WorkNetDetails;
+export default WorkNetDetailsV3;
