@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ScrollView, FlatList } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ScrollView, FlatList, Image } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
@@ -16,6 +16,9 @@ import WorkNetMobileDetailsV2 from '../../components/ui/WorkNetMobileDetailsV2';
 import JobKoreaDetails from '../../components/ui/JobKoreaDetails';
 import WantedDetails from '../../components/ui/WantedDetails';
 import JobPlanetDetails from '../../components/ui/JobPlanetDetails';
+import Home_icon  from '../../assets/images/home_icon.svg';
+import Edit_icon from '../../assets/images/edit_icon.svg';
+import Delelte_icon from '../../assets/images/delete_circle_icon.svg';
 
 const COLORS = ['#06A4FD', '#97E5FF', '#FF0000', '#FF81EB', '#FF8E25', '#FFE871', '#70FF4D', '#35F2DC', '#48B704', '#8206FD'];
 
@@ -63,6 +66,12 @@ const CalendarPage = ({ route, navigation }) => {
       determineComponentToShow();
     }
   }, [jobDetails]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+        headerShown: false,
+    });
+  }, [navigation]);
 
   const formatDate = (date) => {
     if (!date) return moment().format('YYYY-MM-DD');
@@ -271,6 +280,10 @@ const CalendarPage = ({ route, navigation }) => {
     setJobPostId(null);  // 초기화
   };
 
+  const handleGoToMainPage = () => {
+    navigation.navigate('MainPage');
+  };
+
   return (
     <ScrollView style={styles.container}>
       <Calendar
@@ -298,8 +311,9 @@ const CalendarPage = ({ route, navigation }) => {
         />
         <Text style={styles.label}>상세내용</Text>
         <TextInput
-          style={styles.input}
+          style={styles.input2} // input2 스타일 적용
           value={eventDescription}
+          placeholder="상세내용을 입력하세요."
           onChangeText={setEventDescription}
           multiline
         />
@@ -312,13 +326,13 @@ const CalendarPage = ({ route, navigation }) => {
         {isAddingChecklist && (
           <View style={styles.addChecklistContainer}>
             <TextInput
-              style={styles.input}
+              style={styles.input3} // input3 스타일 적용
               placeholder="체크리스트 항목 입력"
               value={checklistItem}
               onChangeText={setChecklistItem}
             />
-            <TouchableOpacity style={styles.saveButton} onPress={handleSaveChecklistItem}>
-              <Text style={styles.saveButtonText}>저장</Text>
+            <TouchableOpacity style={styles.saveButton}>
+              <Text style={styles.saveButtonText} onPress={handleSaveChecklistItem}>저장</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -336,19 +350,32 @@ const CalendarPage = ({ route, navigation }) => {
           keyExtractor={(item, index) => index.toString()}
         />
         {showExtraButtons ? (
-          <View>
-            <TouchableOpacity style={styles.saveEventButton} onPress={handleRelatedSchedule}>
-              <Text style={styles.saveEventButtonText}>해당 공고와 관련된 일정 추가하기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteEventButton} onPress={handleDeleteEvent}>
-              <Text style={styles.deleteEventButtonText}>일정 삭제하기</Text>
-            </TouchableOpacity>
+          <View style={styles.style1}>
+          <Text style={[styles.text4, isButtonDisabled && styles.disabledText3]}>일정삭제하기</Text>
+          <TouchableOpacity
+            style={[styles.addButton2, isButtonDisabled && styles.disabledButton]}
+            onPress={handleSaveEvent}
+            disabled={isButtonDisabled}>
+            <Delelte_icon width={24} style={styles.delete_icon}></Delelte_icon>
+          </TouchableOpacity>
           </View>
         ) : (
-          <TouchableOpacity style={styles.saveEventButton} onPress={handleSaveEvent} disabled={isButtonDisabled}>
-            <Text style={styles.saveEventButtonText}>일정 추가하기</Text>
-          </TouchableOpacity>
+          <View style={styles.style1}>
+            <Text style={[styles.text3, isButtonDisabled && styles.disabledText3]}>일정추가하기</Text>
+            <TouchableOpacity
+              style={[styles.addButton2, isButtonDisabled && styles.disabledButton]}
+              onPress={handleSaveEvent}
+              disabled={isButtonDisabled}>
+              <Text style={styles.addButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
         )}
+        <View style={styles.style1}>
+          <TouchableOpacity
+            onPress={handleGoToMainPage}>
+            <Home_icon width={30} height={30} />
+          </TouchableOpacity>
+        </View>
       </View>
       {showComponent && ComponentToShow}
     </ScrollView>
@@ -358,7 +385,8 @@ const CalendarPage = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 16,
+    backgroundColor: 'white',
   },
   calendar: {
     marginBottom: 16,
@@ -366,11 +394,11 @@ const styles = StyleSheet.create({
   colorPicker: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 26,
   },
   colorCircle: {
-    width: 30,
-    height: 30,
+    width: 24,
+    height: 24,
     borderRadius: 15,
     borderWidth: 2,
   },
@@ -395,23 +423,49 @@ const styles = StyleSheet.create({
   eventDate: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
+    fontFamily: 'NanumSquareEB',
+    color: 'black',
+    marginBottom: 14,
   },
   label: {
     fontSize: 16,
     marginBottom: 8,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
+    height: 'auto',
+    borderColor: '#C8C8C8',
+    borderBottomWidth: 1,
     borderRadius: 5,
-    marginBottom: 20,
+    marginBottom: 10,
+    paddingHorizontal: 8,
+    fontFamily: 'NanumSquareEB',
+    fontSize: 16,
+  },
+  input2: {
+    height: 'auto',
+    borderColor: '#C8C8C8',
+    borderBottomWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 8,
+    fontFamily: 'NanumSquareB',
+    fontSize: 15,
+  },
+  input3: {
+    height: 'auto',
+    borderColor: '#C8C8C8',
+    borderBottomWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 8,
+    fontFamily: 'NanumSquareR',
+    fontSize: 14,
   },
   checklistContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
+    marginTop: 10,
   },
   addChecklistContainer: {
     flexDirection: 'row',
@@ -443,6 +497,41 @@ const styles = StyleSheet.create({
     width: 25,
     borderRadius: 3,
     alignItems: 'center',
+    justifyContent: 'center', // 추가
+  },
+  text3: {
+    color: '#06A4FD',
+    fontSize: 15,
+    fontFamily: 'NanumSquareEB',
+    marginRight: 10,
+  },
+  text4: {
+    color: 'red',
+    fontSize: 15,
+    fontFamily: 'NanumSquareEB',
+    marginRight: 10,
+  },
+  disabledText3: {
+    color: '#A9A9A9',
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  style1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  addButton2: {
+    backgroundColor: '#06A4FD',
+    width: 23,
+    height: 23,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center', // 추가
+    marginLeft: -4,
   },
   addButtonText: {
     color: 'white',
@@ -453,35 +542,19 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
     alignItems: 'center',
-    marginLeft: 8,
+    marginLeft: 5,
   },
   saveButtonText: {
     color: 'white',
+    fontFamily: 'NanumSquareB',
     fontSize: 16,
   },
-  saveEventButton: {
-    backgroundColor: '#06A4FD',
-    padding: 15,
+  disabledButton: {
+    backgroundColor: '#A9A9A9',
+    padding: 5,
     borderRadius: 5,
     alignItems: 'center',
-    marginTop: 10,
-  },
-  saveEventButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  deleteEventButton: {
-    backgroundColor: 'red',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  deleteEventButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
+    marginLeft: 8,
   },
   item: {
     flexDirection: 'row',
@@ -502,6 +575,32 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 14,
     color: '#888',
+  },
+  saveEventButton: {
+    backgroundColor: '#06A4FD',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center', // 추가
+    marginTop: 10,
+  },
+  saveEventButtonText: {
+    color: 'white',
+    fontSize: 18, // 업데이트
+    fontWeight: 'bold',
+  },
+  deleteEventButton: {
+    backgroundColor: '#06A4FD',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center', // 추가
+    marginTop: 10,
+  },
+  deleteEventButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   jobDetailsContainer: {
     backgroundColor: 'white',
