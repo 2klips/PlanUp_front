@@ -9,6 +9,11 @@ import WorkNetCompanyDetails from '../../components/ui/WorkNetCompanyDetails';
 import WorkNetCompanyDetailsV2 from '../../components/ui/WorkNetCompanyDetailsV2';
 import WorkNetDetailsV2 from '../../components/ui/WorkNetDetailsV2';
 import WorkNetDetailsV3 from '../../components/ui/WorkNetDetailsV3';
+import WorkNetCompanyDetailsV3 from '../../components/ui/WorkNetCompanyDetailsV3';
+import WorkNetMobileDetails from '../../components/ui/WorkNetMobileDetails';
+import WorkNetMobileCompanyDetails from '../../components/ui/WorkNetMobileCompanyDetails';
+import WorkNetMobileDetailsV2 from '../../components/ui/WorkNetMobileDetailsV2';
+import WorkNetMobileCompanyDetailsV2 from '../../components/ui/WorkNetMobileCompanyDetailsV2';
 import JobKoreaDetails from '../../components/ui/JobKoreaDetails';
 import JobKoreaCompanyDetails from '../../components/ui/JobKoreaCompanyDetails';
 import WantedDetails from '../../components/ui/WantedDetails';
@@ -46,7 +51,17 @@ const JobDetailsPage = ({ route }) => {
                     if (url.includes('saramin')) {
                         setPlatform('saramin');
                     } else if (url.includes('work')) {
-                        setPlatform(url.includes('detail') ? 'worknetV1' : 'worknetV2');
+                        if (url.includes('detail/retrivePriEmpDtlView.do')) {
+                            setPlatform('worknetV3');
+                        } else if (url.includes('empInfoSrch/detail/empDetailAuthView.do')) {
+                            setPlatform('worknetV1');
+                        } else if (url.includes('empInfoSrch/list/dhsOpenEmpInfoDetail2.do')) {
+                            setPlatform('worknetV3');
+                        } else if (url.includes('regionJobsWorknet/jobDetailView2.do') && url.includes('srchInfotypeNm=OEW')) {
+                            setPlatform('worknetMobileV1');
+                        } else if (url.includes('regionJobsWorknet/jobDetailView2.do') && url.includes('srchInfotypeNm=VALIDATION')) {
+                            setPlatform('worknetMobileV2');
+                        }
                     } else if (url.includes('jobkorea')) {
                         setPlatform('jobkorea');
                     } else if (url.includes('wanted')) {
@@ -176,7 +191,49 @@ const JobDetailsPage = ({ route }) => {
                                     </TouchableOpacity>
                                 </View>
                                 <WorkNetDetailsV3 jobDetails={jobDetails} />
-                                <WorkNetCompanyDetailsV2 jobDetails={jobDetails} />
+                                {/* <WorkNetCompanyDetailsV3 jobDetails={jobDetails} /> */}
+                            </>
+                        )}
+                        {platform === 'worknetMobileV1' && (
+                            <>
+                                <TouchableOpacity style={styles.backbutton} onPress={() => navigation.navigate('URLInputPage')}>
+                                    <Text style={styles.backText}>다시 입력하기</Text>
+                                    <Back width={18} height={18} style={styles.backIcon} />
+                                </TouchableOpacity>
+                                <View style={styles.header}>
+                                    <Success width={60} height={60} style={styles.success} />
+                                    <Image style={styles.worknet_logo} source={Worknet_logo} />
+                                    <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                </View>
+                                <View style={styles.item}>
+                                    <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
+                                    <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
+                                        <Text style={styles.buttonText}>+</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <WorkNetMobileDetails jobDetails={jobDetails} />
+                                <WorkNetMobileCompanyDetails jobDetails={jobDetails} />
+                            </>
+                        )}
+                        {platform === 'worknetMobileV2' && (
+                            <>
+                                <TouchableOpacity style={styles.backbutton} onPress={() => navigation.navigate('URLInputPage')}>
+                                    <Text style={styles.backText}>다시 입력하기</Text>
+                                    <Back width={18} height={18} style={styles.backIcon} />
+                                </TouchableOpacity>
+                                <View style={styles.header}>
+                                    <Success width={60} height={60} style={styles.success} />
+                                    <Image style={styles.worknet_logo} source={Worknet_logo} />
+                                    <Text style={styles.title}>취업공고를 불러왔어요!</Text>
+                                </View>
+                                <View style={styles.item}>
+                                    <Text style={styles.addText}>해당 공고를 캘린더에 추가하기</Text>
+                                    <TouchableOpacity onPress={addToCalendar} style={styles.addbutton}>
+                                        <Text style={styles.buttonText}>+</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <WorkNetMobileDetailsV2 jobDetails={jobDetails} />
+                                <WorkNetMobileCompanyDetailsV2 jobDetails={jobDetails} />
                             </>
                         )}
                         {platform === 'jobkorea' && (

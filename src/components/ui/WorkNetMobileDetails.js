@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, Linking, TouchableOpacity } from 'react-native';
 import DetailRow from './DetailRow';
-import moment from 'moment';
 import Worknet_logo from '../../assets/images/worknet_logo.png';
 import Arrow from '../../assets/images/arrow_black.svg';
 
-const WorkNetDetailsV3 = ({ jobDetails }) => {
+const WorkNetMobileDetails = ({ jobDetails }) => {
     const handlePress = () => {
         const { URL } = jobDetails;
         if (URL) {
@@ -16,15 +15,6 @@ const WorkNetDetailsV3 = ({ jobDetails }) => {
         }
     };
 
-    const calculateDday = (endDate) => {
-        const today = moment();
-        const end = moment(endDate, 'YYYY년 MM월 DD일');
-        return end.diff(today, 'days');
-    };
-
-    const dDay = jobDetails.공고마감일 ? calculateDday(jobDetails.공고마감일) : null;
-    const closingDateText = dDay !== null ? `D-${dDay}` : '수시채용';
-
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.card}>
@@ -32,18 +22,15 @@ const WorkNetDetailsV3 = ({ jobDetails }) => {
                     <Image style={styles.worknet_logo} source={Worknet_logo} />
                     <Text style={styles.siteName}>워크넷</Text>
                 </View>
-                <Text style={styles.title}>{jobDetails.직무}</Text>
-                <Image style={styles.logo} source={{ uri: jobDetails.로고이미지 }} />
-                <DetailRow label="모집직종" value={jobDetails.모집직종} />
-                <DetailRow label="경력" value={jobDetails.경력조건} />
-                <DetailRow label="학력" value={jobDetails.학력조건} />
-                <DetailRow label="지역" value={jobDetails.근무지역} />
-                <DetailRow label="고용형태" value={jobDetails.고용형태} />
-                <Text style={styles.date}>{closingDateText}</Text>
-                <Text style={styles.closingDate}>{jobDetails.공고마감일}</Text>
+                <Text style={styles.title}>{jobDetails.회사명 || '직무 없음'}</Text>
+                <Image style={styles.logo} source={{ uri: jobDetails.회사로고 || 'default_logo_uri' }} />
+                {/* <DetailRow label="마감일" value={jobDetails.마감일 || '마감일 정보 없음'} /> */}
+                <DetailRow label="경력" value={jobDetails.경력 || '경력 정보 없음'} />
+                <DetailRow label="학력" value={jobDetails.학력 || '학력 정보 없음'} />
+                <DetailRow label="지역" value={jobDetails.근무지 || '근무지 정보 없음'} />
+                <DetailRow label="고용형태" value={jobDetails.고용형태 || '고용형태 정보 없음'} />
                 <View style={styles.footer}>
-                    <Text style={styles.footerText}>접수 시작일: {jobDetails.공고시작일 || '수시채용'}</Text>
-                    <Text style={styles.footerText}>접수 마감일: {jobDetails.공고마감일 || '수시채용'}</Text>
+                        <Text style={styles.footerText}>{jobDetails.접수기간 || '수시채용'}</Text>
                 </View>
 
                 <View style={styles.moveToSite}>
@@ -119,21 +106,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: 10,
     },
-    date: {
-        fontSize: 34,
-        fontFamily: 'NanumSquareEB',
-        color: 'black',
-        textAlign: 'center',
-        marginTop: 12,
-        marginBottom: 1,
-    },
-    closingDate: {
-        fontSize: 12,
-        color: '#555',
-        textAlign: 'center',
-        marginTop: -4,
-        marginBottom: 20,
-    },
     footer: {
         borderTopWidth: 1,
         borderTopColor: '#e1e1e1',
@@ -170,4 +142,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default WorkNetDetailsV3;
+export default WorkNetMobileDetails;

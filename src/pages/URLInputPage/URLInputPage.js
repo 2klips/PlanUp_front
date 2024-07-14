@@ -9,6 +9,9 @@ import SaraminDetails from '../../components/ui/SaraminDetails';
 import JobKoreaDetails from '../../components/ui/JobKoreaDetails';
 import WorkNetDetails from '../../components/ui/WorkNetDetails';
 import WorkNetDetailsV2 from '../../components/ui/WorkNetDetailsV2';
+import WorkNetDetailsV3 from '../../components/ui/WorkNetDetailsV3';
+import WorkNetMobileDetails from '../../components/ui/WorkNetMobileDetails';
+import WorkNetMobileDetailsV2 from '../../components/ui/WorkNetMobileDetailsV2';
 import JobPlanetDetails from '../../components/ui/JobPlanetDetails';
 import WantedDetails from '../../components/ui/WantedDetails';
 
@@ -36,21 +39,39 @@ const URLInputPage = ({ navigation }) => {
         try {
             const response = await axios.post('http://10.0.2.2:8000/scrape', { url });
             setJobDetails(response.data);
+
             if (url.includes('saramin')) {
                 setPlatform('saramin');
-            } else if (url.includes('jobkorea')) {
-                setPlatform('jobkorea');
-            } else if (url.includes('work')) {
-                setPlatform(url.includes('detail') ? 'worknetV1' : 'worknetV2');
-            } else if (url.includes('jobplanet')) {
-                setPlatform('jobplanet');
+            } else if (url.includes('work.go.kr')) {
+                if (url.includes('detail/retrivePriEmpDtlView.do')) {
+                    setPlatform('worknetV3');
+                } else if (url.includes('empInfoSrch/detail/empDetailAuthView.do')) {
+                    setPlatform('worknetV1');
+                } else if (url.includes('empInfoSrch/list/dhsOpenEmpInfoDetail2.do')) {
+                    setPlatform('worknetV2');
+                } else if (url.includes('regionJobsWorknet/jobDetailView2.do')) {
+                    if (url.includes('srchInfotypeNm=OEW')) {
+                        setPlatform('worknetMobileV1');
+                    } else if (url.includes('srchInfotypeNm=VALIDATION')) {
+                        setPlatform('worknetMobileV2');
+                    }
+                } else {
+                    console.error('지원되지 않는 Worknet URL입니다.');
+                }
             } else if (url.includes('wanted')) {
                 setPlatform('wanted');
+            } else if (url.includes('jobkorea')) {
+                setPlatform('jobkorea');
+            } else if (url.includes('jobplanet')) {
+                setPlatform('jobplanet');
+            } else {
+                console.error('지원되지 않는 URL입니다.');
             }
         } catch (error) {
             console.error('Error fetching job details:', error);
         }
     };
+
 
     const handleUrlSubmit = () => {
         if (inputUrl) {

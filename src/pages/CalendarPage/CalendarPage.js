@@ -10,6 +10,9 @@ import { useAuth } from '../../context/AuthContext';
 import SaraminDetails from '../../components/ui/SaraminDetails';
 import WorkNetDetails from '../../components/ui/WorkNetDetails';
 import WorkNetDetailsV2 from '../../components/ui/WorkNetDetailsV2';
+import WorkNetDetailsV3 from '../../components/ui/WorkNetDetailsV3';
+import WorkNetMobileDetails from '../../components/ui/WorkNetMobileDetails';
+import WorkNetMobileDetailsV2 from '../../components/ui/WorkNetMobileDetailsV2';
 import JobKoreaDetails from '../../components/ui/JobKoreaDetails';
 import WantedDetails from '../../components/ui/WantedDetails';
 import JobPlanetDetails from '../../components/ui/JobPlanetDetails';
@@ -50,8 +53,9 @@ const CalendarPage = ({ route, navigation }) => {
 
   useEffect(() => {
     if (jobDetails) {
+      console.log('Job Details:', jobDetails);  // 디버깅을 위한 로그
       setEventTitle(jobDetails.직무 || '');
-      const formattedDate = moment(jobDetails.마감일, 'YYYY.MM.DD HH:mm').format('YYYY-MM-DD');
+      const formattedDate = formatDate(jobDetails.마감일);
       setEventDate(formattedDate);
       setMarkedDates({
         [formattedDate]: { selected: true, marked: true, selectedColor: 'blue' }
@@ -59,6 +63,12 @@ const CalendarPage = ({ route, navigation }) => {
       determineComponentToShow();
     }
   }, [jobDetails]);
+
+  const formatDate = (date) => {
+    if (!date) return moment().format('YYYY-MM-DD');
+    const parsedDate = moment(date, 'YYYY.MM.DD HH:mm');
+    return parsedDate.isValid() ? parsedDate.format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+  };
 
   const handleSaveEvent = async () => {
     if (eventTitle.trim() === '' || eventDescription.trim() === '') {
@@ -128,43 +138,24 @@ const CalendarPage = ({ route, navigation }) => {
 
   const determineComponentToShow = () => {
     const source = jobDetails.source;
-    console.log('source:', source);
     if (source === 'saramin') {
-      setComponentToShow(
-        <>
-          <SaraminDetails jobDetails={jobDetails} />
-        </>
-      );
+      setComponentToShow(<SaraminDetails jobDetails={jobDetails} />);
     } else if (source === 'worknetV1') {
-      setComponentToShow(
-        <>
-          <WorkNetDetails jobDetails={jobDetails} />
-        </>
-      );
+      setComponentToShow(<WorkNetDetails jobDetails={jobDetails} />);
     } else if (source === 'worknetV2') {
-      setComponentToShow(
-        <>
-          <WorkNetDetailsV2 jobDetails={jobDetails} />
-        </>
-      );
+      setComponentToShow(<WorkNetDetailsV2 jobDetails={jobDetails} />);
+    } else if (source === 'worknetV3') {
+      setComponentToShow(<WorkNetDetailsV3 jobDetails={jobDetails} />);
+    } else if (source === 'worknetMobileV1') {
+      setComponentToShow(<WorkNetMobileDetails jobDetails={jobDetails} />);
+    } else if (source === 'worknetMobileV2') {
+      setComponentToShow(<WorkNetMobileDetailsV2 jobDetails={jobDetails} />);
     } else if (source === 'jobkorea') {
-      setComponentToShow(
-        <>
-          <JobKoreaDetails jobDetails={jobDetails} />
-        </>
-      );
+      setComponentToShow(<JobKoreaDetails jobDetails={jobDetails} />);
     } else if (source === 'wanted') {
-      setComponentToShow(
-        <>
-          <WantedDetails jobDetails={jobDetails} />
-        </>
-      );
+      setComponentToShow(<WantedDetails jobDetails={jobDetails} />);
     } else if (source === 'jobplanet') {
-      setComponentToShow(
-        <>
-          <JobPlanetDetails jobDetails={jobDetails} />
-        </>
-      );
+      setComponentToShow(<JobPlanetDetails jobDetails={jobDetails} />);
     } else {
       setComponentToShow(null);
     }
@@ -296,7 +287,7 @@ const CalendarPage = ({ route, navigation }) => {
       <View style={styles.eventDetail}>
         <View style={styles.dateContainer}>
           <Text style={styles.eventDate}>
-            {moment(eventDate).locale('ko').format('YYYY년 M월 D일')}
+            {eventDate ? moment(eventDate).locale('ko').format('YYYY년 M월 D일') : '날짜 선택'}
           </Text>
         </View>
         <Text style={styles.label}>제목</Text>
