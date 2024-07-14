@@ -128,8 +128,8 @@ function MainPage() {
                     {isChecklist && <Checklist />}
 
                     {/* 채용 정보 표시 */}
-                    <View>
-                        <Text style={styles.sectionTitle}>채용 정보</Text>
+                    <View style={styles.jobcontainer}>
+                        <Text style={styles.sectionTitle}>나의 취업공고</Text>
                         {jobPostings.map((job) => (
                             <View key={job._id} style={styles.jobPosting}>
                                 <Text style={styles.jobTitle}>{job.title}</Text>
@@ -175,17 +175,25 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginLeft: 3,
     },
+    jobcontainer: {
+        marginTop: 20,
+    },
     sectionTitle: {
-        fontSize: 22,
+        fontSize: 18,
         fontFamily: 'NanumSquareEB',
-        color: 'black',
+        color: '#06A4FD',
         marginVertical: 10,
+        marginBottom: 16,
+        marginLeft: 8,
     },
     jobPosting: {
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
+        padding: 16,
+        borderWidth: 3,
+        borderTopColor: '#97E5FF',
+        borderLeftColor: '#97E5FF',
+        borderRightColor: '#69C9FF',
+        borderBottomColor: '#47BDFF',
+        borderRadius: 22,
         marginVertical: 5,
     },
     jobTitle: {
@@ -194,7 +202,7 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     jobCompany: {
-        fontSize: 16,
+        fontSize: 14,
         fontFamily: 'NanumSquareR',
         color: 'black',
     },
@@ -202,6 +210,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: 'NanumSquareR',
         color: 'gray',
+        textAlign: 'right',
     },
     button: {
         backgroundColor: '#4CAF50',

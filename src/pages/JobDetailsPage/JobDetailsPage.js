@@ -89,9 +89,9 @@ const JobDetailsPage = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={addToCalendar} style={styles.calendarButton}>
+            {/* <TouchableOpacity onPress={addToCalendar} style={styles.calendarButton}>
                 <Text style={styles.calendarButtonText}>해당 공고를 캘린더에 추가하기</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {jobDetails ? (
                     <>
