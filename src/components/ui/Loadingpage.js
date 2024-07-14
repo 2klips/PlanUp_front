@@ -10,7 +10,7 @@ const LoadingScreen = () => {
       <Image 
         source={require('../../assets/images/loading.gif')}  
         style={{width: 140, height: 140, resizeMode: 'contain', marginBottom: 10, marginTop: 20}}
-    />
+      />
       <Text style={styles.infotext}>10초 ~ 20초 정도 소요돼요.</Text>
       <Text style={styles.infotext}>잠시만 기다려주세요!</Text>
     </View>

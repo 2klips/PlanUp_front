@@ -11,12 +11,14 @@ import CalendarPage from '../pages/CalendarPage/CalendarPage'; // 경로를 적�
 import TodolistDetail from '../pages/Todolist/TodolistDetail';
 import CertifiCalendar from '../pages/Search/CertifiCalendar';
 import NoResultsPage from '../pages/JobDetailsPage/NoResultsPage';
+import IntroScreen from '../components/ui/IntroScreen';
 
 const Stack = createNativeStackNavigator();
 
 function MainNavigator() {
     return (
-        <Stack.Navigator initialRouteName="MainPage">
+        <Stack.Navigator initialRouteName="IntroScreen">
+            <Stack.Screen name="IntroScreen" component={IntroScreen} options={{ headerShown: false }} />
             <Stack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
             <Stack.Screen name="URLInputPage" component={URLInputPage} />
             <Stack.Screen name="JobDetailsPage" component={JobDetailsPage} />

@@ -6,7 +6,10 @@ import {
     Text,
     View,
     TouchableOpacity,
-    AppState
+    AppState,
+    Dimensions,
+    Image,
+    Linking
 } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import TodolistCalendar from '../../components/ui/TodolistCalendar';
@@ -15,11 +18,14 @@ import Checklist from '../../components/ui/Checklist';
 import AddURL from '../../components/ui/AddURL';
 import URLonly from '../../components/ui/URLonly';
 import Reminder from '../../components/ui/Reminder';
+import Swiper from 'react-native-web-swiper';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import VirtualizedView from '../../utils/VirutalizedList';
 import Logo from '../../assets/images/logo.svg';
+
+
 
 function MainPage() {
     const { user } = useAuth();
@@ -108,7 +114,12 @@ function MainPage() {
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }}>
             <VirtualizedView>
                 <View style={styles.container}>
-                    <Logo width={60} height={100} style={styles.logo} />
+                    {/* <Logo width={60} height={100} style={styles.logo} />
+                     */}
+                     <Image 
+                        source={require('../../assets/images/logo_ani.gif')}  
+                        style={{width: 80, height: 100, resizeMode: 'contain', marginBottom: 0, marginTop: 0, alignSelf: 'center'}}
+                    />
                     <Text style={styles.title}>{user.name}님 안녕하세요!</Text>
                     <Text style={styles.welcome}>목표를 꼭 이루시길 바래요!</Text>
 
@@ -146,6 +157,29 @@ function MainPage() {
                     >
                         <Text style={styles.buttonText}>채용 정보 보기</Text>
                     </TouchableOpacity>
+
+                     {/*AD*/}
+                    <View style={styles.sliderContainer}>
+                        <Swiper loop 
+                                autoplay 
+                                timeout={5} 
+                                controlsEnabled 
+                                controlsProps={{
+                                    prevPos: false,
+                                    nextPos: false,
+                                    dotsTouchable: true, 
+                            }}>
+                            <TouchableOpacity style={styles.slide} onPress={() => Linking.openURL('https://www.2024datacontest.co.kr/')}>
+                                <Image source={require('../../assets/images/Ad01.png')} style={styles.image} />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.slide} onPress={() => Linking.openURL('https://motijobfair.com/')}>
+                                <Image source={require('../../assets/images/Ad02.png')} style={styles.image} />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.slide} onPress={() => Linking.openURL('https://fome-jobfair.com/main/main.php')}>
+                                <Image source={require('../../assets/images/Ad03.png')} style={styles.image} />
+                            </TouchableOpacity>
+                        </Swiper>
+                    </View>
                 </View>
             </VirtualizedView>
         </SafeAreaView>
@@ -222,6 +256,27 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 16,
+    },
+    sliderContainer: {
+        height: 200,
+        width: '100%',
+        marginBottom: 30,
+        marginTop: 30,
+        
+    },
+    slide: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1, // 테두리 너비 설정
+        borderColor: 'white', // 테두리 색상 설정 (여기서는 검정색)
+        borderRadius: 24, // 테두리 둥글게 설정
+        overflow: 'hidden', // 자식 요소가 테두리를 넘지 않도록 설정
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
     },
 });
 export default MainPage;
