@@ -9,16 +9,16 @@ import CalendarOnly from './CalendarOnly';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import VirtualizedView from '../../utils/VirutalizedList';
 import CustomCalendar from './CustomCalendar';
-import licenseimg from '../../assets/images/license_icon.svg'
-import userimg from '../../assets/images/user_todo_icon.svg'
-import jobimg from '../../assets/images/saramin_logo.png'
-import { Image } from 'react-native';
+import Licenseimg from '../../assets/images/license_icon.svg'
+import Userimg from '../../assets/images/user_todo_icon.svg'
+import Jobimg from '../../assets/images/main_top_Logo.svg'
+import Checkimg from '../../assets/images/check.svg'
 
 const TodolistCalendar = ({ navigation }) => {
     const [todoList, setTodoList] = useState([]);
     const [showAll, setShowAll] = useState(false);
     const isFocused = useIsFocused();
-
+    const [checklistCounts, setChecklistCounts] = useState({});
 
     useEffect(() => {
         const fetchTodos = async () => {
@@ -65,46 +65,68 @@ const TodolistCalendar = ({ navigation }) => {
     navigation.navigate('TodolistDetail', { selectedTodo: item });
 };
 
-    const renderTodo = ({ item }) => {
-        const examDate = moment(item.examDate);
-        const formattedDate = examDate.format('YYYY년 M월 D일');
-        const daysLeft = item.daysLeft;
-        const type = item.type;
+const fetchChecklistCount = async (todoId) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const response = await axios.get(`http://10.0.2.2:8080/checklist/${todoId}/count`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
-        // let source = null;
+        return response.data.count;
+    } catch (error) {
+        console.error(`Error fetching checklist count for todoId ${todoId}:`, error);
+        return 0;
+    }
+};
 
-        // // type 값에 따라 이미지를 선택합니다.
-        // switch (type) {
-        //     case '0':
-        //         source = userimg;
-        //         break;
-        //     case '1':
-        //         source = licenseimg;
-        //         break;
-        //     case '2':
-        //         source = jobimg;
-        //         break;
-        //     default:
-        //         source = userimg;
-        //         break;
-        // }
+useEffect(() => {
+    const fetchChecklistCounts = async () => {
+        const counts = {};
+        await Promise.all(
+            todoList.map(async (item) => {
+                const count = await fetchChecklistCount(item._id);
+                counts[item._id] = count;
+            })
+        );
+        setChecklistCounts(counts);
+    };
 
-        return (
-            <TouchableOpacity onPress={() => handleTodoPress(item)}>
-                <View style={styles.item}>
-                    <View style={styles.itemLeft}>
-                        <View style={[styles.circle, { backgroundColor: item.color || 'blue' }]} />
-                        <View style={{width:'80%'}}>
-                            <Text style={styles.title} numberOfLines={1} ellipsizeMode='tail'>{item.title}</Text>
-                            {/* <Image source={jobimg} style={styles.todoIcon} /> */}
+    fetchChecklistCounts();
+}, [todoList]);
+
+const renderTodo = ({ item }) => {
+    const examDate = moment(item.examDate);
+    const formattedDate = examDate.format('YYYY년 M월 D일');
+    const daysLeft = item.daysLeft;
+    const type = item.type;
+    const count = checklistCounts[item._id] || 0;
+
+    return (
+        <TouchableOpacity onPress={() => handleTodoPress(item)}>
+            <View style={styles.item}>
+                <View style={styles.itemLeft}>
+                    <View style={[styles.circle, { backgroundColor: item.color || 'blue' }]} />
+                    <View style={{ width: '80%' }}>
+                        <Text style={styles.title} numberOfLines={1} ellipsizeMode='tail'>{item.title}</Text>
+                        <View style={styles.typeContainer}>
+                            {type === '0' ? <Userimg width={15} height={15} marginRight={5} /> : type === '1' ? <Licenseimg width={15} height={15} marginRight={5} /> : <Jobimg width={15} height={15} marginRight={5} />}
                             <Text style={styles.examDate}>{formattedDate}</Text>
+                            {count > 0 && (
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Checkimg width={15} height={15} marginRight={5}/>
+                                    <Text>{count}</Text>
+                                </View>
+                            )}
                         </View>
                     </View>
-                    <Text style={styles.daysLeft}>D-{daysLeft}일</Text>
                 </View>
-            </TouchableOpacity>
-        );
-    };
+                <Text style={styles.daysLeft}>D-{daysLeft}일</Text>
+            </View>
+        </TouchableOpacity>
+    );
+};
 
     const displayedTodoList = showAll ? todoList : todoList.slice(0, 4);
     
@@ -210,6 +232,7 @@ const styles = StyleSheet.create({
         fontSize: 13,
         fontFamily: 'NanumSquareR',
         color: '#888',
+        marginRight: 10,
     },
     daysLeft: {
         fontSize: 16,
@@ -232,6 +255,11 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         marginTop: 20,
     },
+
+    typeContainer: {
+        alignItems: 'center',
+        flexDirection: 'row',
+    }
 });
 
 export default TodolistCalendar;

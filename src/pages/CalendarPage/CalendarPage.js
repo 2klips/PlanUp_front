@@ -84,6 +84,7 @@ const CalendarPage = ({ route, navigation }) => {
         text: eventDescription,
         color: color,
         examDate: eventDate,
+        type: '2'
       },{
         headers: {
           Authorization: `Bearer ${token}`
