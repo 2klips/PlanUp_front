@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity, Alert} from 'react-native';
+import React, {useLayoutEffect} from 'react';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Image} from 'react-native';
 import Modal from 'react-native-modal';
 import { useNavigation } from '@react-navigation/native';
 import LoginInputBox from '../../components/ui/LoginInputBox';
@@ -58,6 +58,12 @@ function SignupPage() {
         }
     };
 
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerShown: false,
+        });
+    }, [navigation]);
+
     const handleValidatePasswordVerify = (pass) => {
         if (pass === '') {
             setIsValidPasswordVerify(false)
@@ -113,13 +119,18 @@ function SignupPage() {
 
     return (
         <View style={styles.container}>
+            <Image 
+                source={require('../../assets/images/logo_ani.gif')}  
+                style={{width: 100, height: 100, resizeMode: 'contain', marginBottom: 0, marginTop: -60, alignSelf: 'center'}}
+                />
             <View style={styles.TextBox}>
                 <Text style={styles.title}>환영합니다!</Text>
-                <Text style={styles.smallText}>원하시는 꿈을 이루실 수 있도록 최선을 다 할게요.</Text>
+                <Text style={styles.smallText}>원하시는 꿈을 이루실 수 있도록 최선을</Text>
+                <Text style={styles.smallText}>다 할게요.</Text>
             </View>
             <View style={styles.TextBox}>
                 <Text style={styles.subText}>사용하실 아이디와</Text>
-                <Text style={styles.subText}>비밀번호를 비력해주세요.</Text>
+                <Text style={styles.subText}>비밀번호를 입력해주세요.</Text>
             </View>
             <View style={styles.margin}>
             <LoginInputBox
@@ -134,7 +145,7 @@ function SignupPage() {
                 />
             <Text style={[styles.validateText, idValidColor]}>{idValidText}</Text>
             </View>
-            <View>
+            <View style={styles.margin}>
             <LoginInputBox
                 title="비밀번호"
                 text="비밀번호를 입력하세요"
@@ -148,7 +159,7 @@ function SignupPage() {
             />
             <Text style={[styles.validateText, passwordValidColor]}>{passwordValidText}</Text>
             </View>
-            <View>
+            <View style={styles.margin}>
             <LoginInputBox
                 title="비밀번호 확인"
                 text="비밀번호를 다시 한 번 입력해주세요"
@@ -206,27 +217,30 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: 'white',
+        fontFamily: 'NanumSquareB',
+        marginTop: 4,
+        marginBottom: 0,
         fontSize: 16,
         textAlign: 'center',
     },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
+        fontSize: 28,
+        fontFamily: 'NanumSquareEB',
         color: 'black'
     },
     smallText: {
-        fontSize: 14,
-        color: 'gray',
-        fontWeight: 'bold',
+        fontSize: 16,
+        color: 'black',
+        fontFamily: 'NanumSquareB',
         textAlign: 'left'
     },
     margin: {
-        marginBottom: 10,
+        marginBottom: 0,
     },
     subText: {
         fontSize: 17,
         color: 'black',
-        fontWeight: 'bold',
+        fontFamily: 'NanumSquareEB',
         textAlign: 'left'
     },
     TextBox: {

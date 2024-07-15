@@ -106,7 +106,7 @@ function MainPage() {
 
     const {setIsLoggedIn, setUser } = useAuth();
     const handleLogout = (navigation, setIsLoggedIn, setUser) => {
-        Alert.alert('Logout', 'Do you want to log out?', [
+        Alert.alert('로그아웃', '로그아웃 하시겠습니까?', [
             { text: 'Cancel', style: 'cancel' },
             { text: 'OK', onPress: () =>  {
                 AsyncStorage.removeItem('token')
@@ -114,7 +114,7 @@ function MainPage() {
                         setIsLoggedIn(false);
                         setUser(null);
                         console.log('로그아웃 성공');
-                        Alert.alert('로그아웃 성공', '로그아웃에 성공했습니다.');
+                        Alert.alert('로그아웃 성공', '로그아웃 되었습니다.');
                         navigation.navigate('LoginPage');
                     })
                     .catch((error) => {
@@ -140,7 +140,7 @@ function MainPage() {
                 <TouchableOpacity 
                 onPress={() => handleLogout(navigation, setIsLoggedIn, setUser)}
                 style={{ marginRight: 10 }}>
-                    <Text style={{ color: '#007AFF', fontSize: 16 }}>Logout</Text>
+                    <Text style={styles.logout}>로그아웃</Text>
                 </TouchableOpacity>
                     {/* <Logo width={60} height={100} style={styles.logo} />
                      */}
@@ -220,6 +220,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: 20,
         paddingRight: 20,
+    },
+    logout : {
+        fontFamily: 'NanumSquareEB',
+        color: '#06A4FD',
+        textAlign: 'right',
     },
     logo: {
         alignSelf: 'center',

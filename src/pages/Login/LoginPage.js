@@ -44,7 +44,7 @@ function LoginPage({ navigation }) {
                 setIsLoggedIn(true);
                 setUser(data.user);
                 console.log('로그인 성공:', data);
-                Alert.alert('로그인 성공', '로그인에 성공했습니다.');
+                Alert.alert('로그인 성공', '로그인 되었습니다.');
                 navigation.navigate('MainPage', {
                     params: data.user,
                 });
@@ -64,7 +64,7 @@ function LoginPage({ navigation }) {
                         source={require('../../assets/images/logo_ani.gif')}  
                         style={{width: 80, height: 100, resizeMode: 'contain', marginBottom: 0, marginTop: -120, alignSelf: 'center'}}
             />
-            <Text style={styles.app_name}>APP NAME</Text>
+            <Text style={styles.app_name}>PLAN UP</Text>
             <Text style={styles.title}>로그인</Text>
             <LoginInputBox
                 title="아이디"

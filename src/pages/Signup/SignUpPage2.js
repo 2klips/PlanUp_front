@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal, Button , SafeAreaView, ScrollView} from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal, Button , SafeAreaView, ScrollView, Image} from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import LoginInputBox from '../../components/ui/LoginInputBox';
 import {validateEmail, validateHP, validateName} from '../../utils/validateRegex';
@@ -40,6 +40,13 @@ function SignupPage2() {
             }
         }
     };
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerShown: false,
+        });
+    }, [navigation]);
+
     const handleValidateEmail = (email) => {
         if (email === '') {
             setIsValidEmail(false);
@@ -98,12 +105,12 @@ function SignupPage2() {
         .then((response) => response.json())
         .then((data) => {
             console.log('Signup 성공:', data);
-            Alert.alert('Signup 성공', '회원가입에 성공했습니다.');
+            Alert.alert('회원가입', '회원가입이 완료되었습니다!');
             navigation.navigate('LoginPage');
         })
         .catch((error) => {
             console.error('Signup 오류:', error);
-            Alert.alert('Signup 오류', '회원가입 중 오류가 발생했습니다.', error);
+            Alert.alert('회원가입 오류', '회원가입 중 오류가 발생했습니다.', error);
         });
     };
 
@@ -111,6 +118,10 @@ function SignupPage2() {
         <SafeAreaView style={styles.safeArea}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.container}>
+                    <Image 
+                    source={require('../../assets/images/logo_ani.gif')}  
+                    style={{width: 100, height: 100, resizeMode: 'contain', marginBottom: 0, marginTop: -80, alignSelf: 'center'}}
+                    />
                     <View style={styles.textBox}>
                         <Text style={styles.subText}>추가 정보를 입력해주세요.</Text>
                     </View>
@@ -130,7 +141,7 @@ function SignupPage2() {
                     <View>
                         <LoginInputBox
                             title="연락처"
-                            text="전화번호를 입력하세요"
+                            text="전화번호를 입력하세요 ( - 포함하여 입력 )"
                             value={hp}
                             onChangeText={(e) => {
                                 setHp(e);
@@ -192,7 +203,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'gray',
         paddingVertical: 5,
         paddingHorizontal: 10,
-        borderRadius: 5,
+        borderRadius: 8,
         marginBottom: 5,
         width: 100,
         height: 35,
@@ -224,7 +235,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#06A4FD',
         paddingVertical: 5,
         paddingHorizontal: 10,
-        borderRadius: 5,
+        borderRadius: 8,
+        marginTop: 16,
         marginBottom: 5,
         width: 100,
         height: 35,
@@ -233,7 +245,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'NanumSquareB',
+        marginTop: 4,
     },
     title: {
         fontSize: 24,
@@ -242,9 +255,10 @@ const styles = StyleSheet.create({
         color: '#25A4FF'
     },
     subText: {
-        fontSize: 17,
+        fontSize: 22,
         color: 'black',
-        fontWeight: 'bold',
+        fontFamily: 'NanumSquareEB',
+        marginLeft: 6,
         textAlign: 'left'
     },
     textBox: {

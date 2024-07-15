@@ -15,6 +15,7 @@ import WorkNetMobileDetails from '../../components/ui/WorkNetMobileDetails';
 import WorkNetMobileDetailsV2 from '../../components/ui/WorkNetMobileDetailsV2';
 import JobPlanetDetails from '../../components/ui/JobPlanetDetails';
 import WantedDetails from '../../components/ui/WantedDetails';
+import Home_icon  from '../../assets/images/home_icon.svg';
 
 const URLInputPage = ({ navigation }) => {
     const [inputUrl, setInputUrl] = useState('');
@@ -35,6 +36,10 @@ const URLInputPage = ({ navigation }) => {
             setDisplayText('');
         }
     }, [isFocused]);
+
+    const handleGoToMainPage = () => {
+        navigation.navigate('MainPage');
+    };
 
     const submitUrl = async (url) => {
         try {
@@ -117,6 +122,12 @@ const URLInputPage = ({ navigation }) => {
                 <Text style={styles.infoText}>URL주소를 입력해주세요!</Text> 
                 <Image source={Jobsite} style={styles.jobsiteLogo} />
                 <Text style={styles.note}>※ 현재 위 사이트들의 URL만 조회가 가능해요.</Text>
+            </View>
+            <View style={styles.style1}>
+                <TouchableOpacity
+                    onPress={handleGoToMainPage}>
+                    <Home_icon width={30} height={30} />
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -208,6 +219,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginTop: 10,
     },
+    style1:{
+        flexDirection:'row',
+        alignItems:"center",
+        justifyContent:"center",
+        marginTop: 40,
+        marginBottom: 20,
+      },
 });
 
 export default URLInputPage;
