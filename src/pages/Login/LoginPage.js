@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
+import React, {useLayoutEffect} from 'react';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,6 +16,12 @@ function LoginPage({ navigation }) {
         console.log('Go to SignupPage button pressed');
         navigation.navigate('SignupPage');
     };
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerShown: false,
+        });
+    }, [navigation]);
 
     const onLogin = async () => {
         try {
@@ -53,7 +59,12 @@ function LoginPage({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Login Page</Text>
+            <Image 
+                        source={require('../../assets/images/logo_ani.gif')}  
+                        style={{width: 80, height: 100, resizeMode: 'contain', marginBottom: 0, marginTop: -120, alignSelf: 'center'}}
+            />
+            <Text style={styles.app_name}>APP NAME</Text>
+            <Text style={styles.title}>로그인</Text>
             <LoginInputBox
                 title="아이디"
                 text="아이디를 입력하세요"
@@ -120,11 +131,18 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 15,
     },
+    app_name: {
+        fontFamily: 'NanumSquareEB',
+        fontSize: 20,
+        color: 'black',
+        marginBottom: 16,
+        marginTop: -26,
+    },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
+        fontSize: 30,
+        fontFamily: 'NanumSquareEB',
         marginBottom: 20,
-        color: '#25A4FF'
+        color: '#06A4FD'
     },
     innerText:{
         fontSize: 20,
