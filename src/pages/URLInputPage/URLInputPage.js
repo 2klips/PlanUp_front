@@ -5,6 +5,7 @@ import axios from 'axios';
 import Logo from '../../assets/images/logo.svg'
 import Jobsite from '../../assets/images/jobsite_logo5.png';
 import Copy from '../../assets/images/copy_icon.svg';
+import { API_URL } from '@env';
 import SaraminDetails from '../../components/ui/SaraminDetails';
 import JobKoreaDetails from '../../components/ui/JobKoreaDetails';
 import WorkNetDetails from '../../components/ui/WorkNetDetails';
@@ -37,7 +38,7 @@ const URLInputPage = ({ navigation }) => {
 
     const submitUrl = async (url) => {
         try {
-            const response = await axios.post('http://10.0.2.2:8000/scrape', { url });
+            const response = await axios.post(`${API_URL}/scrape`, { url });
             setJobDetails(response.data);
 
             if (url.includes('saramin')) {

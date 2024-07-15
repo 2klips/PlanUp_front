@@ -13,6 +13,7 @@ import Licenseimg from '../../assets/images/license_icon.svg'
 import Userimg from '../../assets/images/user_todo_icon.svg'
 import Jobimg from '../../assets/images/main_top_Logo.svg'
 import Checkimg from '../../assets/images/check.svg'
+import { API_URL } from '@env';
 
 const TodolistCalendar = ({ navigation }) => {
     const [todoList, setTodoList] = useState([]);
@@ -24,7 +25,7 @@ const TodolistCalendar = ({ navigation }) => {
         const fetchTodos = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const response = await axios.get('http://10.0.2.2:8080/list/userid', {
+                const response = await axios.get(`${API_URL}/list/userid`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -68,7 +69,7 @@ const TodolistCalendar = ({ navigation }) => {
 const fetchChecklistCount = async (todoId) => {
     try {
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get(`http://10.0.2.2:8080/checklist/${todoId}/count`, {
+        const response = await axios.get(`${API_URL}/checklist/${todoId}/count`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

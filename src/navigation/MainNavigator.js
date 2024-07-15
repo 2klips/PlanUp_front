@@ -12,6 +12,7 @@ import TodolistDetail from '../pages/Todolist/TodolistDetail';
 import CertifiCalendar from '../pages/Search/CertifiCalendar';
 import NoResultsPage from '../pages/JobDetailsPage/NoResultsPage';
 import IntroScreen from '../components/ui/IntroScreen';
+import LoginPage from '../pages/Login/LoginPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,8 @@ function MainNavigator() {
             <Stack.Screen name="CertifiCalendar" component={CertifiCalendar} />
             <Stack.Screen name="CalendarPage" component={CalendarPage} />
             <Stack.Screen name="NoResultsPage" component={NoResultsPage} />
+            <Stack.Screen name="LoginPage" component={LoginPage} options={{ headerShown: true ,
+            }} />
         </Stack.Navigator>
     );
 }

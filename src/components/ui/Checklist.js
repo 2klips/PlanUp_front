@@ -5,6 +5,7 @@ import axios from 'axios';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { API_URL } from '@env';
 
 const ChecklistItem = ({ title, date, color, isChecked, onValueChange }) => (
   <View style={styles.item}>
@@ -30,7 +31,7 @@ const Checklist = ({ navigation }) => {
     const fetchChecklist = async () => {
       const token = await AsyncStorage.getItem('token');
       try {
-        const response = await axios.get('http://10.0.2.2:8080/checklist/userid', {
+        const response = await axios.get(`${API_URL}/checklist/userid`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -62,7 +63,7 @@ const Checklist = ({ navigation }) => {
     try {
       const token = await AsyncStorage.getItem('token');
       await axios.put(
-        `http://10.0.2.2:8080/checklist/updateCompleted`,
+        `${API_URL}/checklist/updateCompleted`,
         { id,
           completed: newValue 
         },

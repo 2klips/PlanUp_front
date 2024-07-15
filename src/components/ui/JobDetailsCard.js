@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import axios from 'axios';
+import { API_URL } from '@env';
 
 const JobDetailsCard = () => {
     const [jobDetails, setJobDetails] = useState(null);
@@ -9,7 +10,7 @@ const JobDetailsCard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.post('http://localhost:5000/scrape', {
+                const response = await axios.post('${API_URL}/scrape', {
                     url: '크롤링할 URL을 여기에 넣으세요'
                 });
                 setJobDetails(response.data);

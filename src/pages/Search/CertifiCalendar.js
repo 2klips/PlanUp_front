@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../context/AuthContext';
 import VirtualizedView from '../../utils/VirutalizedList';
 import CustomCalendar from '../../components/ui/CustomCalendar';
+import { API_URL } from '@env';
 
 const COLORS = ['#06A4FD', '#97E5FF', '#FF0000', '#FF81EB', '#FF8E25', '#FFE871', '#70FF4D', '#35F2DC', '#48B704', '#8206FD'];
 
@@ -44,7 +45,7 @@ const CertifiCalendar = ({ route, navigation }) => {
       try {
         const token = await AsyncStorage.getItem('token');
         console.log(token)
-        const response = await axios.get('http://10.0.2.2:8080/list/userid', {
+        const response = await axios.get(`${API_URL}/list/userid`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -71,7 +72,7 @@ const CertifiCalendar = ({ route, navigation }) => {
     setIsButtonDisabled(true);
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.post('http://10.0.2.2:8080/list', {
+      const response = await axios.post(`${API_URL}/list`, {
         userid: user.userid,
         title: title,
         text: text,
@@ -117,7 +118,7 @@ const CertifiCalendar = ({ route, navigation }) => {
     try {
       const token = await AsyncStorage.getItem('token');
       for (const item of checklist) {
-        const response = await axios.post('http://10.0.2.2:8080/checklist', {
+        const response = await axios.post(`${API_URL}/checklist`, {
           userid: user.userid,
           color: color,
           examDate: selectedDate,

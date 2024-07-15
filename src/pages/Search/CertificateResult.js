@@ -8,6 +8,7 @@ import License from '../../assets/images/license_icon.svg';
 import HRDK_text from '../../assets/images/HRDK_text_logo.png';
 import Zoom from '../../assets/images/zoom_icon.svg';
 import moment from 'moment';
+import { API_URL } from '@env';
 
 const CertificateResult = ({ route }) => {
   const { certificates } = route.params;
@@ -40,7 +41,7 @@ const CertificateResult = ({ route }) => {
       const trimmedJobName = jobName.trim();
       console.log(`Searching for job name: ${trimmedJobName}`);
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.post('http://10.0.2.2:8080/certifi/job_name', 
+      const response = await axios.post(`${API_URL}/certifi/job_name`, 
         { job_name: trimmedJobName },
         {
           headers: {

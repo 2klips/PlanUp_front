@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import License from '../../assets/images/license_icon.svg';
 import HRDK_logo from '../../assets/images/HRDK_logo.png';
 import Zoom from '../../assets/images/zoom_icon.svg';
+import { API_URL } from '@env';
 
 const SearchCertificate = () => {
   const [jobName, setJobName] = useState('');
@@ -24,7 +25,7 @@ const SearchCertificate = () => {
       console.log(`Searching for job name: ${trimmedJobName}`);
       // console.log(`Searching for job name: ${jobName}`);
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.post('http://10.0.2.2:8080/certifi/job_name', 
+      const response = await axios.post(`${API_URL}/certifi/job_name`, 
         { job_name: trimmedJobName },
         // { job_name: jobName },
         {

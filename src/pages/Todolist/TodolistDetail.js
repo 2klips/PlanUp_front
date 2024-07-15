@@ -10,7 +10,7 @@ import { useAuth } from '../../context/AuthContext';
 import VirtualizedView from '../../utils/VirutalizedList';
 import CustomCalendar from '../../components/ui/CustomCalendar';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
-
+import {API_URL} from '@env';
 import Edit_icon from '../../assets/images/edit_icon.svg';
 import Delelte_icon from '../../assets/images/delete_circle_icon.svg';
 
@@ -82,7 +82,7 @@ const TodolistDetail = ({ route, navigation }) => {
         try {
             const todoID = selectedTodo._id
             const response = await axios.post(
-                'http://10.0.2.2:8080/checklist/getByTodoId',
+                `${API_URL}/checklist/getByTodoId`,
                 { todoId: todoID }, // 데이터 객체
                 {
                   headers: {
@@ -114,7 +114,7 @@ const TodolistDetail = ({ route, navigation }) => {
     const handleDelete = async () => {
         try {
             const token = await AsyncStorage.getItem('token');
-            const response = await axios.delete(`http://10.0.2.2:8080/list/delete/${selectedTodo._id}`, {
+            const response = await axios.delete(`${API_URL}/list/delete/${selectedTodo._id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -143,7 +143,7 @@ const TodolistDetail = ({ route, navigation }) => {
     }
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.put('http://10.0.2.2:8080/list/update', {
+      const response = await axios.put(`${API_URL}/list/update`, {
         id: todo,
         title: title,
         text: text,
@@ -188,7 +188,7 @@ const TodolistDetail = ({ route, navigation }) => {
     try {
       const token = await AsyncStorage.getItem('token');
       for (const item of newChecklist) {
-        const response = await axios.post('http://10.0.2.2:8080/checklist', {
+        const response = await axios.post(`${API_URL}/checklist`, {
           userid: user.userid,
           color: color,
           examDate: selectedDate,
@@ -218,7 +218,7 @@ const TodolistDetail = ({ route, navigation }) => {
       const token = await AsyncStorage.getItem('token');
       for (const item of checklists) {
         if (!newChecklist.includes(item)) { // 기존 체크리스트 항목만 업데이트
-          const response = await axios.put('http://10.0.2.2:8080/checklist/update', {
+          const response = await axios.put(`${API_URL}/checklist/update`, {
             id: item.id,
             color: item.color,
             examDate: selectedDate,
@@ -246,7 +246,7 @@ const TodolistDetail = ({ route, navigation }) => {
     try {
         const token = await AsyncStorage.getItem('token');
         await axios.put(
-        `http://10.0.2.2:8080/checklist/updateCompleted`,
+        `${API_URL}/checklist/updateCompleted`,
         { id,
             completed: newValue 
         },

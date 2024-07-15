@@ -4,6 +4,7 @@ import Modal from 'react-native-modal';
 import { useNavigation } from '@react-navigation/native';
 import LoginInputBox from '../../components/ui/LoginInputBox';
 import { validateId, validatePassword } from '../../utils/validateRegex';
+import { API_URL } from '@env';
 
 function SignupPage() {
     const [userid, setUserid] = React.useState('');
@@ -79,7 +80,7 @@ function SignupPage() {
             return;
         }
         try {
-            const response = await fetch(`http://10.0.2.2:8080/user/get_user`, {
+            const response = await fetch(`${API_URL}/user/get_user`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

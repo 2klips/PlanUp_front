@@ -28,6 +28,7 @@ import Worknet_logo from '../../assets/images/worknet_logo.png';
 import Wanted_logo from '../../assets/images/wanted_logo.png';
 import Success from '../../assets/images/success_icon.svg';
 import Back from '../../assets/images/back_icon.svg';
+import { API_URL } from '@env';
 
 const JobDetailsPage = ({ route }) => {
     const { url } = route.params;
@@ -45,7 +46,7 @@ const JobDetailsPage = ({ route }) => {
     useEffect(() => {
         const fetchJobDetails = async () => {
             try {
-                const response = await axios.post('http://10.0.2.2:8000/scrape', { url });
+                const response = await axios.post(`${API_URL}/scrape`, { url });
                 if (response.data) {
                     setJobDetails(response.data);
                     if (url.includes('saramin')) {

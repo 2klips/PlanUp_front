@@ -5,6 +5,7 @@ import axios from 'axios';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { API_URL } from '@env';
 
 const Reminder = () => {
     const [nextTodo, setNextTodo] = useState(null);
@@ -15,7 +16,7 @@ const Reminder = () => {
         const fetchTodos = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const response = await axios.get('http://10.0.2.2:8080/list/userid', {
+                const response = await axios.get(`${API_URL}/list/userid`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

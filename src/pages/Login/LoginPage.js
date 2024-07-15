@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginInputBox from '../../components/ui/LoginInputBox';
+import { API_URL } from '@env';
 
 function LoginPage({ navigation }) {
     const { setIsLoggedIn } = useAuth();
@@ -25,7 +26,7 @@ function LoginPage({ navigation }) {
 
     const onLogin = async () => {
         try {
-            const response = await fetch('http://10.0.2.2:8080/user/login', {
+            const response = await fetch(`${API_URL}/user/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

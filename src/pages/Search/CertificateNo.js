@@ -9,6 +9,7 @@ import HRDK_logo from '../../assets/images/HRDK_logo.png';
 import Zoom from '../../assets/images/zoom_icon.svg';
 import No_result from '../../assets/images/delete_icon.svg';
 import Back from '../../assets/images/back_icon.svg';
+import { API_URL } from '@env';
 
 const CertificateNo = () => {
   const [jobName, setJobName] = useState('');
@@ -26,7 +27,7 @@ const CertificateNo = () => {
       console.log(`Searching for job name: ${trimmedJobName}`);
       // console.log(`Searching for job name: ${jobName}`);
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.post('http://10.0.2.2:8080/certifi/job_name', 
+      const response = await axios.post(`${API_URL}/certifi/job_name`, 
         { job_name: trimmedJobName }, // 수정된 부분: 트림된 jobName 사용
         // { job_name: jobName },
         {

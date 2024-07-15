@@ -9,7 +9,8 @@ import {
     AppState,
     Dimensions,
     Image,
-    Linking
+    Linking,
+    Alert
 } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import TodolistCalendar from '../../components/ui/TodolistCalendar';
@@ -24,6 +25,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import VirtualizedView from '../../utils/VirutalizedList';
 import Logo from '../../assets/images/logo.svg';
+import { API_URL } from '@env';
 
 
 
@@ -58,7 +60,7 @@ function MainPage() {
         const fetchChecklist = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const response = await axios.get('http://10.0.2.2:8080/checklist/userid', {
+                const response = await axios.get(`${API_URL}/checklist/userid`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -72,7 +74,7 @@ function MainPage() {
         const fetchTodos = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const response = await axios.get('http://10.0.2.2:8080/list/userid', {
+                const response = await axios.get(`${API_URL}/list/userid`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -86,7 +88,7 @@ function MainPage() {
         const fetchJobPostings = async () => {
             const token = await AsyncStorage.getItem('token');
             try {
-                const response = await axios.get(`http://10.0.2.2:8080/jobPostings/${user.userid}`, {
+                const response = await axios.get(`${API_URL}/jobPostings/${user.userid}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -102,6 +104,27 @@ function MainPage() {
         fetchJobPostings();
     }, [isFocused]);
 
+    const {setIsLoggedIn, setUser } = useAuth();
+    const handleLogout = (navigation, setIsLoggedIn, setUser) => {
+        Alert.alert('Logout', 'Do you want to log out?', [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'OK', onPress: () =>  {
+                AsyncStorage.removeItem('token')
+                    .then(() => {
+                        setIsLoggedIn(false);
+                        setUser(null);
+                        console.log('로그아웃 성공');
+                        Alert.alert('로그아웃 성공', '로그아웃에 성공했습니다.');
+                        navigation.navigate('LoginPage');
+                    })
+                    .catch((error) => {
+                        console.error('로그아웃 오류:', error);
+                        Alert.alert('로그아웃 오류', '로그아웃 중 오류가 발생했습니다.', error);
+                    });
+            }}
+        ]);
+    };
+
     if (!user) {
         return (
             <View style={styles.container}>
@@ -114,6 +137,11 @@ function MainPage() {
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ffffff' }}>
             <VirtualizedView>
                 <View style={styles.container}>
+                <TouchableOpacity 
+                onPress={() => handleLogout(navigation, setIsLoggedIn, setUser)}
+                style={{ marginRight: 10 }}>
+                    <Text style={{ color: '#007AFF', fontSize: 16 }}>Logout</Text>
+                </TouchableOpacity>
                     {/* <Logo width={60} height={100} style={styles.logo} />
                      */}
                      <Image 

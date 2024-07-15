@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '@env';
 
 const AuthContext = createContext();
 
@@ -13,7 +14,7 @@ export const AuthProvider = ({ children }) => {
             try {
                 const token = await AsyncStorage.getItem('token');
                 if (token) {
-                    const response = await fetch('http://10.0.2.2:8080/user/verifyToken', {
+                    const response = await fetch(`${API_URL}/user/verifyToken`, {
                         method: 'get',
                         headers: {
                             'Content-Type': 'application/json',
