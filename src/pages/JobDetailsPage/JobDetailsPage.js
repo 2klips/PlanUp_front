@@ -46,7 +46,7 @@ const JobDetailsPage = ({ route }) => {
     useEffect(() => {
         const fetchJobDetails = async () => {
             try {
-                const response = await axios.post(`${API_URL}/scrape`, { url });
+                const response = await axios.post(`https://port-0-planupdocker-lymaphhq4dfd5231.sel5.cloudtype.app/scrape`, { url });
                 if (response.data) {
                     setJobDetails(response.data);
                     if (url.includes('saramin')) {

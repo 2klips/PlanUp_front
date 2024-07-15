@@ -72,7 +72,7 @@ const TodolistCalendar = ({ navigation }) => {
                 }
 
                 // 다시 가져와서 삭제된 항목을 제외한 리스트로 설정
-                const refreshedResponse = await axios.get('http://10.0.2.2:8080/list/userid', {
+                const refreshedResponse = await axios.get(`${API_URL}/list/userid`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
