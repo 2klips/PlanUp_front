@@ -13,6 +13,7 @@ import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 import {API_URL} from '@env';
 import Edit_icon from '../../assets/images/edit_icon.svg';
 import Delelte_icon from '../../assets/images/delete_circle_icon.svg';
+import Home_icon  from '../../assets/images/home_icon.svg';
 
 const ChecklistItem = ({ title, date, color, completed, onValueChange }) => (
     <View style={styles.item}>
@@ -120,13 +121,17 @@ const TodolistDetail = ({ route, navigation }) => {
                 }
             });
             if (response.status === 200) {
-                Alert.alert('성공', '일정 삭제 성공');
+                Alert.alert('일정 삭제', '일정이 삭제되었어요');
                 navigation.navigate('MainPage');
             }
         } catch (error) {
             console.error(error);
         }
     }
+
+  const handleGoToMainPage = () => {
+      navigation.navigate('MainPage');
+    };
     
   const showToast = () => {
     console.log('토스트 호출')
@@ -156,7 +161,7 @@ const TodolistDetail = ({ route, navigation }) => {
       });
 
       if (response.status === 200) {
-        Alert.alert('성공', '일정 수정 성공');
+        Alert.alert('일정 수정', '수정이 완료되었어요.');
         const todoId = response.data._id
         await saveChecklistItems(todoId);
         await updateExistingChecklistItems();
@@ -387,6 +392,12 @@ const TodolistDetail = ({ route, navigation }) => {
                     </View>
                 )}
             </View>
+        </View>
+        <View style={styles.style1}>
+          <TouchableOpacity
+            onPress={handleGoToMainPage}>
+            <Home_icon width={30} height={30} />
+          </TouchableOpacity>
         </View>
       </View>
       <Toast config={toastConfig} />

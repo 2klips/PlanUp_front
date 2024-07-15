@@ -6,15 +6,18 @@ function IntroScreen({ navigation }) {
     useEffect(() => {
         const timer = setTimeout(() => {
             navigation.replace('MainPage');  
-        }, 1400); // 3초 
+        }, 1800); // 시간 설정
 
         return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 해제
     }, [navigation]);
 
     return (
         <View style={styles.container}>
-            <Logo width={100} height={100} style={styles.logo}/>
-            <Text style={styles.App_name}>이름 아직도 못정함ㅋㅋ</Text>
+            <Image 
+                source={require('../../assets/images/logo_ani.gif')}  
+                style={{width: 100, height: 100, resizeMode: 'contain', marginBottom: 0, marginTop: 0, alignSelf: 'center'}}
+                />
+            <Text style={styles.App_name}>PLAN UP</Text>
            
         </View>
     );
@@ -32,6 +35,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontFamily: 'NanumSquareEB',
         color: 'black',
+        marginTop: -16,
         marginBottom: 10,
     },
     logo: {

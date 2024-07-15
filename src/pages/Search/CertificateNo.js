@@ -10,6 +10,7 @@ import Zoom from '../../assets/images/zoom_icon.svg';
 import No_result from '../../assets/images/delete_icon.svg';
 import Back from '../../assets/images/back_icon.svg';
 import { API_URL } from '@env';
+import Home_icon  from '../../assets/images/home_icon.svg';
 
 const CertificateNo = () => {
   const [jobName, setJobName] = useState('');
@@ -20,6 +21,10 @@ const CertificateNo = () => {
         headerShown: false,
     });
   }, [navigation]);
+
+  const handleGoToMainPage = () => {
+    navigation.navigate('MainPage');
+  };
 
   const handleSearch = async () => {
     try {
@@ -81,6 +86,12 @@ const CertificateNo = () => {
         <Text style={styles.footerText}>※ 현재 국가공인 자격증만 검색할 수 있어요.</Text>
         <Text style={styles.footerText}>검색에 되지 않는 자격증은 자격 일정으로 추가해주세요.</Text>
         <Text style={styles.footerText2}>※ 시험이 종료된 시험 일정은 검색되지 않아요.</Text>
+      </View>
+      <View style={styles.style1}>
+          <TouchableOpacity
+            onPress={handleGoToMainPage}>
+            <Home_icon width={30} height={30} />
+          </TouchableOpacity>
       </View>
     </View>
   );
@@ -207,6 +218,13 @@ const styles = StyleSheet.create({
     color: '#06A4FD',
     textAlign: 'center',
     marginTop : 10
+  },
+  style1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 120,
+    marginBottom: 10,
   },
 });
 

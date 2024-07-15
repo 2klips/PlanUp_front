@@ -12,6 +12,8 @@ import VirtualizedView from '../../utils/VirutalizedList';
 import CustomCalendar from '../../components/ui/CustomCalendar';
 import { API_URL } from '@env';
 
+import Home_icon  from '../../assets/images/home_icon.svg';
+
 const COLORS = ['#06A4FD', '#97E5FF', '#FF0000', '#FF81EB', '#FF8E25', '#FFE871', '#70FF4D', '#35F2DC', '#48B704', '#8206FD'];
 
 const ChecklistItem = ({ title, date, color, completed, onValueChange }) => (
@@ -63,6 +65,10 @@ const CertifiCalendar = ({ route, navigation }) => {
         headerShown: false,
     });
   }, [navigation]);
+
+  const handleGoToMainPage = () => {
+    navigation.navigate('MainPage');
+  };
   
   const handleSave = async () => {
     if (title.trim() === '' || text.trim() === '') {
@@ -255,6 +261,13 @@ const handleSelectDate = (date) => {
           </TouchableOpacity>
           </View>
         </View>
+        <View style={styles.style1}>
+          <TouchableOpacity
+            onPress={handleGoToMainPage}>
+            <Home_icon width={30} height={30} />
+          </TouchableOpacity>
+        </View>
+
       </View>
     </ScrollView>
   );

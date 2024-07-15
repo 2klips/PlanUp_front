@@ -8,6 +8,7 @@ import License from '../../assets/images/license_icon.svg';
 import HRDK_logo from '../../assets/images/HRDK_logo.png';
 import Zoom from '../../assets/images/zoom_icon.svg';
 import { API_URL } from '@env';
+import Home_icon  from '../../assets/images/home_icon.svg';
 
 const SearchCertificate = () => {
   const [jobName, setJobName] = useState('');
@@ -18,6 +19,10 @@ const SearchCertificate = () => {
         headerShown: false,
     });
   }, [navigation]);
+
+  const handleGoToMainPage = () => {
+    navigation.navigate('MainPage');
+  };
 
   const handleSearch = async () => {
     try {
@@ -81,6 +86,12 @@ const SearchCertificate = () => {
         <Text style={styles.footerText}>검색에 되지 않는 자격증은 자격 일정으로 추가해주세요.</Text>
         <Text style={styles.footerText2}>※ 시험이 종료된 시험 일정은 검색되지 않아요.</Text>
       </View>
+      <View style={styles.style1}>
+          <TouchableOpacity
+            onPress={handleGoToMainPage}>
+            <Home_icon width={30} height={30} />
+          </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -123,6 +134,13 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     marginBottom: 10,
     backgroundColor: '#fff',
+  },
+  style1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 100,
+    marginBottom: 10,
   },
   zoom: {
     position: 'absolute',

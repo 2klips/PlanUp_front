@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ScrollView, FlatList, Image } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { Calendar } from 'react-native-calendars';
@@ -353,7 +353,7 @@ const CalendarPage = ({ route, navigation }) => {
           <Text style={[styles.text4, isButtonDisabled && styles.disabledText3]}>일정삭제하기</Text>
           <TouchableOpacity
             style={[styles.addButton2, isButtonDisabled && styles.disabledButton]}
-            onPress={handleSaveEvent}
+            onPress={handleDelete}
             disabled={isButtonDisabled}>
             <Delelte_icon width={24} style={styles.delete_icon}></Delelte_icon>
           </TouchableOpacity>

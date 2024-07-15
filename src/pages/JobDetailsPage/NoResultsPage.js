@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import No_result from '../../assets/images/delete_icon.svg';
 import Back from '../../assets/images/back_icon.svg';
 import Jobsite from '../../assets/images/jobsite_logo5.png';
+import Home_icon  from '../../assets/images/home_icon.svg';
 
 const NoResultsPage = () => {
   const navigation = useNavigation();
@@ -15,6 +16,10 @@ const NoResultsPage = () => {
         headerShown: false,
     });
   }, [navigation]);
+  
+  const handleGoToMainPage = () => {
+    navigation.navigate('MainPage');
+  };
 
   return (
     <View style={styles.container}>
@@ -40,6 +45,13 @@ const NoResultsPage = () => {
         <Text style={styles.footerText}>해당 사이트의 URL인지 확인해주세요.</Text>
       </View>
       <Image source={Jobsite} style={styles.job5} />
+
+      <View style={styles.style1}>
+          <TouchableOpacity
+            onPress={handleGoToMainPage}>
+            <Home_icon width={30} height={30} />
+          </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -126,6 +138,13 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginTop: 10,
     alignSelf: 'center'
+  },
+  style1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 100,
+    marginBottom: 10,
   },
 });
 
