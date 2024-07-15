@@ -20,6 +20,31 @@ const TodolistCalendar = ({ navigation }) => {
     const isFocused = useIsFocused();
     const [checklistCounts, setChecklistCounts] = useState({});
 
+    // useEffect(() => {
+    //     const fetchTodos = async () => {
+    //         const token = await AsyncStorage.getItem('token');
+    //         try {
+    //             const response = await axios.get('http://10.0.2.2:8080/list/userid', {
+    //                 headers: {
+    //                     Authorization: `Bearer ${token}`
+    //                 }
+    //             });
+    //             const sortedTodoList = response.data.map(item => ({
+    //                 ...item,
+    //                 daysLeft: moment(item.examDate).diff(moment(), 'days')
+    //             })).sort((a, b) => a.daysLeft - b.daysLeft);
+    //             setTodoList(sortedTodoList);
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     };
+
+
+    //     fetchTodos();
+    // }, [isFocused]);
+
+    // ========================================================================
+
     useEffect(() => {
         const fetchTodos = async () => {
             const token = await AsyncStorage.getItem('token');
@@ -33,16 +58,39 @@ const TodolistCalendar = ({ navigation }) => {
                     ...item,
                     daysLeft: moment(item.examDate).diff(moment(), 'days')
                 })).sort((a, b) => a.daysLeft - b.daysLeft);
-                setTodoList(sortedTodoList);
+                
+                // 디데이가 0보다 작은 항목을 삭제하는 코드 추가
+                for (const item of sortedTodoList) {
+                    if (item.daysLeft < 0) {
+                        await axios.delete(`http://10.0.2.2:8080/list/delete/${item._id}`, {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        });
+                    }
+                }
+
+                // 다시 가져와서 삭제된 항목을 제외한 리스트로 설정
+                const refreshedResponse = await axios.get('http://10.0.2.2:8080/list/userid', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                const refreshedTodoList = refreshedResponse.data.map(item => ({
+                    ...item,
+                    daysLeft: moment(item.examDate).diff(moment(), 'days')
+                })).sort((a, b) => a.daysLeft - b.daysLeft);
+
+                setTodoList(refreshedTodoList);
             } catch (error) {
                 console.error(error);
             }
         };
 
-
         fetchTodos();
     }, [isFocused]);
 
+    // ========================================================================
 
     const markedDates = {};
     todoList.forEach(item => {
