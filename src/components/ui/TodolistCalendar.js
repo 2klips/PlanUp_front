@@ -63,7 +63,7 @@ const TodolistCalendar = ({ navigation }) => {
                 // 디데이가 0보다 작은 항목을 삭제하는 코드 추가
                 for (const item of sortedTodoList) {
                     if (item.daysLeft < 0) {
-                        await axios.delete(`http://10.0.2.2:8080/list/delete/${item._id}`, {
+                        await axios.delete(`${API_URL}/list/delete/${item._id}`, {
                             headers: {
                                 Authorization: `Bearer ${token}`
                             }
