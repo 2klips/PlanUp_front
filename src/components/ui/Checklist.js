@@ -5,14 +5,15 @@ import axios from 'axios';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { API_URL } from '@env';
 
 const ChecklistItem = ({ title, date, color, isChecked, onValueChange }) => (
   <View style={styles.item}>
     <View style={styles.itemLeft}>
       <View style={[styles.circle, { backgroundColor: color || 'blue' }]} />
       <View>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.date}>{date}까지</Text>
+        <Text style={[styles.title, isChecked && styles.checklistItemCompleted]}>{title}</Text>
+        <Text style={[styles.date, isChecked && styles.checklistItemCompleted]}>{date}까지</Text>
       </View>
     </View>
     <CheckBox value={isChecked} onValueChange={onValueChange} /> 
@@ -30,20 +31,26 @@ const Checklist = ({ navigation }) => {
     const fetchChecklist = async () => {
       const token = await AsyncStorage.getItem('token');
       try {
-        const response = await axios.get('http://10.0.2.2:8080/list/check', {
+        const response = await axios.get(`${API_URL}/checklist/userid`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
         const checklistItems = response.data
+          .filter(item => !item.completed)
           .map(item => ({
             id: item._id,
             title: item.list,
             date: moment(item.examDate).format('YYYY년 M월 D일'),
             color: item.color,
-            isChecked: item.completed, // Assuming `completed` is the correct property
+            isChecked: item.completed, 
           }))
-          .sort((a, b) => new Date(a.date) - new Date(b.date));
+          .sort((a, b) => {
+            if (a.isChecked === b.isChecked) {
+              return new Date(a.date) - new Date(b.date);
+            }
+            return a.isChecked - b.isChecked;
+          });
         setChecklist(checklistItems);
       } catch (error) {
         console.error(error);
@@ -55,24 +62,47 @@ const Checklist = ({ navigation }) => {
   const handleToggleCheckbox = async (id, newValue) => {
     try {
       const token = await AsyncStorage.getItem('token');
-      await axios.get(`http://10.0.2.2:8080/list/check/`, {
-        completed: newValue,
-        headers: {
-          Authorization: `Bearer ${token}`
+      await axios.put(
+        `${API_URL}/checklist/updateCompleted`,
+        { id,
+          completed: newValue 
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-      });
+      );
+      if (newValue === true) {
+        // 체크된 항목은 리스트에서 제외
+        setChecklist(prevChecklist =>
+          prevChecklist.filter(item => item.id !== id)
+        );
+      } else {
       setChecklist(prevChecklist =>
         prevChecklist.map(item =>
           item.id === id ? { ...item, isChecked: newValue } : item
-        )
+        ).sort((a, b) => {
+          if (a.isChecked === b.isChecked) {
+            return new Date(a.date) - new Date(b.date);
+          }
+          return a.isChecked - b.isChecked;
+        })
       );
+    }
     } catch (error) {
       console.error(error);
     }
   };
+
   const handleShowMore = () => {
     setShowMore(true);
   };
+
+  const handleShowLess = () => {
+    setShowMore(false);
+  };
+
 
   return (
     <View style={styles.card}>
@@ -95,6 +125,12 @@ const Checklist = ({ navigation }) => {
           <Text style={styles.showMoreText}>더보기</Text>
         </TouchableOpacity>
       )}
+      {showMore && (
+        <TouchableOpacity style={styles.showMoreButton} onPress={handleShowLess}>
+          <Text style={styles.showMoreText}>접기</Text>
+        </TouchableOpacity>
+      )}
+
       <Text style={styles.footer}>※ 완료된 체크리스트는 자동으로 사라져요.</Text>
     </View>
   );
@@ -103,8 +139,8 @@ const Checklist = ({ navigation }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 15,
+    borderRadius: 30,
+    padding: 20,
     marginVertical: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -114,7 +150,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'NanumSquareEB',
     color: '#06A4FD',
     marginBottom: 10,
   },
@@ -130,6 +166,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+
   circle: {
     width: 10,
     height: 10,
@@ -153,10 +190,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footer: {
-    fontSize: 14,
-    color: '#888',
+    fontSize: 13,
+    color: '#06A4FD',
+    fontFamily: 'NanumSquareB',
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 30,
+    marginBottom: 14,
+  },
+  checklistItemCompleted: {
+    textDecorationLine: 'line-through',
+    color: 'gray',
   },
 });
 

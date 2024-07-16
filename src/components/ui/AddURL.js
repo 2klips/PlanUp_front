@@ -1,7 +1,9 @@
-// AddURL.js
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Logo from '../../assets/images/logo.svg'
+import License from '../../assets/images/license_icon.svg';
+
 
 const AddURL = () => {
     const navigation = useNavigation();
@@ -9,14 +11,16 @@ const AddURL = () => {
     return (
         <View style={styles.container}>
             <View style={styles.item}>
+                <License width={24} height={20} style={styles.license} />
                 <Text style={styles.text}>자격증시험추가</Text>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SearchCertificate')}>
                     <Text style={styles.buttonText}>+</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.item}>
+                <Logo width={22} height={20} style={styles.logo} />
                 <Text style={styles.text}>취업공고추가</Text>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SearchMainJob')}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('URLInputPage')}>
                     <Text style={styles.buttonText}>+</Text>
                 </TouchableOpacity>
             </View>
@@ -38,21 +42,29 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     text: {
-        color: '#00aaf0',
-        marginRight: 8,
+        color: '#06A4FD',
+        marginRight: 6,
+        fontSize: 16,
+        fontFamily: 'NanumSquareEB',
     },
     button: {
-        backgroundColor: '#00aaf0',
-        borderRadius: 2,
-        paddingHorizontal: 4,
+        backgroundColor: '#06A4FD', 
+        borderRadius: 1,
+        paddingHorizontal: 9,
         paddingVertical: 1,
     },
     buttonText: {
         textAlign: 'center',
         color: '#fff',
-        fontSize: 18,
+        fontSize: 24,
+        lineHeight: 30,
+    },
+    logo: {
+        marginRight: 4,
+    },
+    license: {
+        marginRight: 4,
     },
 });
 
 export default AddURL;
-

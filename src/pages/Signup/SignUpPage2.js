@@ -1,36 +1,27 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal, Button , SafeAreaView, ScrollView} from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal, Button , SafeAreaView, ScrollView, Image} from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import LoginInputBox from '../../components/ui/LoginInputBox';
-import Postcode from '@actbase/react-daum-postcode';
-import {validateEmail, validateHP, validateSSN, validateName} from '../../utils/validateRegex';
+import {validateEmail, validateHP, validateName} from '../../utils/validateRegex';
+import { API_URL } from '@env';
+
+
 function SignupPage2() {
     const route = useRoute();
     const { userid, password } = route.params;
 
-    const [isModalVisible, setModalVisible] = useState(false);
     const [email, setEmail] = React.useState('');
     const [name, setName] = React.useState('');
     const [hp, setHp] = React.useState('');
-    const [address, setAddress] = React.useState('');
-    const [zoneCode, setZoneCode] = React.useState('');
-    const [addrDetail, setAddrDetail] = React.useState('');
-    const [ssn1, setSsn1] = React.useState('');
-    const [ssn2, setSsn2] = React.useState('');
-    const [gender, setGender] = React.useState('');
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [isValidName, setIsValidName] = useState(false);
     const [isValidHP, setIsValidHP] = useState(false);
-    const [isValidSSN, setIsValidSSN] = useState(false);
-    const [isValidAddress, setIsValidAddress] = useState(false);
     const [validNameText, setValidNameText] = useState('');
     const [validNameColor, setValidNameColor] = useState({ color: '#06A4FD' });
     const [validEmailText, setValidEmailText] = useState('');
     const [validEmailColor, setValidEmailColor] = useState({ color: '#06A4FD' });
     const [validHPText, setValidHPText] = useState('');
     const [validHPColor, setValidHPColor] = useState({ color: '#06A4FD' });
-    const [validSSNText, setValidSSNText] = useState('');
-    const [validSSNColor, setValidSSNColor] = useState({ color: '#06A4FD' });
 
     const handleValidateName = (name) => {
         if (name === '') {
@@ -49,6 +40,13 @@ function SignupPage2() {
             }
         }
     };
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerShown: false,
+        });
+    }, [navigation]);
+
     const handleValidateEmail = (email) => {
         if (email === '') {
             setIsValidEmail(false);
@@ -83,63 +81,15 @@ function SignupPage2() {
             }
         }
     };
-    const handleValidateSSN = (ssn1, ssn2) => {
-        if (ssn1 === '' || ssn2 === '') {
-            setIsValidSSN(false);
-            return;
-        }else{
-            const isValid = validateSSN(ssn1, ssn2);
-            if (!isValid) {
-                setIsValidSSN(false);
-                setValidSSNText('주민등록번호 형식을 다시 확인해주세요.');
-                setValidSSNColor({ color: 'red' });
-            } else {
-                setValidSSNColor({ color: '#06A4FD' });
-                setValidSSNText('');
-                setIsValidSSN(true);
-            }
-        }
-    };
 
-    const handleAddressSelect = (data) => {
-        setIsValidAddress(false);
-        setModalVisible(false);
-        Alert.alert('주소 선택', JSON.stringify(data));
-        const roadAddress = data.roadAddress;
-        setZoneCode(data.zonecode);
-        if(data.buildingName){
-            setAddress(roadAddress + ' ' + data.buildingName);
-            setIsValidAddress(true);
-        }
-        else{
-            setAddress(roadAddress);
-            setIsValidAddress(true);
-        }
-
-    };
-
-    const isGender = (ssn2) => {
-        if(ssn2[0] === '1' || ssn2[0] === '3'){
-            setGender('남성');
-        }
-        else if(ssn2[0] === '2' || ssn2[0] === '4'){
-            setGender('여성');
-        }else{
-            setGender('');
-        }
-    };
-    const handleChange = (text) => {
-        setSsn2(text);
-        isGender(text);
-    };
     const navigation = useNavigation();
 
     const goToSignup = () => {
-        if (!isValidName || !isValidEmail || !isValidHP || !isValidSSN || !isValidAddress) {
+        if (!isValidName || !isValidEmail || !isValidHP) {
             Alert.alert('오류', '모든 입력란을 올바르게 작성해주세요.');
             return;
         }
-        fetch('http://10.0.2.2:8080/user/signup', {
+        fetch(`${API_URL}/user/signup`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -150,23 +100,17 @@ function SignupPage2() {
                 password,
                 hp,
                 email,
-                zoneCode,
-                address,
-                addrDetail,
-                ssn1,
-                ssn2,
-                gender,
             }),
         })
         .then((response) => response.json())
         .then((data) => {
             console.log('Signup 성공:', data);
-            Alert.alert('Signup 성공', '회원가입에 성공했습니다.');
+            Alert.alert('회원가입', '회원가입이 완료되었습니다!');
             navigation.navigate('LoginPage');
         })
         .catch((error) => {
             console.error('Signup 오류:', error);
-            Alert.alert('Signup 오류', '회원가입 중 오류가 발생했습니다.', error);
+            Alert.alert('회원가입 오류', '회원가입 중 오류가 발생했습니다.', error);
         });
     };
 
@@ -174,6 +118,10 @@ function SignupPage2() {
         <SafeAreaView style={styles.safeArea}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.container}>
+                    <Image 
+                    source={require('../../assets/images/logo_ani.gif')}  
+                    style={{width: 100, height: 100, resizeMode: 'contain', marginBottom: 0, marginTop: -80, alignSelf: 'center'}}
+                    />
                     <View style={styles.textBox}>
                         <Text style={styles.subText}>추가 정보를 입력해주세요.</Text>
                     </View>
@@ -190,40 +138,10 @@ function SignupPage2() {
                         />
                         <Text style={[styles.validateText, validNameColor]}>{validNameText}</Text>
                     </View>
-                    <View style={styles.labelBox}>
-                        <Text style={styles.label}>주민등록번호</Text>
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            style={[styles.textInput]}
-                            placeholder="앞자리"
-                            placeholderTextColor='#25A4FF'
-                            maxLength={6}
-                            keyboardType="numeric"
-                            value={ssn1}
-                            onChangeText={setSsn1}
-                        />
-                        <Text style={styles.separator}>-</Text>
-                        <TextInput
-                            style={[styles.textInput, {flex: 1}]}
-                            placeholder="뒷자리"
-                            placeholderTextColor='#25A4FF'
-                            maxLength={7}
-                            keyboardType="numeric"
-                            value={ssn2}
-                            onChangeText={(e) => {
-                                setSsn2(e);
-                                handleChange(e);
-                                handleValidateSSN(ssn1, e);
-                            }}
-                            secureTextEntry
-                        />
-                        <Text style={[styles.validateText, validSSNColor]}>{validSSNText}</Text>
-                    </View>
                     <View>
                         <LoginInputBox
                             title="연락처"
-                            text="전화번호를 입력하세요"
+                            text="전화번호를 입력하세요 ( - 포함하여 입력 )"
                             value={hp}
                             onChangeText={(e) => {
                                 setHp(e);
@@ -248,55 +166,11 @@ function SignupPage2() {
                         />
                         <Text style={[styles.validateText, validEmailColor]}>{validEmailText}</Text>
                     </View>
-                    <View>
-                        <View>
-                            <Modal visible={isModalVisible} animationType="slide">
-                                <View style={styles.modalContainer}>
-                                    <Postcode
-                                        style={styles.postcode}
-                                        jsOptions={{ animation: true, hideMapBtn: true }}
-                                        onSelected={handleAddressSelect}
-                                    />
-                                    <Button title="닫기" onPress={() => setModalVisible(false)} />
-                                </View>
-                            </Modal>
-                        </View>
-                            <LoginInputBox
-                                title="주소"
-                                text="주소/도로명 주소"
-                                value={address}
-                                onChangeText={setAddress}
-                                editable={false}
-                            />
-                            <TouchableOpacity style={styles.smallButton} onPress={() => setModalVisible(true)} >
-                                <Text style={styles.smallButtonText}>주소검색</Text>
-                            </TouchableOpacity>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder="우편번호"
-                                placeholderTextColor='#25A4FF'
-                                value={zoneCode}
-                                onChangeText={setZoneCode}
-                                textAlign='center'
-                                style={styles.textInput}
-                                editable={false}
-                            />
-                            <Text style={styles.separator}></Text>
-                            <TextInput
-                                placeholder="상세 주소를 입력 해주세요"
-                                placeholderTextColor='#25A4FF'
-                                value={addrDetail}
-                                onChangeText={setAddrDetail}
-                                textAlign='center'
-                                style={[styles.textInput, {width: 155, fontSize: 12}]}
-                            />
-                        </View>
-                    </View>
                     
                     <TouchableOpacity 
-                    style={[styles.button , (!isValidName || !isValidEmail || !isValidHP || !isValidSSN || !isValidAddress) && styles.buttonDisabled]} 
+                    style={[styles.button , (!isValidName || !isValidEmail || !isValidHP) && styles.buttonDisabled]} 
                     onPress={goToSignup}
-                    disabled={!isValidName || !isValidEmail || !isValidHP || !isValidSSN || !isValidAddress}
+                    disabled={!isValidName || !isValidEmail || !isValidHP}
                     >
                         <Text style={styles.buttonText}>회원가입</Text>
                     </TouchableOpacity>
@@ -329,7 +203,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'gray',
         paddingVertical: 5,
         paddingHorizontal: 10,
-        borderRadius: 5,
+        borderRadius: 8,
         marginBottom: 5,
         width: 100,
         height: 35,
@@ -361,7 +235,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#06A4FD',
         paddingVertical: 5,
         paddingHorizontal: 10,
-        borderRadius: 5,
+        borderRadius: 8,
+        marginTop: 16,
         marginBottom: 5,
         width: 100,
         height: 35,
@@ -370,7 +245,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'NanumSquareB',
+        marginTop: 4,
     },
     title: {
         fontSize: 24,
@@ -379,9 +255,10 @@ const styles = StyleSheet.create({
         color: '#25A4FF'
     },
     subText: {
-        fontSize: 17,
+        fontSize: 22,
         color: 'black',
-        fontWeight: 'bold',
+        fontFamily: 'NanumSquareEB',
+        marginLeft: 6,
         textAlign: 'left'
     },
     textBox: {

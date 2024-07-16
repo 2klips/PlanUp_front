@@ -1,9 +1,10 @@
-import React from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
+import React, {useLayoutEffect} from 'react';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginInputBox from '../../components/ui/LoginInputBox';
+import { API_URL } from '@env';
 
 function LoginPage({ navigation }) {
     const { setIsLoggedIn } = useAuth();
@@ -17,9 +18,15 @@ function LoginPage({ navigation }) {
         navigation.navigate('SignupPage');
     };
 
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerShown: false,
+        });
+    }, [navigation]);
+
     const onLogin = async () => {
         try {
-            const response = await fetch('http://10.0.2.2:8080/user/login', {
+            const response = await fetch(`${API_URL}/user/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -37,7 +44,7 @@ function LoginPage({ navigation }) {
                 setIsLoggedIn(true);
                 setUser(data.user);
                 console.log('로그인 성공:', data);
-                Alert.alert('로그인 성공', '로그인에 성공했습니다.');
+                Alert.alert('로그인 성공', '로그인 되었습니다.');
                 navigation.navigate('MainPage', {
                     params: data.user,
                 });
@@ -53,7 +60,12 @@ function LoginPage({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Login Page</Text>
+            <Image 
+                        source={require('../../assets/images/logo_ani.gif')}  
+                        style={{width: 80, height: 100, resizeMode: 'contain', marginBottom: 0, marginTop: -120, alignSelf: 'center'}}
+            />
+            <Text style={styles.app_name}>PLAN UP</Text>
+            <Text style={styles.title}>로그인</Text>
             <LoginInputBox
                 title="아이디"
                 text="아이디를 입력하세요"
@@ -120,11 +132,18 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 15,
     },
+    app_name: {
+        fontFamily: 'NanumSquareEB',
+        fontSize: 20,
+        color: 'black',
+        marginBottom: 16,
+        marginTop: -26,
+    },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
+        fontSize: 30,
+        fontFamily: 'NanumSquareEB',
         marginBottom: 20,
-        color: '#25A4FF'
+        color: '#06A4FD'
     },
     innerText:{
         fontSize: 20,

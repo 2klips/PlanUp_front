@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,} from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, FlatList, ScrollView } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { Calendar } from 'react-native-calendars';
@@ -7,8 +7,24 @@ import moment from 'moment';
 import 'moment/locale/ko';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../context/AuthContext';
+import VirtualizedView from '../../utils/VirutalizedList';
+import CustomCalendar from '../../components/ui/CustomCalendar';
+import { API_URL } from '@env';
 
 const COLORS = ['#06A4FD', '#97E5FF', '#FF0000', '#FF81EB', '#FF8E25', '#FFE871', '#70FF4D', '#35F2DC', '#48B704', '#8206FD'];
+
+const ChecklistItem = ({ title, date, color, completed, onValueChange }) => (
+  <View style={styles.item}>
+    <View style={styles.itemLeft}>
+      <View style={[styles.circle, { backgroundColor: color || 'blue' }]} />
+      <View>
+        <Text style={[styles.title, completed && styles.checklistItemCompleted]}>{title}</Text>
+        <Text style={[styles.date, completed && styles.checklistItemCompleted]}>{date}까지</Text>
+      </View>
+    </View>
+    <CheckBox value={completed} onValueChange={onValueChange} /> 
+  </View>
+);
 
 const TodolistCreate = ({ route, navigation }) => {
   const { selectedDate: initialSelectedDate } = route.params;
@@ -21,13 +37,14 @@ const TodolistCreate = ({ route, navigation }) => {
   const [checklist, setChecklist] = useState([]);
   const [checklistItem, setChecklistItem] = useState('');
   const [isAddingChecklist, setIsAddingChecklist] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); 
 
   useEffect(() => {
     const fetchTodos = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
         console.log(token)
-        const response = await axios.get('http://10.0.2.2:8080/list', {
+        const response = await axios.get(`${API_URL}/list/userid`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -45,15 +62,16 @@ const TodolistCreate = ({ route, navigation }) => {
       Alert.alert('Error', 'Please fill out all fields');
       return;
     }
+    setIsButtonDisabled(true);
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.post('http://10.0.2.2:8080/list', {
+      const response = await axios.post(`${API_URL}/list`, {
         userid: user.userid,
         title: title,
         text: text,
         color: color,
         examDate: selectedDate,
-        checklist: checklist,
+        type: '0',
       },{
         headers: {
           Authorization: `Bearer ${token}`
@@ -61,10 +79,14 @@ const TodolistCreate = ({ route, navigation }) => {
       });
 
       if (response.status === 201) {
-        Alert.alert('Success', 'Todo added successfully');
+        Alert.alert('성공', '일정 추가 성공');
+        console.log(response.data)
+        const todoId = response.data
+        await saveChecklistItems(todoId);
         navigation.navigate('MainPage');
       } else {
         Alert.alert('Error', 'Failed to add todo');
+        setIsButtonDisabled(false);
       }
     } catch (error) {
       console.error(error);
@@ -76,35 +98,40 @@ const TodolistCreate = ({ route, navigation }) => {
     setIsAddingChecklist(true);
   };
 
-  const handleSaveChecklistItem = async () => {
+  const handleSaveChecklistItem = () => {
     if (checklistItem.trim() !== '') {
+      const newChecklistItem = { date:moment(selectedDate).format('YYYY년 M월 D일'), color: color, text: checklistItem, completed: false };
+      setChecklist([...checklist, newChecklistItem]);
+      setChecklistItem('');
+      setIsAddingChecklist(false);
+    }
+  };
+
+  const saveChecklistItems = async (todoId) => {
+    try {
       const token = await AsyncStorage.getItem('token');
-      console.log(token)
-      const newChecklistItem = { text: checklistItem, completed: false };
-      try {
-        const response = await axios.post('http://10.0.2.2:8080/list/check', {
-          userid: user.userid, 
-          color: color, 
+      for (const item of checklist) {
+        const response = await axios.post(`${API_URL}/checklist`, {
+          userid: user.userid,
+          color: color,
           examDate: selectedDate,
-          list: checklistItem, 
-          completed: false, 
-          todoId: 'TODO_ID_HERE' 
+          list: item.text,
+          completed: item.completed,
+          todoId: todoId
         }, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        if (response.status === 201) {
-          setChecklist([...checklist, newChecklistItem]);
-          setChecklistItem('');
-          setIsAddingChecklist(false);
-        } else {
+  
+        if (response.status !== 201) {
           Alert.alert('Error', 'Failed to add checklist item');
+          return;
         }
-      } catch (error) {
-        console.error(error);
-        Alert.alert('Error', 'An error occurred while adding the checklist item');
       }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'An error occurred while adding the checklist item');
     }
   };
 
@@ -116,46 +143,65 @@ const TodolistCreate = ({ route, navigation }) => {
 
   const markedDates = {};
   todoList.forEach(item => {
-    markedDates[item.examDate] = {
-      marked: true,
-      dotColor: item.color || 'red',
-    };
-  });
+    const dateKey = moment(item.examDate).format('YYYY-MM-DD');
+    if (!markedDates[dateKey]) {
+        markedDates[dateKey] = { dots: [] };
+    }
+    markedDates[dateKey].dots.push({
+        key: item.id,
+        color: item.color || 'red',
+        selectedDotColor: item.color || 'red',
+    });
+});
 
-  markedDates[selectedDate] = { selected: true, selectedColor: 'blue' };
+const handleColorChange = (newColor) => {
+  setColor(newColor);
+  setChecklist(checklist.map(item => ({ ...item, color: newColor })));
+};
+
+const handleSelectDate = (date) => {
+  setSelectedDate(date);
+  setChecklist(checklist.map(item => ({ ...item, date: moment(date).format('YYYY년 M월 D일') })));
+}
+
+  markedDates[selectedDate] = { selected: true, selectedColor: '#06A4FD' };
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Calendar
+        <CustomCalendar
           style={styles.calendar}
           current={selectedDate}
-          onDayPress={(day) => setSelectedDate(day.dateString)}
+          onDayPress={(day) => handleSelectDate(day.dateString)}
+          markingType={'multi-dot'}
           markedDates={markedDates}
           monthFormat={'yyyy년 MM월'}
         />
         <View style={styles.colorPicker}>
           {COLORS.map((c, index) => (
-            <TouchableOpacity key={index} onPress={() => setColor(c)} style={[styles.colorCircle, { backgroundColor: c, borderColor: color === c ? 'black' : 'transparent' }]} />
+            <TouchableOpacity key={index} onPress={() => handleColorChange(c)} style={[styles.colorCircle, { backgroundColor: c, borderColor: color === c ? 'black' : 'transparent' }]} />
           ))}
         </View>
         <View style={styles.eventDetail}>
-          <View style={[styles.circle, { backgroundColor: color }]} />
-          <Text style={styles.eventDate}>
-            {moment(selectedDate).locale('ko').format('YYYY년 M월 D일')}
-            <Text style={styles.checklistCount}> ({checklist.length})</Text>
-          </Text>
+          <View style={styles.dateContainer}>
+            <View style={[styles.circle, { backgroundColor: color }]} />
+            <Text></Text>
+            <Text style={styles.eventDate}>
+              {moment(selectedDate).locale('ko').format('YYYY년 M월 D일')}
+              <Text style={styles.checklistCount}> ({checklist.length})</Text>
+            </Text>
+          </View>
           <Text style={styles.text1}>제목</Text>
           <TextInput
             style={styles.input}
-            placeholder="제목을 입력하세요"
+            placeholder="제목을 입력하세요."
             value={title}
             onChangeText={setTitle}
           />
           <Text style={styles.text1}>상세내용</Text> 
           <TextInput
             style={styles.input}
-            placeholder="상세내용을 입력하세요"
+            placeholder="상세내용을 입력하세요."
             value={text}
             onChangeText={setText}
             multiline
@@ -182,19 +228,22 @@ const TodolistCreate = ({ route, navigation }) => {
           <FlatList
             data={checklist}
             renderItem={({ item, index }) => (
-              <View style={styles.checklistItemContainer}>
-                <Text style={[styles.checklistItem, item.completed && styles.checklistItemCompleted]}>{item.text}</Text>
-                <CheckBox
-                  value={item.completed}
-                  onValueChange={() => handleToggleChecklistItem(index)}
-                />
-              </View>
+              <ChecklistItem
+                title={item.text}
+                date={item.date}
+                color={item.color}
+                isChecked={item.completed}
+                onValueChange={() => handleToggleChecklistItem(index)}
+            />
             )}
             keyExtractor={(item, index) => index.toString()}
           />
         <View style={styles.style1}>
-          <Text style={styles.text3}>일정추가하기</Text>
-          <TouchableOpacity style={styles.addButton2} onPress={handleSave}>
+          <Text style={[styles.text3, isButtonDisabled && styles.disabledText3]}>일정추가하기</Text>
+          <TouchableOpacity 
+          style={[styles.addButton2, isButtonDisabled && styles.disabledButton]} 
+          onPress={handleSave}
+          disabled={isButtonDisabled}>
             <Text style={styles.addButtonText}>+</Text>
           </TouchableOpacity>
           </View>
@@ -210,6 +259,11 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: 'white',
   },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+
+},
   calendar: {
     marginBottom: 16,
   },
@@ -219,8 +273,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   colorCircle: {
-    width: 30,
-    height: 30,
+    width: 24,
+    height: 24,
     borderRadius: 15,
     borderWidth: 2,
   },
@@ -243,11 +297,13 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     marginBottom: 8,
+    marginRight: 8,
   },
   eventDate: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontFamily: 'NanumSquareEB',
+    color: 'black',
+    marginBottom: 14,
   },
   checklistCount: {
     fontSize: 14,
@@ -255,21 +311,24 @@ const styles = StyleSheet.create({
   },
   text1: {
     color: '#C8C8C8',
-    fontWeight: 'bold',
+    fontFamily: 'NanumSquareEB',
     marginBottom: 5,
+    marginTop: 6,
   },
   input: {
-    height: 40,
+    height: 'auto',
     borderColor: '#C8C8C8',
     borderBottomWidth: 1,
     borderRadius: 5,
     marginBottom: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
   },
+
   checklistContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
+    marginTop: 10,
   },
   addChecklistContainer: {
     flexDirection: 'row',
@@ -309,10 +368,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginRight: 10,
   },
+  disabledText3: {
+    color: '#A9A9A9',
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
   style1:{
     flexDirection:'row',
     alignItems:"center",
-    justifyContent:"center"
+    justifyContent:"center",
+    marginTop: 20,
+    marginBottom: 20,
   },
   addButton2: {
   backgroundColor: '#06A4FD',
@@ -335,7 +402,36 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontFamily: 'NanumSquareB',
+    fontSize: 14,
+  },
+  disabledButton: {
+    backgroundColor: '#A9A9A9',
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+
+  item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+},
+  itemLeft: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  },
+  title: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  },
+  date: {
+  fontSize: 14,
+  color: '#888',
   },
 });
 
