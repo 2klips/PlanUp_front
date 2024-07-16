@@ -108,9 +108,9 @@ const URLInputPage = ({ navigation }) => {
                         onChangeText={handleTextChange}
                 
                     />
-                    <TouchableOpacity style={styles.copy} onPress={handleUrlSubmit}>
+                    {/* <TouchableOpacity style={styles.copy} onPress={handleUrlSubmit}>
                         <Copy width={24} height={24} />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <TouchableOpacity style={styles.button} onPress={handleUrlSubmit}>
                     <Text style={styles.buttonText}>조회하기</Text>
