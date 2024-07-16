@@ -14,6 +14,7 @@ import {API_URL} from '@env';
 import Edit_icon from '../../assets/images/edit_icon.svg';
 import Delelte_icon from '../../assets/images/delete_circle_icon.svg';
 import Home_icon  from '../../assets/images/home_icon.svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ChecklistItem = ({ title, date, color, completed, onValueChange }) => (
     <View style={styles.item}>
@@ -294,114 +295,117 @@ const TodolistDetail = ({ route, navigation }) => {
     }
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <CustomCalendar
-            style={styles.calendar}
-            current={selectedDate}
-            onDayPress={isDeleting ? showToast : (day) => handleSelectDate(day.dateString)}
-            markingType={'multi-dot'}
-            markedDates={marked}
-            monthFormat={'yyyy년 MM월'}
-        />
-        <View style={styles.colorPicker}>
-          {COLORS.map((c, index) => (
-            <TouchableOpacity key={index} onPress={isDeleting ? showToast : () => handleColorChange(c)} style={[styles.colorCircle, { backgroundColor: c, borderColor: color === c ? 'black' : 'transparent' }]} />
-          ))}
-        </View>
-        <View style={styles.eventDetail}>
-          <View style={styles.dateContainer}>
-            <Text style={styles.eventDate}>
-                <View style={[styles.circle, { backgroundColor: color }]} />
-                <Text>  </Text>
-                {moment(selectedDate).locale('ko').format('YYYY년 M월 D일')}
-                <Text style={styles.checklistCount}> ({checklists.length})</Text>
-            </Text>
-                <TouchableOpacity style={styles.editButton} 
-                    onPress={() => setIsDeleting(prev => !prev)}
-                >
-                    <Edit_icon width={28} height={28} style={styles.edit_icon} ></Edit_icon>
-                </TouchableOpacity>
-            </View>
-          <Text style={styles.text1}>제목</Text>
-          <TextInput
-            style={styles.inputTitle}
-            placeholder="제목을 입력하세요"
-            value={title}
-            onChangeText={setTitle}
-            editable={!isDeleting}
+    <SafeAreaView>
+      <ScrollView>
+      
+        <View style={styles.container}>
+          <CustomCalendar
+              style={styles.calendar}
+              current={selectedDate}
+              onDayPress={isDeleting ? showToast : (day) => handleSelectDate(day.dateString)}
+              markingType={'multi-dot'}
+              markedDates={marked}
+              monthFormat={'yyyy년 MM월'}
           />
-          <Text style={styles.text1}>상세내용</Text> 
-          <TextInput
-            style={styles.input}
-            placeholder="상세내용을 입력하세요"
-            value={text}
-            onChangeText={setText}
-            multiline
-            editable={!isDeleting}
-          />
-          <View style={styles.checklistContainer}>
-            <Text style={styles.text2}>Check List</Text>
-            <TouchableOpacity 
-            style={[isDeleting ? styles.disabledAddButton1 : styles.addButton1]} 
-            onPress={isDeleting ? showToast : handleAddChecklistItem}
-            >
-              <Text style={styles.addButtonText}>+</Text>
-            </TouchableOpacity>
+          <View style={styles.colorPicker}>
+            {COLORS.map((c, index) => (
+              <TouchableOpacity key={index} onPress={isDeleting ? showToast : () => handleColorChange(c)} style={[styles.colorCircle, { backgroundColor: c, borderColor: color === c ? 'black' : 'transparent' }]} />
+            ))}
           </View>
-          {isAddingChecklist && (
-            <View style={styles.addChecklistContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="체크리스트 항목 입력"
-                value={checklistItem}
-                onChangeText={setChecklistItem}
-              />
-              <TouchableOpacity style={styles.saveButton} onPress={handleSaveChecklistItem}>
-                <Text style={styles.saveButtonText}>저장</Text>
+          <View style={styles.eventDetail}>
+            <View style={styles.dateContainer}>
+              <Text style={styles.eventDate}>
+                  <View style={[styles.circle, { backgroundColor: color }]} />
+                  <Text>  </Text>
+                  {moment(selectedDate).locale('ko').format('YYYY년 M월 D일')}
+                  <Text style={styles.checklistCount}> ({checklists.length})</Text>
+              </Text>
+                  <TouchableOpacity style={styles.editButton} 
+                      onPress={() => setIsDeleting(prev => !prev)}
+                  >
+                      <Edit_icon width={28} height={28} style={styles.edit_icon} ></Edit_icon>
+                  </TouchableOpacity>
+              </View>
+            <Text style={styles.text1}>제목</Text>
+            <TextInput
+              style={styles.inputTitle}
+              placeholder="제목을 입력하세요"
+              value={title}
+              onChangeText={setTitle}
+              editable={!isDeleting}
+            />
+            <Text style={styles.text1}>상세내용</Text> 
+            <TextInput
+              style={styles.input}
+              placeholder="상세내용을 입력하세요"
+              value={text}
+              onChangeText={setText}
+              multiline
+              editable={!isDeleting}
+            />
+            <View style={styles.checklistContainer}>
+              <Text style={styles.text2}>Check List</Text>
+              <TouchableOpacity 
+              style={[isDeleting ? styles.disabledAddButton1 : styles.addButton1]} 
+              onPress={isDeleting ? showToast : handleAddChecklistItem}
+              >
+                <Text style={styles.addButtonText}>+</Text>
               </TouchableOpacity>
             </View>
-          )}
-          <FlatList
-            data={checklists}
-            renderItem={({ item }) => (
-                <ChecklistItem
-                title={item.text}
-                date={item.date}
-                color={item.color}
-                completed={item.completed}
-                onValueChange={(value) => handleToggleCheckbox(item.id, value)}
-            />
+            {isAddingChecklist && (
+              <View style={styles.addChecklistContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="체크리스트 항목 입력"
+                  value={checklistItem}
+                  onChangeText={setChecklistItem}
+                />
+                <TouchableOpacity style={styles.saveButton} onPress={handleSaveChecklistItem}>
+                  <Text style={styles.saveButtonText}>저장</Text>
+                </TouchableOpacity>
+              </View>
             )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-            <View>    
-                {isDeleting ? (
-                    <View style={styles.style1}>
-                    <Text style={styles.deltext}>일정삭제하기</Text>
-                    <TouchableOpacity onPress={handleDelete}>
-                        <Delelte_icon width={24} style={styles.delete_icon}></Delelte_icon>
-                    </TouchableOpacity>
-                    </View>
-                ) : (
-                    <View style={styles.style1}>
-                    <Text style={styles.text3}>일정수정하기</Text>
-                    <TouchableOpacity style={styles.addButton2} onPress={handleSave}>
-                        <Text style={styles.addButtonText}>+</Text>
-                    </TouchableOpacity>
-                    </View>
-                )}
-            </View>
+            <FlatList
+              data={checklists}
+              renderItem={({ item }) => (
+                  <ChecklistItem
+                  title={item.text}
+                  date={item.date}
+                  color={item.color}
+                  completed={item.completed}
+                  onValueChange={(value) => handleToggleCheckbox(item.id, value)}
+              />
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+              <View>    
+                  {isDeleting ? (
+                      <View style={styles.style1}>
+                      <Text style={styles.deltext}>일정삭제하기</Text>
+                      <TouchableOpacity onPress={handleDelete}>
+                          <Delelte_icon width={24} style={styles.delete_icon}></Delelte_icon>
+                      </TouchableOpacity>
+                      </View>
+                  ) : (
+                      <View style={styles.style1}>
+                      <Text style={styles.text3}>일정수정하기</Text>
+                      <TouchableOpacity style={styles.addButton2} onPress={handleSave}>
+                          <Text style={styles.addButtonText}>+</Text>
+                      </TouchableOpacity>
+                      </View>
+                  )}
+              </View>
+          </View>
+          <View style={styles.style1}>
+            <TouchableOpacity
+              onPress={handleGoToMainPage}>
+              <Home_icon width={30} height={30} />
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.style1}>
-          <TouchableOpacity
-            onPress={handleGoToMainPage}>
-            <Home_icon width={30} height={30} />
-          </TouchableOpacity>
-        </View>
-      </View>
+      </ScrollView>
       <Toast config={toastConfig} />
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 

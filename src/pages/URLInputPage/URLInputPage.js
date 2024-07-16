@@ -17,6 +17,7 @@ import JobPlanetDetails from '../../components/ui/JobPlanetDetails';
 import WantedDetails from '../../components/ui/WantedDetails';
 import Home_icon  from '../../assets/images/home_icon.svg';
 
+
 const URLInputPage = ({ navigation }) => {
     const [inputUrl, setInputUrl] = useState('');
     const [displayText, setDisplayText] = useState('');
