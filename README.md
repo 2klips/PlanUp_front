@@ -15,6 +15,26 @@
 
 **플랜 업과 함께 목표를 이루시도록 도와드릴게요!**
 
+# 포트폴리오
+
+<details>
+  <summary>펼치기/접기</summary>
+ 
+![PLAN_UP 기획서_page-0001](https://github.com/user-attachments/assets/31f7e8e5-9f11-48ad-84b4-2d75cfc57c8d)
+![PLAN_UP 기획서_page-0002](https://github.com/user-attachments/assets/ff59fad1-362a-4d70-88a9-5dded9682f5f)
+![PLAN_UP 기획서_page-0003](https://github.com/user-attachments/assets/e1c54730-5bca-4f9d-aa36-a7176a3f5648)
+![PLAN_UP 기획서_page-0004](https://github.com/user-attachments/assets/e58e3242-ff2c-41dc-af1d-1cfe494e19a3)
+![PLAN_UP 기획서_page-0005](https://github.com/user-attachments/assets/885521d3-3fb3-4552-a014-73f9dfca706b)
+![PLAN_UP 기획서_page-0006](https://github.com/user-attachments/assets/b98bc8da-ed3a-4bdd-8f13-b27dc6fe7493)
+![PLAN_UP 기획서_page-0007](https://github.com/user-attachments/assets/dbb87149-45a5-45c4-992e-2f40b0a888dc)
+![PLAN_UP 기획서_page-0008](https://github.com/user-attachments/assets/eddbb1c9-9da3-4b36-9a41-e0f23aae1f3e)
+![PLAN_UP 기획서_page-0009](https://github.com/user-attachments/assets/492e5b6d-f071-4209-91ec-bdc02f9a55c9)
+![PLAN_UP 기획서_page-0010](https://github.com/user-attachments/assets/e1b5aeef-cec4-43b2-ac68-27e88ca62a85)
+ 
+ </details>
+
+ <hr/>
+
 ### 기능
 
 * 캘린더를 통해 일정을 한눈에 확인
@@ -30,10 +50,14 @@
 # 실제 어플 구동 화면
 <details>
   <summary>시연 보기/접기</summary>
+  
  
- ![](https://github.com/user-attachments/assets/f115eefe-a89a-449c-8c74-695c413f4eb3)
+ ![[[https://github.com/user-attachments/assets/f115eefe-a89a-449c-8c74-695c413f4eb3](https://github.com/Songysp/frontend/blob/cd68c3ced4f27dbdc66d551f210aa420be3b4276/%EA%B5%AC%EB%8F%99%ED%99%94%EB%A9%B4.gif)](https://github.com/Songysp/frontend/blob/cd68c3ced4f27dbdc66d551f210aa420be3b4276/%EA%B5%AC%EB%8F%99%ED%99%94%EB%A9%B4.gif?raw=true))](https://github.com/Songysp/frontend/blob/cd68c3ced4f27dbdc66d551f210aa420be3b4276/%EA%B5%AC%EB%8F%99%ED%99%94%EB%A9%B4.gif?raw=true)
+ 
  
 </details>
+
+
 
 ### 프로젝트 폴더 구조
 
@@ -82,25 +106,6 @@ Client/
   * Figma
   * GitHub
 
-# 포트폴리오
-
-<details>
-  <summary>펼치기/접기</summary>
- 
-![PLAN_UP 기획서-1.pdf](https://github.com/user-attachments/files/16402753/PLAN_UP.-1.pdf)
-![PLAN_UP 기획서-2.pdf](https://github.com/user-attachments/files/16402754/PLAN_UP.-2.pdf)
-![PLAN_UP 기획서-3.pdf](https://github.com/user-attachments/files/16402755/PLAN_UP.-3.pdf)
-![PLAN_UP 기획서-4.pdf](https://github.com/user-attachments/files/16402756/PLAN_UP.-4.pdf)
-![PLAN_UP 기획서-5.pdf](https://github.com/user-attachments/files/16402757/PLAN_UP.-5.pdf)
-![PLAN_UP 기획서-6.pdf](https://github.com/user-attachments/files/16402758/PLAN_UP.-6.pdf)
-![PLAN_UP 기획서-7.pdf](https://github.com/user-attachments/files/16402759/PLAN_UP.-7.pdf)
-![PLAN_UP 기획서-8.pdf](https://github.com/user-attachments/files/16402760/PLAN_UP.-8.pdf)
-![PLAN_UP 기획서-9.pdf](https://github.com/user-attachments/files/16402761/PLAN_UP.-9.pdf)
-![PLAN_UP 기획서-10.pdf](https://github.com/user-attachments/files/16402762/PLAN_UP.-10.pdf)
-
- 
- </details>
-
 
 # 협업 방식
 1. **Figma 활용**
@@ -116,7 +121,60 @@ Client/
     * 모든 개발은 develop 브랜치에서 이루어지고, 추가 기능 개발은 따로 브랜치를 분리해 develop과 병합. 이후 충분한 테스트를 거친 후 master 브랜치에 병합하여 배포 버전을 업데이트
 
 # 작성자의 기여
-* 각자 작성
+* 리액트 네이티브 및 안드로이드 개발
+
+  * 리액트 네이티브를 사용한 모바일 애플리케이션 개발.
+  * 안드로이드 플랫폼에 대한 개발 환경 세팅 및 폴더 구조 구축.
+
+* 백엔드 서버 구조 구축
+
+  * 서버 아키텍처 설계 및 구현.
+  * 백엔드 서버 개발 및 유지보수.
+
+
+* GitHub 버전 관리 구조 구축
+
+  * GitHub를 활용한 버전 관리 시스템 설정 및 관리.
+  * 협업을 위한 브랜치 전략 수립.
+
+* 메인 페이지 구성
+
+* 사용자 인증 및 로그인, 회원가입 세션 개발
+
+* 로그인 및 회원가입 기능 구현.
+
+* 프론트엔드 및 백엔드 환경 변수 관리
+
+* 개발 환경에서 필요한 환경 변수 설정 및 관리.
+
+* 캘린더, 일정, 체크리스트 기능 개발
+
+  * 캘린더와 일정 관리 기능 구현.
+  * 체크리스트 기능 개발 및 통합.
+
+* 전체적인 문제 해결 및 유지보수
+
+  * 프로젝트에서 발생한 문제 및 오류 해결.
+  * 전체적인 코드 유지보수 및 개선 작업.
+
+* Dockerfile 이미지 생성
+  * Dockerfile을 사용하여 컨테이너 이미지를 생성 및 관리.
+
+* APK 빌드 및 배포
+
+  * Android 애플리케이션의 APK 파일 생성 및 배포.
+  * 빌드 프로세스 자동화 및 최적화.
+
+
+* 백엔드 서버 및 크롤링 서버 배포
+
+  * 백엔드 서버와 크롤링 서버의 배포 및 운영.
+  * 서버 모니터링 및 유지보수.
+
+* 플레이스토어 배포
+* 
+  * 애플리케이션을 Google Play Store에 배포.
+  * 앱의 업데이트 및 관리.
 
 # 팀 기여
 * 현우 팀장:
