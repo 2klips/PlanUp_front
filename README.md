@@ -27,11 +27,11 @@
 
 * 채용 공고 URL을 통한 기업 정보, 채용 공고를 일정에 저장
 
-### 서비스 시연
+# 실제 어플 구동 화면
 <details>
   <summary>시연 보기/접기</summary>
  
- 추가 예정
+ ![](https://github.com/user-attachments/assets/f115eefe-a89a-449c-8c74-695c413f4eb3)
  
 </details>
 
@@ -82,12 +82,22 @@ Client/
   * Figma
   * GitHub
 
-### 포트폴리오
+# 포트폴리오
 
 <details>
   <summary>펼치기/접기</summary>
  
- 추가예정
+![PLAN_UP 기획서-1.pdf](https://github.com/user-attachments/files/16402753/PLAN_UP.-1.pdf)
+![PLAN_UP 기획서-2.pdf](https://github.com/user-attachments/files/16402754/PLAN_UP.-2.pdf)
+![PLAN_UP 기획서-3.pdf](https://github.com/user-attachments/files/16402755/PLAN_UP.-3.pdf)
+![PLAN_UP 기획서-4.pdf](https://github.com/user-attachments/files/16402756/PLAN_UP.-4.pdf)
+![PLAN_UP 기획서-5.pdf](https://github.com/user-attachments/files/16402757/PLAN_UP.-5.pdf)
+![PLAN_UP 기획서-6.pdf](https://github.com/user-attachments/files/16402758/PLAN_UP.-6.pdf)
+![PLAN_UP 기획서-7.pdf](https://github.com/user-attachments/files/16402759/PLAN_UP.-7.pdf)
+![PLAN_UP 기획서-8.pdf](https://github.com/user-attachments/files/16402760/PLAN_UP.-8.pdf)
+![PLAN_UP 기획서-9.pdf](https://github.com/user-attachments/files/16402761/PLAN_UP.-9.pdf)
+![PLAN_UP 기획서-10.pdf](https://github.com/user-attachments/files/16402762/PLAN_UP.-10.pdf)
+
  
  </details>
 
@@ -109,7 +119,7 @@ Client/
 * 각자 작성
 
 # 팀 기여
-* 임현우 팀장:
+* 현우 팀장:
     * 기획, 디자인
     * 크롤링 코드 보완
     * 화면 구성 디테일 수정
