@@ -51,8 +51,11 @@
 <details>
   <summary>시연 보기/접기</summary>
   
- 
- ![[[https://github.com/user-attachments/assets/f115eefe-a89a-449c-8c74-695c413f4eb3](https://github.com/Songysp/frontend/blob/cd68c3ced4f27dbdc66d551f210aa420be3b4276/%EA%B5%AC%EB%8F%99%ED%99%94%EB%A9%B4.gif)](https://github.com/Songysp/frontend/blob/cd68c3ced4f27dbdc66d551f210aa420be3b4276/%EA%B5%AC%EB%8F%99%ED%99%94%EB%A9%B4.gif?raw=true))](https://github.com/Songysp/frontend/blob/cd68c3ced4f27dbdc66d551f210aa420be3b4276/%EA%B5%AC%EB%8F%99%ED%99%94%EB%A9%B4.gif?raw=true)
+
+  <br/>
+
+ <center><img src="구동화면.gif" alt="Demo GIF" width="360" height="640"></center>
+
  
  
 </details>
@@ -79,9 +82,40 @@ Client/
 
 ```
 
-* run: react-native run-android
+# 실행
+1. 리포지토리 복제
+```bash
+git clone https://github.com/Songysp/PlanUP_frontend
 
-### 플레이 스토어
+```
+
+2. 패키지 설치
+  * node.js, react-native-cli, android stuid 필요
+```bash
+npm install
+```
+  * 백엔드 종속성 설치
+```bash
+# 백엔드 루트 폴더에서 아래 코드 실행
+pip install -r requirements.txt
+```
+
+3. 앱 실행
+
+  * 백엔드 서버 실행
+```bash
+npm start
+```
+  * FastAPI 크롤링 서버 실행
+```bash
+python main.py
+```
+  * 프론트 엔드
+```bash
+npx react-native run-android
+```
+
+# 플레이 스토어
 
 ### [스토어 링크](https://play.google.com/store/apps/details?id=com.PlanUP&pli=1)
 ![플레이스토어](https://github.com/user-attachments/assets/77b51f29-cd09-49e8-a971-87710aa3204f)
